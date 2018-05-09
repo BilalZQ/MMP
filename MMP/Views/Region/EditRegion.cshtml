@@ -1,0 +1,22 @@
+﻿@model MMP.Models.ViewModels.Region.EditRegion
+@{
+    Layout = null;
+}
+
+
+@using (Html.BeginForm("EditRegion", "Region", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.region_id)
+    <div class="form-group">
+        @Html.LabelFor(model => model.region_name, "Region Name", new { @class = "control-label" })
+        @Html.EditorFor(model => model.region_name, new { htmlAtrributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.region_name)
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Submit" class="btn btn-primary" />
+        <input type="reset" value="Reset" class="btn" />
+    </div>
+
+
+}

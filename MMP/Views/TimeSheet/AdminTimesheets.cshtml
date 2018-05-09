@@ -1,0 +1,161 @@
+﻿
+@{
+    ViewBag.Title = "TimeSheets";
+}
+
+<h2>Admin TimeSheets View</h2>
+<!-- <a class="btn btn-success" style="margin-bottom:10px" onclick="PopupForm('@Url.Action("GenerateTimeSheets", "TimeSheet")')"><i class="fa fa-plus"></i> Generate TimeSheet</a> -->
+<a class="btn btn-success" style="margin-bottom:10px" onclick="GenerateTimeSheet()"><i class="fa fa-plus"></i> Generate TimeSheet</a> <!-- CALL FUNCTION TO ADD TIMESHEETS-->
+
+
+<table id="timesheetsTable" class="table table-striped table-bordered" style="width:70%">
+    <thead>
+        <tr>
+            <th>UserName</th>
+            <th>Supervisor</th>
+            <th>Status</th>
+            <th>Updated at</th>
+            <th>Updated by</th>
+            <th>Created At</th>
+            <th>Start Date</th>
+            <th>Valid Till</th>
+            <th></th>
+        </tr>
+    </thead>
+
+</table>
+
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+
+@section Scripts{
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+    <script>
+        var Popup, dataTable;
+
+        $(document).ready(function (){
+            dataTable = $("#timesheetsTable").DataTable({
+                "ajax": {
+                    "url": "/TimeSheet/GetDataAdmin",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "user.user_name" },
+                    { "data": "supervisorName" },
+                    { "data": "ts.timesheet_status" },
+                    { "data": "ts.ts_status_update" },
+                    { "data": "ts.updated_by" },
+                    { "data": "tsmr.created_at" },
+                    { "data": "tsmr.startDate" },
+                    { "data": "tsmr.endDate" },
+                    { "data": "ts.timesheet_id", "render": function (data) {
+                            return "<a class= 'btn btn-default btn-sm' onclick=PopupForm('@Url.Action("asd", "asd")/" + data + "')><i class= 'fa fa-pencil'></i> View/Edit Timesheet</a><a class= 'btn btn-danger btn-sm' style='margin-left:5px' onclick=Delete("+data+")><i class= 'fa fa-trash'></i> Delete</a>"
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "150px"
+                    }
+                ],
+                "language": {
+                    "emptyTable" : "No TimeSheets Available, Click on <b>Generate TimeSheet</b> Button to add Timesheet for current week"
+                }
+            });
+        });
+
+        function PopupForm(url)
+        {
+            var formDiv = $('<div/>');
+            $.get(url).done(function (response) {
+                formDiv.html(response);
+
+                Popup = formDiv.dialog({
+                    autoOpen: true,
+                    resizeable: false,
+                    title: "Fill TimeSheet details",
+                    height: 700,
+                    width: 700,
+                    close: function () {
+                        Popup.dialog('destroy').remove();
+                    }
+                });
+            });
+        }
+
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('close');
+                            dataTable.ajax.reload();
+
+                            //notify.js plugin
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+
+        function GenerateTimeSheet()
+        {
+            if (confirm('Generate New Timesheet?'))
+            {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GenerateTimeSheets", "Timesheet")',
+                    success: function (data) {
+                        if (data.success) {
+                            dataTable.ajax.reload();
+
+                            //notify.js plugin
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+                        }
+                    }
+                })
+            }
+        }
+
+        function Delete(id)
+        {
+            if (confirm('Are you sure you want to remove this Timesheet?'))
+            {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete", "Timesheet")/' + id,
+                    success: function (data) {
+                        if (data.success) {
+                            dataTable.ajax.reload();
+
+                            //notify.js plugin
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+                        }
+                    }
+                })
+            }
+        }
+
+
+
+    </script>
+}
+

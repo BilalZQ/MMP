@@ -1,0 +1,1123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="mmpModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="categories">
+          <Key>
+            <PropertyRef Name="category_id" />
+          </Key>
+          <Property Name="category_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="category_name" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="category_type_details">
+          <Key>
+            <PropertyRef Name="ctd_id" />
+          </Key>
+          <Property Name="ctd_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ctd_name" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="ctd_code" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="category_id" Type="int" Nullable="false" />
+          <Property Name="ctd_created_at" Type="datetime" Precision="0" />
+          <Property Name="ctd_updated_at" Type="datetime" Precision="0" />
+        </EntityType>
+        <EntityType Name="holiday_details">
+          <Key>
+            <PropertyRef Name="hd_id" />
+          </Key>
+          <Property Name="hd_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="hd_name" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="hd_from" Type="date" Nullable="false" />
+          <Property Name="hd_to" Type="date" Nullable="false" />
+          <Property Name="hy_id" Type="int" Nullable="false" />
+          <Property Name="generated_by" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="holiday_year">
+          <Key>
+            <PropertyRef Name="hy_id" />
+          </Key>
+          <Property Name="hy_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="hy_name" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="creation_date" Type="datetime" Precision="0" />
+          <Property Name="year" Type="year" Nullable="false" />
+        </EntityType>
+        <EntityType Name="leave_details">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="no_of_leaves" Type="int" Nullable="false" />
+          <Property Name="encashable" Type="enum" />
+          <Property Name="carry_forward" Type="enum" />
+          <Property Name="category_type_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="project_details">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="sector_id" Type="int" Nullable="false" />
+          <Property Name="project_model" Type="enum" />
+          <Property Name="category_type_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="regions">
+          <Key>
+            <PropertyRef Name="region_id" />
+          </Key>
+          <Property Name="region_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="region_name" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="roles">
+          <Key>
+            <PropertyRef Name="role_id" />
+          </Key>
+          <Property Name="role_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="role_name" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sectors">
+          <Key>
+            <PropertyRef Name="sector_id" />
+          </Key>
+          <Property Name="sector_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="sector_name" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="timesheet_day_details">
+          <Key>
+            <PropertyRef Name="tdd_id" />
+          </Key>
+          <Property Name="tdd_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="tdd_day" Type="date" Nullable="false" />
+          <Property Name="workhours" Type="double" />
+          <Property Name="tsd_id" Type="int" />
+        </EntityType>
+        <EntityType Name="timesheet_details">
+          <Key>
+            <PropertyRef Name="tsd_id" />
+          </Key>
+          <Property Name="tsd_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="tsd_timesheet_id" Type="int" Nullable="false" />
+          <Property Name="tsd_category_id" Type="int" Nullable="false" />
+          <Property Name="tsd_category_type_id" Type="int" Nullable="false" />
+          <Property Name="timesheet_entry_type" Type="enum" Nullable="false" />
+        </EntityType>
+        <EntityType Name="timesheet_mr">
+          <Key>
+            <PropertyRef Name="tsmr_id" />
+          </Key>
+          <Property Name="tsmr_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="tsmr_generated_by" Type="int" />
+          <Property Name="days" Type="int" Nullable="false" />
+          <Property Name="tsmr_created_at" Type="datetime" Precision="0" />
+          <Property Name="tsmr_start_date" Type="datetime" Precision="0" />
+          <Property Name="tsmr_valid_till" Type="datetime" Precision="0" />
+        </EntityType>
+        <EntityType Name="timesheets">
+          <Key>
+            <PropertyRef Name="timesheet_id" />
+          </Key>
+          <Property Name="timesheet_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="timesheet_user" Type="int" Nullable="false" />
+          <Property Name="total_hours" Type="double" />
+          <Property Name="time_my" Type="date" />
+          <Property Name="updated_by" Type="int" />
+          <Property Name="timesheet_status" Type="enum" />
+          <Property Name="timesheet_status_update" Type="datetime" Precision="0" />
+          <Property Name="timesheet_caller" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="users">
+          <Key>
+            <PropertyRef Name="user_id" />
+          </Key>
+          <Property Name="user_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="role_id" Type="int" Nullable="false" />
+          <Property Name="user_name" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="user_email" Type="varchar" MaxLength="100" />
+          <Property Name="user_password" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="created_at" Type="datetime" Precision="0" />
+          <Property Name="updated_at" Type="datetime" Precision="0" />
+          <Property Name="supervisor" Type="int" />
+          <Property Name="region_id" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_CT_category_id">
+          <End Role="categories" Type="Self.categories" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="category_type_details" Type="Self.category_type_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="categories">
+              <PropertyRef Name="category_id" />
+            </Principal>
+            <Dependent Role="category_type_details">
+              <PropertyRef Name="category_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_hd_generated_by">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="holiday_details" Type="Self.holiday_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="holiday_details">
+              <PropertyRef Name="generated_by" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_hd_holidayYear">
+          <End Role="holiday_year" Type="Self.holiday_year" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="holiday_details" Type="Self.holiday_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="holiday_year">
+              <PropertyRef Name="hy_id" />
+            </Principal>
+            <Dependent Role="holiday_details">
+              <PropertyRef Name="hy_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ld_category_type">
+          <End Role="category_type_details" Type="Self.category_type_details" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="leave_details" Type="Self.leave_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category_type_details">
+              <PropertyRef Name="ctd_id" />
+            </Principal>
+            <Dependent Role="leave_details">
+              <PropertyRef Name="category_type_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_pd_category_type">
+          <End Role="category_type_details" Type="Self.category_type_details" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="project_details" Type="Self.project_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category_type_details">
+              <PropertyRef Name="ctd_id" />
+            </Principal>
+            <Dependent Role="project_details">
+              <PropertyRef Name="category_type_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_pd_sector">
+          <End Role="sectors" Type="Self.sectors" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="project_details" Type="Self.project_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sectors">
+              <PropertyRef Name="sector_id" />
+            </Principal>
+            <Dependent Role="project_details">
+              <PropertyRef Name="sector_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_td_category">
+          <End Role="categories" Type="Self.categories" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="timesheet_details" Type="Self.timesheet_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="categories">
+              <PropertyRef Name="category_id" />
+            </Principal>
+            <Dependent Role="timesheet_details">
+              <PropertyRef Name="tsd_category_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_td_category_type">
+          <End Role="category_type_details" Type="Self.category_type_details" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="timesheet_details" Type="Self.timesheet_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category_type_details">
+              <PropertyRef Name="ctd_id" />
+            </Principal>
+            <Dependent Role="timesheet_details">
+              <PropertyRef Name="tsd_category_type_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_td_timesheet">
+          <End Role="timesheets" Type="Self.timesheets" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="timesheet_details" Type="Self.timesheet_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="timesheets">
+              <PropertyRef Name="timesheet_id" />
+            </Principal>
+            <Dependent Role="timesheet_details">
+              <PropertyRef Name="tsd_timesheet_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tdd_tsd">
+          <End Role="timesheet_details" Type="Self.timesheet_details" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="timesheet_day_details" Type="Self.timesheet_day_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="timesheet_details">
+              <PropertyRef Name="tsd_id" />
+            </Principal>
+            <Dependent Role="timesheet_day_details">
+              <PropertyRef Name="tsd_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_timehsheets_caller">
+          <End Role="timesheet_mr" Type="Self.timesheet_mr" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="timesheets" Type="Self.timesheets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="timesheet_mr">
+              <PropertyRef Name="tsmr_id" />
+            </Principal>
+            <Dependent Role="timesheets">
+              <PropertyRef Name="timesheet_caller" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_timesheets_approver">
+          <End Role="users" Type="Self.users" Multiplicity="0..1" />
+          <End Role="timesheets" Type="Self.timesheets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="timesheets">
+              <PropertyRef Name="updated_by" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_timesheets_user">
+          <End Role="users" Type="Self.users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="timesheets" Type="Self.timesheets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="timesheets">
+              <PropertyRef Name="timesheet_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_users_region">
+          <End Role="regions" Type="Self.regions" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="users" Type="Self.users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="regions">
+              <PropertyRef Name="region_id" />
+            </Principal>
+            <Dependent Role="users">
+              <PropertyRef Name="region_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_users_role">
+          <End Role="roles" Type="Self.roles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="users" Type="Self.users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="roles">
+              <PropertyRef Name="role_id" />
+            </Principal>
+            <Dependent Role="users">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_users_supervisor">
+          <End Role="users" Type="Self.users" Multiplicity="0..1" />
+          <End Role="users1" Type="Self.users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="users1">
+              <PropertyRef Name="supervisor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="tsmr_created_by">
+          <End Role="users" Type="Self.users" Multiplicity="0..1" />
+          <End Role="timesheet_mr" Type="Self.timesheet_mr" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="timesheet_mr">
+              <PropertyRef Name="tsmr_generated_by" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="mmpModelStoreContainer">
+          <EntitySet Name="categories" EntityType="Self.categories" Schema="mmp" store:Type="Tables" />
+          <EntitySet Name="category_type_details" EntityType="Self.category_type_details" Schema="mmp" store:Type="Tables" />
+          <EntitySet Name="holiday_details" EntityType="Self.holiday_details" Schema="mmp" store:Type="Tables" />
+          <EntitySet Name="holiday_year" EntityType="Self.holiday_year" Schema="mmp" store:Type="Tables" />
+          <EntitySet Name="leave_details" EntityType="Self.leave_details" Schema="mmp" store:Type="Tables" />
+          <EntitySet Name="project_details" EntityType="Self.project_details" Schema="mmp" store:Type="Tables" />
+          <EntitySet Name="regions" EntityType="Self.regions" Schema="mmp" store:Type="Tables" />
+          <EntitySet Name="roles" EntityType="Self.roles" Schema="mmp" store:Type="Tables" />
+          <EntitySet Name="sectors" EntityType="Self.sectors" Schema="mmp" store:Type="Tables" />
+          <EntitySet Name="timesheet_day_details" EntityType="Self.timesheet_day_details" Schema="mmp" store:Type="Tables" />
+          <EntitySet Name="timesheet_details" EntityType="Self.timesheet_details" Schema="mmp" store:Type="Tables" />
+          <EntitySet Name="timesheet_mr" EntityType="Self.timesheet_mr" Schema="mmp" store:Type="Tables" />
+          <EntitySet Name="timesheets" EntityType="Self.timesheets" Schema="mmp" store:Type="Tables" />
+          <EntitySet Name="users" EntityType="Self.users" Schema="mmp" store:Type="Tables" />
+          <AssociationSet Name="FK_CT_category_id" Association="Self.FK_CT_category_id">
+            <End Role="categories" EntitySet="categories" />
+            <End Role="category_type_details" EntitySet="category_type_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_hd_generated_by" Association="Self.FK_hd_generated_by">
+            <End Role="users" EntitySet="users" />
+            <End Role="holiday_details" EntitySet="holiday_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_hd_holidayYear" Association="Self.FK_hd_holidayYear">
+            <End Role="holiday_year" EntitySet="holiday_year" />
+            <End Role="holiday_details" EntitySet="holiday_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ld_category_type" Association="Self.FK_ld_category_type">
+            <End Role="category_type_details" EntitySet="category_type_details" />
+            <End Role="leave_details" EntitySet="leave_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_pd_category_type" Association="Self.FK_pd_category_type">
+            <End Role="category_type_details" EntitySet="category_type_details" />
+            <End Role="project_details" EntitySet="project_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_pd_sector" Association="Self.FK_pd_sector">
+            <End Role="sectors" EntitySet="sectors" />
+            <End Role="project_details" EntitySet="project_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_td_category" Association="Self.FK_td_category">
+            <End Role="categories" EntitySet="categories" />
+            <End Role="timesheet_details" EntitySet="timesheet_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_td_category_type" Association="Self.FK_td_category_type">
+            <End Role="category_type_details" EntitySet="category_type_details" />
+            <End Role="timesheet_details" EntitySet="timesheet_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_td_timesheet" Association="Self.FK_td_timesheet">
+            <End Role="timesheets" EntitySet="timesheets" />
+            <End Role="timesheet_details" EntitySet="timesheet_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tdd_tsd" Association="Self.FK_tdd_tsd">
+            <End Role="timesheet_details" EntitySet="timesheet_details" />
+            <End Role="timesheet_day_details" EntitySet="timesheet_day_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_timehsheets_caller" Association="Self.FK_timehsheets_caller">
+            <End Role="timesheet_mr" EntitySet="timesheet_mr" />
+            <End Role="timesheets" EntitySet="timesheets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_timesheets_approver" Association="Self.FK_timesheets_approver">
+            <End Role="users" EntitySet="users" />
+            <End Role="timesheets" EntitySet="timesheets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_timesheets_user" Association="Self.FK_timesheets_user">
+            <End Role="users" EntitySet="users" />
+            <End Role="timesheets" EntitySet="timesheets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_users_region" Association="Self.FK_users_region">
+            <End Role="regions" EntitySet="regions" />
+            <End Role="users" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_users_role" Association="Self.FK_users_role">
+            <End Role="roles" EntitySet="roles" />
+            <End Role="users" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_users_supervisor" Association="Self.FK_users_supervisor">
+            <End Role="users" EntitySet="users" />
+            <End Role="users1" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="tsmr_created_by" Association="Self.tsmr_created_by">
+            <End Role="users" EntitySet="users" />
+            <End Role="timesheet_mr" EntitySet="timesheet_mr" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="mmpModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="category">
+          <Key>
+            <PropertyRef Name="category_id" />
+          </Key>
+          <Property Name="category_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="category_name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="category_type_details" Relationship="Self.FK_CT_category_id" FromRole="categories" ToRole="category_type_details" />
+          <NavigationProperty Name="timesheet_details" Relationship="Self.FK_td_category" FromRole="categories" ToRole="timesheet_details" />
+        </EntityType>
+        <EntityType Name="category_type_details">
+          <Key>
+            <PropertyRef Name="ctd_id" />
+          </Key>
+          <Property Name="ctd_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ctd_name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ctd_code" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="category_id" Type="Int32" Nullable="false" />
+          <Property Name="ctd_created_at" Type="DateTime" />
+          <Property Name="ctd_updated_at" Type="DateTime" />
+          <NavigationProperty Name="category" Relationship="Self.FK_CT_category_id" FromRole="category_type_details" ToRole="categories" />
+          <NavigationProperty Name="leave_details" Relationship="Self.FK_ld_category_type" FromRole="category_type_details" ToRole="leave_details" />
+          <NavigationProperty Name="project_details" Relationship="Self.FK_pd_category_type" FromRole="category_type_details" ToRole="project_details" />
+          <NavigationProperty Name="timesheet_details" Relationship="Self.FK_td_category_type" FromRole="category_type_details" ToRole="timesheet_details" />
+        </EntityType>
+        <EntityType Name="holiday_details">
+          <Key>
+            <PropertyRef Name="hd_id" />
+          </Key>
+          <Property Name="hd_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="hd_name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="hd_from" Type="DateTime" Nullable="false" />
+          <Property Name="hd_to" Type="DateTime" Nullable="false" />
+          <Property Name="hy_id" Type="Int32" Nullable="false" />
+          <Property Name="generated_by" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="user" Relationship="Self.FK_hd_generated_by" FromRole="holiday_details" ToRole="users" />
+          <NavigationProperty Name="holiday_year" Relationship="Self.FK_hd_holidayYear" FromRole="holiday_details" ToRole="holiday_year" />
+        </EntityType>
+        <EntityType Name="holiday_year">
+          <Key>
+            <PropertyRef Name="hy_id" />
+          </Key>
+          <Property Name="hy_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="hy_name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="creation_date" Type="DateTime" />
+          <Property Name="year" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="holiday_details" Relationship="Self.FK_hd_holidayYear" FromRole="holiday_year" ToRole="holiday_details" />
+        </EntityType>
+        <EntityType Name="leave_details">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="no_of_leaves" Type="Int32" Nullable="false" />
+          <Property Name="encashable" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" />
+          <Property Name="carry_forward" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" />
+          <Property Name="category_type_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="category_type_details" Relationship="Self.FK_ld_category_type" FromRole="leave_details" ToRole="category_type_details" />
+        </EntityType>
+        <EntityType Name="project_details">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="sector_id" Type="Int32" Nullable="false" />
+          <Property Name="project_model" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" />
+          <Property Name="category_type_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="category_type_details" Relationship="Self.FK_pd_category_type" FromRole="project_details" ToRole="category_type_details" />
+          <NavigationProperty Name="sector" Relationship="Self.FK_pd_sector" FromRole="project_details" ToRole="sectors" />
+        </EntityType>
+        <EntityType Name="region">
+          <Key>
+            <PropertyRef Name="region_id" />
+          </Key>
+          <Property Name="region_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="region_name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="users" Relationship="Self.FK_users_region" FromRole="regions" ToRole="users" />
+        </EntityType>
+        <EntityType Name="role">
+          <Key>
+            <PropertyRef Name="role_id" />
+          </Key>
+          <Property Name="role_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="role_name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="users" Relationship="Self.FK_users_role" FromRole="roles" ToRole="users" />
+        </EntityType>
+        <EntityType Name="sector">
+          <Key>
+            <PropertyRef Name="sector_id" />
+          </Key>
+          <Property Name="sector_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="sector_name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="project_details" Relationship="Self.FK_pd_sector" FromRole="sectors" ToRole="project_details" />
+        </EntityType>
+        <EntityType Name="timesheet_day_details">
+          <Key>
+            <PropertyRef Name="tdd_id" />
+          </Key>
+          <Property Name="tdd_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="tdd_day" Type="DateTime" Nullable="false" />
+          <Property Name="workhours" Type="Double" />
+          <Property Name="tsd_id" Type="Int32" />
+          <NavigationProperty Name="timesheet_details" Relationship="Self.FK_tdd_tsd" FromRole="timesheet_day_details" ToRole="timesheet_details" />
+        </EntityType>
+        <EntityType Name="timesheet_details">
+          <Key>
+            <PropertyRef Name="tsd_id" />
+          </Key>
+          <Property Name="tsd_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="tsd_timesheet_id" Type="Int32" Nullable="false" />
+          <Property Name="tsd_category_id" Type="Int32" Nullable="false" />
+          <Property Name="tsd_category_type_id" Type="Int32" Nullable="false" />
+          <Property Name="timesheet_entry_type" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="category" Relationship="Self.FK_td_category" FromRole="timesheet_details" ToRole="categories" />
+          <NavigationProperty Name="category_type_details" Relationship="Self.FK_td_category_type" FromRole="timesheet_details" ToRole="category_type_details" />
+          <NavigationProperty Name="timesheet_day_details" Relationship="Self.FK_tdd_tsd" FromRole="timesheet_details" ToRole="timesheet_day_details" />
+          <NavigationProperty Name="timesheet" Relationship="Self.FK_td_timesheet" FromRole="timesheet_details" ToRole="timesheets" />
+        </EntityType>
+        <EntityType Name="timesheet_mr">
+          <Key>
+            <PropertyRef Name="tsmr_id" />
+          </Key>
+          <Property Name="tsmr_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="tsmr_generated_by" Type="Int32" />
+          <Property Name="days" Type="Int32" Nullable="false" />
+          <Property Name="tsmr_created_at" Type="DateTime" />
+          <Property Name="tsmr_start_date" Type="DateTime" />
+          <Property Name="tsmr_valid_till" Type="DateTime" />
+          <NavigationProperty Name="timesheets" Relationship="Self.FK_timehsheets_caller" FromRole="timesheet_mr" ToRole="timesheets" />
+          <NavigationProperty Name="user" Relationship="Self.tsmr_created_by" FromRole="timesheet_mr" ToRole="users" />
+        </EntityType>
+        <EntityType Name="timesheet">
+          <Key>
+            <PropertyRef Name="timesheet_id" />
+          </Key>
+          <Property Name="timesheet_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="timesheet_user" Type="Int32" Nullable="false" />
+          <Property Name="total_hours" Type="Double" />
+          <Property Name="time_my" Type="DateTime" />
+          <Property Name="updated_by" Type="Int32" />
+          <Property Name="timesheet_status" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" />
+          <Property Name="timesheet_status_update" Type="DateTime" />
+          <Property Name="timesheet_caller" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="timesheet_details" Relationship="Self.FK_td_timesheet" FromRole="timesheets" ToRole="timesheet_details" />
+          <NavigationProperty Name="timesheet_mr" Relationship="Self.FK_timehsheets_caller" FromRole="timesheets" ToRole="timesheet_mr" />
+          <NavigationProperty Name="user" Relationship="Self.FK_timesheets_approver" FromRole="timesheets" ToRole="users" />
+          <NavigationProperty Name="user1" Relationship="Self.FK_timesheets_user" FromRole="timesheets" ToRole="users" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="user_id" />
+          </Key>
+          <Property Name="user_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="role_id" Type="Int32" Nullable="false" />
+          <Property Name="user_name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="user_email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="user_password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="created_at" Type="DateTime" />
+          <Property Name="updated_at" Type="DateTime" />
+          <Property Name="supervisor" Type="Int32" />
+          <Property Name="region_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="holiday_details" Relationship="Self.FK_hd_generated_by" FromRole="users" ToRole="holiday_details" />
+          <NavigationProperty Name="region" Relationship="Self.FK_users_region" FromRole="users" ToRole="regions" />
+          <NavigationProperty Name="role" Relationship="Self.FK_users_role" FromRole="users" ToRole="roles" />
+          <NavigationProperty Name="timesheet_mr" Relationship="Self.tsmr_created_by" FromRole="users" ToRole="timesheet_mr" />
+          <NavigationProperty Name="timesheets" Relationship="Self.FK_timesheets_approver" FromRole="users" ToRole="timesheets" />
+          <NavigationProperty Name="timesheets1" Relationship="Self.FK_timesheets_user" FromRole="users" ToRole="timesheets" />
+          <NavigationProperty Name="users1" Relationship="Self.FK_users_supervisor" FromRole="users" ToRole="users1" />
+          <NavigationProperty Name="user1" Relationship="Self.FK_users_supervisor" FromRole="users1" ToRole="users" />
+        </EntityType>
+        <Association Name="FK_CT_category_id">
+          <End Role="categories" Type="Self.category" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="category_type_details" Type="Self.category_type_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="categories">
+              <PropertyRef Name="category_id" />
+            </Principal>
+            <Dependent Role="category_type_details">
+              <PropertyRef Name="category_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_td_category">
+          <End Role="categories" Type="Self.category" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="timesheet_details" Type="Self.timesheet_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="categories">
+              <PropertyRef Name="category_id" />
+            </Principal>
+            <Dependent Role="timesheet_details">
+              <PropertyRef Name="tsd_category_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ld_category_type">
+          <End Role="category_type_details" Type="Self.category_type_details" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="leave_details" Type="Self.leave_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category_type_details">
+              <PropertyRef Name="ctd_id" />
+            </Principal>
+            <Dependent Role="leave_details">
+              <PropertyRef Name="category_type_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_pd_category_type">
+          <End Role="category_type_details" Type="Self.category_type_details" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="project_details" Type="Self.project_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category_type_details">
+              <PropertyRef Name="ctd_id" />
+            </Principal>
+            <Dependent Role="project_details">
+              <PropertyRef Name="category_type_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_td_category_type">
+          <End Role="category_type_details" Type="Self.category_type_details" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="timesheet_details" Type="Self.timesheet_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category_type_details">
+              <PropertyRef Name="ctd_id" />
+            </Principal>
+            <Dependent Role="timesheet_details">
+              <PropertyRef Name="tsd_category_type_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_hd_generated_by">
+          <End Role="users" Type="Self.user" Multiplicity="1" />
+          <End Role="holiday_details" Type="Self.holiday_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="holiday_details">
+              <PropertyRef Name="generated_by" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_hd_holidayYear">
+          <End Role="holiday_year" Type="Self.holiday_year" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="holiday_details" Type="Self.holiday_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="holiday_year">
+              <PropertyRef Name="hy_id" />
+            </Principal>
+            <Dependent Role="holiday_details">
+              <PropertyRef Name="hy_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_pd_sector">
+          <End Role="sectors" Type="Self.sector" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="project_details" Type="Self.project_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sectors">
+              <PropertyRef Name="sector_id" />
+            </Principal>
+            <Dependent Role="project_details">
+              <PropertyRef Name="sector_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_users_region">
+          <End Role="regions" Type="Self.region" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="users" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="regions">
+              <PropertyRef Name="region_id" />
+            </Principal>
+            <Dependent Role="users">
+              <PropertyRef Name="region_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_users_role">
+          <End Role="roles" Type="Self.role" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="users" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="roles">
+              <PropertyRef Name="role_id" />
+            </Principal>
+            <Dependent Role="users">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tdd_tsd">
+          <End Role="timesheet_details" Type="Self.timesheet_details" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="timesheet_day_details" Type="Self.timesheet_day_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="timesheet_details">
+              <PropertyRef Name="tsd_id" />
+            </Principal>
+            <Dependent Role="timesheet_day_details">
+              <PropertyRef Name="tsd_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_td_timesheet">
+          <End Role="timesheets" Type="Self.timesheet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="timesheet_details" Type="Self.timesheet_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="timesheets">
+              <PropertyRef Name="timesheet_id" />
+            </Principal>
+            <Dependent Role="timesheet_details">
+              <PropertyRef Name="tsd_timesheet_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_timehsheets_caller">
+          <End Role="timesheet_mr" Type="Self.timesheet_mr" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="timesheets" Type="Self.timesheet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="timesheet_mr">
+              <PropertyRef Name="tsmr_id" />
+            </Principal>
+            <Dependent Role="timesheets">
+              <PropertyRef Name="timesheet_caller" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="tsmr_created_by">
+          <End Role="users" Type="Self.user" Multiplicity="0..1" />
+          <End Role="timesheet_mr" Type="Self.timesheet_mr" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="timesheet_mr">
+              <PropertyRef Name="tsmr_generated_by" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_timesheets_approver">
+          <End Role="users" Type="Self.user" Multiplicity="0..1" />
+          <End Role="timesheets" Type="Self.timesheet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="timesheets">
+              <PropertyRef Name="updated_by" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_timesheets_user">
+          <End Role="users" Type="Self.user" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="timesheets" Type="Self.timesheet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="timesheets">
+              <PropertyRef Name="timesheet_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_users_supervisor">
+          <End Role="users" Type="Self.user" Multiplicity="0..1" />
+          <End Role="users1" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="users1">
+              <PropertyRef Name="supervisor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="mmpEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="categories" EntityType="Self.category" />
+          <EntitySet Name="category_type_details" EntityType="Self.category_type_details" />
+          <EntitySet Name="holiday_details" EntityType="Self.holiday_details" />
+          <EntitySet Name="holiday_year" EntityType="Self.holiday_year" />
+          <EntitySet Name="leave_details" EntityType="Self.leave_details" />
+          <EntitySet Name="project_details" EntityType="Self.project_details" />
+          <EntitySet Name="regions" EntityType="Self.region" />
+          <EntitySet Name="roles" EntityType="Self.role" />
+          <EntitySet Name="sectors" EntityType="Self.sector" />
+          <EntitySet Name="timesheet_day_details" EntityType="Self.timesheet_day_details" />
+          <EntitySet Name="timesheet_details" EntityType="Self.timesheet_details" />
+          <EntitySet Name="timesheet_mr" EntityType="Self.timesheet_mr" />
+          <EntitySet Name="timesheets" EntityType="Self.timesheet" />
+          <EntitySet Name="users" EntityType="Self.user" />
+          <AssociationSet Name="FK_CT_category_id" Association="Self.FK_CT_category_id">
+            <End Role="categories" EntitySet="categories" />
+            <End Role="category_type_details" EntitySet="category_type_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_td_category" Association="Self.FK_td_category">
+            <End Role="categories" EntitySet="categories" />
+            <End Role="timesheet_details" EntitySet="timesheet_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ld_category_type" Association="Self.FK_ld_category_type">
+            <End Role="category_type_details" EntitySet="category_type_details" />
+            <End Role="leave_details" EntitySet="leave_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_pd_category_type" Association="Self.FK_pd_category_type">
+            <End Role="category_type_details" EntitySet="category_type_details" />
+            <End Role="project_details" EntitySet="project_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_td_category_type" Association="Self.FK_td_category_type">
+            <End Role="category_type_details" EntitySet="category_type_details" />
+            <End Role="timesheet_details" EntitySet="timesheet_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_hd_generated_by" Association="Self.FK_hd_generated_by">
+            <End Role="users" EntitySet="users" />
+            <End Role="holiday_details" EntitySet="holiday_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_hd_holidayYear" Association="Self.FK_hd_holidayYear">
+            <End Role="holiday_year" EntitySet="holiday_year" />
+            <End Role="holiday_details" EntitySet="holiday_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_pd_sector" Association="Self.FK_pd_sector">
+            <End Role="sectors" EntitySet="sectors" />
+            <End Role="project_details" EntitySet="project_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_users_region" Association="Self.FK_users_region">
+            <End Role="regions" EntitySet="regions" />
+            <End Role="users" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_users_role" Association="Self.FK_users_role">
+            <End Role="roles" EntitySet="roles" />
+            <End Role="users" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tdd_tsd" Association="Self.FK_tdd_tsd">
+            <End Role="timesheet_details" EntitySet="timesheet_details" />
+            <End Role="timesheet_day_details" EntitySet="timesheet_day_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_td_timesheet" Association="Self.FK_td_timesheet">
+            <End Role="timesheets" EntitySet="timesheets" />
+            <End Role="timesheet_details" EntitySet="timesheet_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK_timehsheets_caller" Association="Self.FK_timehsheets_caller">
+            <End Role="timesheet_mr" EntitySet="timesheet_mr" />
+            <End Role="timesheets" EntitySet="timesheets" />
+          </AssociationSet>
+          <AssociationSet Name="tsmr_created_by" Association="Self.tsmr_created_by">
+            <End Role="users" EntitySet="users" />
+            <End Role="timesheet_mr" EntitySet="timesheet_mr" />
+          </AssociationSet>
+          <AssociationSet Name="FK_timesheets_approver" Association="Self.FK_timesheets_approver">
+            <End Role="users" EntitySet="users" />
+            <End Role="timesheets" EntitySet="timesheets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_timesheets_user" Association="Self.FK_timesheets_user">
+            <End Role="users" EntitySet="users" />
+            <End Role="timesheets" EntitySet="timesheets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_users_supervisor" Association="Self.FK_users_supervisor">
+            <End Role="users" EntitySet="users" />
+            <End Role="users1" EntitySet="users" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="mmpModelStoreContainer" CdmEntityContainer="mmpEntities">
+          <EntitySetMapping Name="categories">
+            <EntityTypeMapping TypeName="mmpModel.category">
+              <MappingFragment StoreEntitySet="categories">
+                <ScalarProperty Name="category_id" ColumnName="category_id" />
+                <ScalarProperty Name="category_name" ColumnName="category_name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="category_type_details">
+            <EntityTypeMapping TypeName="mmpModel.category_type_details">
+              <MappingFragment StoreEntitySet="category_type_details">
+                <ScalarProperty Name="ctd_id" ColumnName="ctd_id" />
+                <ScalarProperty Name="ctd_name" ColumnName="ctd_name" />
+                <ScalarProperty Name="ctd_code" ColumnName="ctd_code" />
+                <ScalarProperty Name="category_id" ColumnName="category_id" />
+                <ScalarProperty Name="ctd_created_at" ColumnName="ctd_created_at" />
+                <ScalarProperty Name="ctd_updated_at" ColumnName="ctd_updated_at" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="holiday_details">
+            <EntityTypeMapping TypeName="mmpModel.holiday_details">
+              <MappingFragment StoreEntitySet="holiday_details">
+                <ScalarProperty Name="hd_id" ColumnName="hd_id" />
+                <ScalarProperty Name="hd_name" ColumnName="hd_name" />
+                <ScalarProperty Name="hd_from" ColumnName="hd_from" />
+                <ScalarProperty Name="hd_to" ColumnName="hd_to" />
+                <ScalarProperty Name="hy_id" ColumnName="hy_id" />
+                <ScalarProperty Name="generated_by" ColumnName="generated_by" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="holiday_year">
+            <EntityTypeMapping TypeName="mmpModel.holiday_year">
+              <MappingFragment StoreEntitySet="holiday_year">
+                <ScalarProperty Name="hy_id" ColumnName="hy_id" />
+                <ScalarProperty Name="hy_name" ColumnName="hy_name" />
+                <ScalarProperty Name="creation_date" ColumnName="creation_date" />
+                <ScalarProperty Name="year" ColumnName="year" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="leave_details">
+            <EntityTypeMapping TypeName="mmpModel.leave_details">
+              <MappingFragment StoreEntitySet="leave_details">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="no_of_leaves" ColumnName="no_of_leaves" />
+                <ScalarProperty Name="encashable" ColumnName="encashable" />
+                <ScalarProperty Name="carry_forward" ColumnName="carry_forward" />
+                <ScalarProperty Name="category_type_id" ColumnName="category_type_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="project_details">
+            <EntityTypeMapping TypeName="mmpModel.project_details">
+              <MappingFragment StoreEntitySet="project_details">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="sector_id" ColumnName="sector_id" />
+                <ScalarProperty Name="project_model" ColumnName="project_model" />
+                <ScalarProperty Name="category_type_id" ColumnName="category_type_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="regions">
+            <EntityTypeMapping TypeName="mmpModel.region">
+              <MappingFragment StoreEntitySet="regions">
+                <ScalarProperty Name="region_id" ColumnName="region_id" />
+                <ScalarProperty Name="region_name" ColumnName="region_name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="roles">
+            <EntityTypeMapping TypeName="mmpModel.role">
+              <MappingFragment StoreEntitySet="roles">
+                <ScalarProperty Name="role_id" ColumnName="role_id" />
+                <ScalarProperty Name="role_name" ColumnName="role_name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sectors">
+            <EntityTypeMapping TypeName="mmpModel.sector">
+              <MappingFragment StoreEntitySet="sectors">
+                <ScalarProperty Name="sector_id" ColumnName="sector_id" />
+                <ScalarProperty Name="sector_name" ColumnName="sector_name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="timesheet_day_details">
+            <EntityTypeMapping TypeName="mmpModel.timesheet_day_details">
+              <MappingFragment StoreEntitySet="timesheet_day_details">
+                <ScalarProperty Name="tdd_id" ColumnName="tdd_id" />
+                <ScalarProperty Name="tdd_day" ColumnName="tdd_day" />
+                <ScalarProperty Name="workhours" ColumnName="workhours" />
+                <ScalarProperty Name="tsd_id" ColumnName="tsd_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="timesheet_details">
+            <EntityTypeMapping TypeName="mmpModel.timesheet_details">
+              <MappingFragment StoreEntitySet="timesheet_details">
+                <ScalarProperty Name="tsd_id" ColumnName="tsd_id" />
+                <ScalarProperty Name="tsd_timesheet_id" ColumnName="tsd_timesheet_id" />
+                <ScalarProperty Name="tsd_category_id" ColumnName="tsd_category_id" />
+                <ScalarProperty Name="tsd_category_type_id" ColumnName="tsd_category_type_id" />
+                <ScalarProperty Name="timesheet_entry_type" ColumnName="timesheet_entry_type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="timesheet_mr">
+            <EntityTypeMapping TypeName="mmpModel.timesheet_mr">
+              <MappingFragment StoreEntitySet="timesheet_mr">
+                <ScalarProperty Name="tsmr_id" ColumnName="tsmr_id" />
+                <ScalarProperty Name="tsmr_generated_by" ColumnName="tsmr_generated_by" />
+                <ScalarProperty Name="days" ColumnName="days" />
+                <ScalarProperty Name="tsmr_created_at" ColumnName="tsmr_created_at" />
+                <ScalarProperty Name="tsmr_start_date" ColumnName="tsmr_start_date" />
+                <ScalarProperty Name="tsmr_valid_till" ColumnName="tsmr_valid_till" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="timesheets">
+            <EntityTypeMapping TypeName="mmpModel.timesheet">
+              <MappingFragment StoreEntitySet="timesheets">
+                <ScalarProperty Name="timesheet_id" ColumnName="timesheet_id" />
+                <ScalarProperty Name="timesheet_user" ColumnName="timesheet_user" />
+                <ScalarProperty Name="total_hours" ColumnName="total_hours" />
+                <ScalarProperty Name="time_my" ColumnName="time_my" />
+                <ScalarProperty Name="updated_by" ColumnName="updated_by" />
+                <ScalarProperty Name="timesheet_status" ColumnName="timesheet_status" />
+                <ScalarProperty Name="timesheet_status_update" ColumnName="timesheet_status_update" />
+                <ScalarProperty Name="timesheet_caller" ColumnName="timesheet_caller" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="mmpModel.user">
+              <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="role_id" ColumnName="role_id" />
+                <ScalarProperty Name="user_name" ColumnName="user_name" />
+                <ScalarProperty Name="user_email" ColumnName="user_email" />
+                <ScalarProperty Name="user_password" ColumnName="user_password" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
+                <ScalarProperty Name="updated_at" ColumnName="updated_at" />
+                <ScalarProperty Name="supervisor" ColumnName="supervisor" />
+                <ScalarProperty Name="region_id" ColumnName="region_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

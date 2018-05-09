@@ -1,0 +1,51 @@
+﻿@model MMP.Models.ViewModels.Category.AddorEditLeave
+@{ 
+    Layout = null;
+}
+
+<h2>Leave Operations</h2>
+
+@using (Html.BeginForm("AddorEditLeaves", "Category", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ctd_id)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.leave_name, "Name", new { @class = "control-label" })
+        @Html.EditorFor(model => model.leave_name, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.leave_name)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.leave_code, "Code", new { @class = "control-label" })
+        @Html.EditorFor(model => model.leave_code, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.leave_code)
+    </div>
+
+    @Html.HiddenFor(model => model.category_id)
+    @Html.HiddenFor(model => model.ctd_created_at)
+    @Html.HiddenFor(model => model.leave_details_id)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.no_of_leaves, htmlAttributes: new { @class = "control-label" })
+        @Html.EditorFor(model => model.no_of_leaves, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.no_of_leaves)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.encashable, htmlAttributes: new { @class = "control-label" })
+        @Html.DropDownListFor(model => model.encashable, Model.selector, "Select", new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.encashable, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.carry_forward, htmlAttributes: new { @class = "control-label" })
+        @Html.DropDownListFor(model => model.carry_forward, Model.selector, "Select", new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.carry_forward, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Submit" class="btn btn-primary" />
+        <input type="reset" value="Reset" class="btn" />
+    </div>
+
+}

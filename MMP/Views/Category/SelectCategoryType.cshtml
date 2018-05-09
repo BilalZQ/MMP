@@ -1,0 +1,23 @@
+﻿@model MMP.Models.category
+@{
+    Layout = null;
+}
+
+
+@using (Html.BeginForm("CategoryTypeDetails", "Category", FormMethod.Get, new { onsubmit = "return SubmitForm(this)" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.category_id)
+    <div class="form-group">
+        @Html.LabelFor(model => model.category_name, "Select Category Type", new { @class = "control-label" })
+        @Html.DropDownListFor(model => model.category_name, new SelectList(ViewBag.categories, "category_id", "category_name"), "Select Category type", new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Submit" class="btn btn-primary" />
+        <input type="reset" value="Reset" class="btn" />
+    </div>
+
+
+}

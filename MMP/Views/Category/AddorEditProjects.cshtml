@@ -1,0 +1,45 @@
+﻿@model MMP.Models.ViewModels.Category.AddorEditProject
+@{ 
+    Layout = null;
+}
+
+<h2>Project Operations</h2>
+
+@using (Html.BeginForm("AddorEditProjects", "Category", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ctd_id)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.proj_name, "Name", new { @class = "control-label" })
+        @Html.EditorFor(model => model.proj_name, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.proj_name)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.proj_code, "Code", new { @class = "control-label" })
+        @Html.EditorFor(model => model.proj_code, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.proj_code)
+    </div>
+
+    @Html.HiddenFor(model => model.category_id)
+    @Html.HiddenFor(model => model.ctd_created_at)
+    @Html.HiddenFor(model => model.proj_details_id)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.sector_id, htmlAttributes: new { @class = "control-label"})
+        @Html.DropDownListFor(model => model.sector_id, new SelectList(ViewBag.Sectors, "sector_id", "sector_name"), "Select Sector", new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.sector_id)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.proj_model, htmlAttributes: new { @class = "control-label" })
+        @Html.DropDownListFor(model => model.proj_model, Model.project_model, "Select Project Model", new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.proj_model, "", new { @class = "text-danger" })        
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Submit" class="btn btn-primary" />
+        <input type="reset" value="Reset" class="btn" />
+    </div>
+
+}

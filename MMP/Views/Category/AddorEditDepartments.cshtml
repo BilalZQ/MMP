@@ -1,0 +1,32 @@
+﻿@model MMP.Models.ViewModels.Category.AddorEditDepartment
+@{
+    Layout = null;
+}
+<h2>Department operations</h2>
+
+@using (Html.BeginForm("AddorEditDepartments", "Category", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ctd_id)
+    <div class="form-group">
+        @Html.LabelFor(model => model.dept_name, "Name", new { @class = "control-label" })
+        @Html.EditorFor(model => model.dept_name, new { htmlAtrributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.dept_name)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.dept_code, "Code", new { @class = "control-label" })
+        @Html.EditorFor(model => model.dept_code, new { htmlAtrributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.dept_code)
+    </div>
+        
+    @Html.HiddenFor(model => model.category_id)
+    @Html.HiddenFor(model => model.ctd_created_at)
+
+    <div class="form-group">
+        <input type="submit" value="Submit" class="btn btn-primary" />
+        <input type="reset" value="Reset" class="btn" />
+    </div>
+
+
+}

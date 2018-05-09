@@ -1,0 +1,104 @@
+﻿@model List<MMP.Models.ViewModels.Sector.AddSector>
+
+@{
+    ViewBag.Title = "Insert Sectors";
+}
+
+<!DOCTYPE html>
+
+<div style="width: 700px; padding: 5px; background-color:white; ">
+    @using (Html.BeginForm("AddSectors", "Sector", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        if (ViewBag.Message != null)
+        {
+            <div style="border: solid 1px green">
+                @ViewBag.Message
+            </div>
+        }
+
+        <div><a href="#" id="addNew">Add New</a></div>
+
+        <table id="dataTable" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <th>Sector Name</th>
+                <th></th>
+            </tr>
+            @if (Model != null && Model.Count > 0)
+            {
+                int j = 0;
+                foreach (var i in Model)
+                {
+                    <tr style="border: 1px solid black">
+                        <td>
+                            @Html.EditorFor(a => a[j].sector_name, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(a => a[j].sector_name)
+                        </td>
+                        <td>
+                            @if (j > 0)
+                        {
+                                <a href="#" class="remove">Remove</a>
+                            }
+                        </td>
+                    </tr>
+                    j++;
+                }
+            }
+        </table>
+
+        <input type="submit" value="Add Sectors" class="btn btn-primary" />
+    }
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        //1.Add new row
+        $("#addNew").click(function (e) {
+            e.preventDefault();
+            var $tableBody = $("#dataTable");
+            var $trLast = $tableBody.find("tr:last");
+            var $trNew = $trLast.clone();
+
+            var suffix = $trNew.find(':input:first').attr('name').match(/\d+/);
+            $trNew.find("td:last").html('<a href="#" class="remove">Remove</a>');
+            $.each($trNew.find(':input'), function (i, val) {
+                //Replaced Name (emp_id in this case)
+                var oldN = $(this).attr('name');
+                var newN = oldN.replace('[' + suffix + ']', '[' + (parseInt(suffix) + 1) + ']');
+                $(this).attr('name', newN);
+                //Replaced Value
+                var type = $(this).attr('type');
+                if (type.toLowerCase() == "text")
+                {
+                    $(this).attr('value', '');
+                }
+
+                //for another type replace with default value
+                $(this).removeClass("input-validation-error");
+            });
+            $trLast.after($trNew);
+
+            // Re-assign Validation
+            var form = $("form")
+                .removeData("validator")
+                .removeData("unobtrusiveValidation");
+            $.validator.unobtrusive.parse(form);
+        });
+        // 2. Remove
+        /*$('a.remove').live("click", function (e) {
+            e.preventDefault();
+            $(this).parent().remove();
+        });*/
+        // 2. Remove
+        $(document).on('click', 'a.remove', function (e) {
+            e.preventDefault();
+            var self = $(this);
+            $(this).parent().parent().remove();
+        });
+
+    });
+</script>
