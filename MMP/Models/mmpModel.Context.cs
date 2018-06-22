@@ -12,6 +12,8 @@ namespace MMP.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class mmpEntities : DbContext
     {
@@ -30,6 +32,7 @@ namespace MMP.Models
         public virtual DbSet<holiday_details> holiday_details { get; set; }
         public virtual DbSet<holiday_year> holiday_year { get; set; }
         public virtual DbSet<leave_details> leave_details { get; set; }
+        public virtual DbSet<presence> presences { get; set; }
         public virtual DbSet<project_details> project_details { get; set; }
         public virtual DbSet<region> regions { get; set; }
         public virtual DbSet<role> roles { get; set; }
@@ -39,5 +42,39 @@ namespace MMP.Models
         public virtual DbSet<timesheet_mr> timesheet_mr { get; set; }
         public virtual DbSet<timesheet> timesheets { get; set; }
         public virtual DbSet<user> users { get; set; }
+    
+        public virtual ObjectResult<ReportUsProjectWorkHours_Result> ReportUsProjectWorkHours(Nullable<int> userID, string startDate, string endDate)
+        {
+            var userIDParameter = userID.HasValue ?
+                new ObjectParameter("userID", userID) :
+                new ObjectParameter("userID", typeof(int));
+    
+            var startDateParameter = startDate != null ?
+                new ObjectParameter("startDate", startDate) :
+                new ObjectParameter("startDate", typeof(string));
+    
+            var endDateParameter = endDate != null ?
+                new ObjectParameter("endDate", endDate) :
+                new ObjectParameter("endDate", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportUsProjectWorkHours_Result>("ReportUsProjectWorkHours", userIDParameter, startDateParameter, endDateParameter);
+        }
+    
+        public virtual ObjectResult<ReportUsProjectTotalWorkHours_Result> ReportUsProjectTotalWorkHours(Nullable<int> userID, string startDate, string endDate)
+        {
+            var userIDParameter = userID.HasValue ?
+                new ObjectParameter("userID", userID) :
+                new ObjectParameter("userID", typeof(int));
+    
+            var startDateParameter = startDate != null ?
+                new ObjectParameter("startDate", startDate) :
+                new ObjectParameter("startDate", typeof(string));
+    
+            var endDateParameter = endDate != null ?
+                new ObjectParameter("endDate", endDate) :
+                new ObjectParameter("endDate", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportUsProjectTotalWorkHours_Result>("ReportUsProjectTotalWorkHours", userIDParameter, startDateParameter, endDateParameter);
+        }
     }
 }

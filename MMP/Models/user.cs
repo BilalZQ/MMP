@@ -18,6 +18,7 @@ namespace MMP.Models
         public user()
         {
             this.holiday_details = new HashSet<holiday_details>();
+            this.presences = new HashSet<presence>();
             this.timesheet_mr = new HashSet<timesheet_mr>();
             this.timesheets = new HashSet<timesheet>();
             this.timesheets1 = new HashSet<timesheet>();
@@ -36,6 +37,8 @@ namespace MMP.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<holiday_details> holiday_details { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<presence> presences { get; set; }
         public virtual region region { get; set; }
         public virtual role role { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

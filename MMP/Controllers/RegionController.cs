@@ -10,6 +10,7 @@ using System.Diagnostics;
 
 namespace MMP.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class RegionController : Controller
     {
         [HttpGet]

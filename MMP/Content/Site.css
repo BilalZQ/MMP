@@ -16,3 +16,9 @@ textarea {
     max-width: 280px;
 }
 
+
+.customDrowDown {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+

@@ -1,0 +1,294 @@
+﻿@model List<MMP.Models.ViewModels.TimeSheet.ParentVM>
+
+@{
+    ViewBag.Title = "Edit TimeSheet";
+}
+
+<!-- ============================================================== -->
+<!-- Page wrapper  -->
+<!-- ============================================================== -->
+<div class="page-wrapper">
+    <!-- ============================================================== -->
+    <!-- Container fluid  -->
+    <!-- ============================================================== -->
+    <div class="container-fluid">
+        <!-- ============================================================== -->
+        <!-- Bread crumb and right sidebar toggle -->
+        <!-- ============================================================== -->
+        <div class="row page-titles">
+            <div class="col-md-5 col-8 align-self-center">
+                <h3 class="text-themecolor">Dashboard</h3>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                    <li class="breadcrumb-item active">TimeSheet Edit</li>
+                </ol>
+            </div>
+            <div class="col-md-7 col-4 align-self-center">
+                <a href="https://wrappixel.com/templates/materialpro/" class="btn waves-effect waves-light btn-danger pull-right hidden-sm-down"> Upgrade to Pro</a>
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Bread crumb and right sidebar toggle -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Start Page Content -->
+        <!-- ============================================================== -->
+        <!-- Row -->
+        @using (Html.BeginForm("TimeSheetEditView", "TimeSheet", FormMethod.Post))
+        {
+            <a class="btn btn-success" style="margin-bottom:10px" onclick="OpenModal('@Url.Action("AddCategoryTimeSheet", "TimeSheet")/@ViewBag.TimeSheetID')"><i class="fa fa-plus"></i> Add New Category/CategoryType</a>
+            
+            <div id='myModal' class='modal'>
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div id='myModalContent'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+
+            if (ViewBag.Message != null)
+            {
+                <div style="border: solid 1px green">
+                    @ViewBag.Message
+                </div>
+            }
+
+        <!--<div><a href="#" id="addNew">Add New Category/CategoryType</a></div>-->
+
+            <table id="dataTable" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th>Category</th>
+                    <th>Category Type</th>
+                    <th>Category Type Code</th>
+                    @if (Model != null && Model.Count > 0) // Get this under 1 if
+                {
+                    for (DateTime date = ViewBag.startDate; date.Date <= ViewBag.endDate.Date; date = date.AddDays(1))
+                    {
+                            <th>@String.Format("{0:MMM-d\n(ddd)}", date)</th>
+                        }
+                    }
+                    <th></th>
+                </tr>
+                @if (Model != null && Model.Count > 0)
+                {
+                    for (int j = 0; j < Model.Count; j++)
+                    {
+                        <tr style="border: 1px solid black">
+                            @Html.HiddenFor(a => a[j].tsd_id, new { @name = "tsd_id_" + j })
+                            @Html.HiddenFor(a => a[j].tsd_timesheet_id, new { @name = "tsd_timesheet_id_" + j })
+                            <td>
+                                <!--@Html.DisplayFor(a => a[j].tsd_category_id, new { htmlAttributes = new { @class = "form-control" } })-->
+                                @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.Categories, "category_id", "category_name", Model[j].tsd_category_id), new { @class = "customDrowDown" })
+                                @Html.ValidationMessageFor(a => a[j].tsd_category_id)
+                            </td>
+                            <td>
+                                <!--@Html.DisplayFor(a => a[j].tsd_category_type_id, new { htmlAttributes = new { @class = "form-control" } })-->
+                                @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_name", Model[j].tsd_category_type_id), new { @class = "customDrowDown" })
+                                @Html.ValidationMessageFor(a => a[j].tsd_category_type_id)
+                            </td>
+
+                            <td>
+                                @Html.DropDownListFor(a => a[j].tsd_category_type_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_code", Model[j].tsd_category_type_id), new { @class = "customDrowDown" })
+                                @Html.ValidationMessageFor(a => a[j].tsd_category_type_id)
+                            </td>
+
+
+                            @for (int i = 0; i < Model[j].timesheet_day_details.Count(); i++)
+                        {
+                                @Html.HiddenFor(m => m[j].timesheet_day_details[i].tdd_id)
+                                @Html.HiddenFor(m => m[j].timesheet_day_details[i].tdd_day)
+                                <td>
+                                    @Html.EditorFor(m => m[j].timesheet_day_details[i].workhours, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(m => m[j].timesheet_day_details[i].workhours)
+                                </td>
+                                @Html.HiddenFor(m => m[j].timesheet_day_details[i].tsd_id)
+                            }
+
+
+
+
+                            <td>
+                                @if (j >= 0)
+                                {
+                                    <a class="btn btn-danger" onclick="Delete(@Model[j].tsd_timesheet_id, @Model[j].tsd_category_type_id)"><i class="fa fa-trash"></i> Delete</a><!--NEED TO GIVE OPTION TO DELETE ROWS (CATEGORY AND CATEGORY TYPE ID WITH ALL ITS RESPECTIVE WORKHOUR ENTRIES)-->
+                                }
+                            </td>
+                        </tr>
+
+                    }
+                }
+
+
+
+            </table>
+
+            if (ViewBag.Message != null)
+            {
+                <script type="text/javascript">
+            window.onload = function () {
+                //alert("@Model");
+            };
+                </script>
+            }
+
+
+            <input type="submit" name="submit" value="Save" class="btn btn-primary" />
+            <input type="submit" name="submit" value="Submit" class="btn btn-primary" />
+        }
+    </div>
+    <!-- ============================================================== -->
+    <!-- End PAge Content -->
+    <!-- ============================================================== -->
+</div>
+<!-- ============================================================== -->
+<!-- End Container fluid  -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- footer -->
+<!-- ============================================================== -->
+<footer class="footer"> © 2017 Material Pro Admin by wrappixel.com </footer>
+<!-- ============================================================== -->
+<!-- End footer -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- End Page wrapper  -->
+<!-- ============================================================== -->
+
+
+@section Scripts{
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+    <script>
+        var Popup, dataTable;
+
+        $(document).ready(function () {
+            dataTable = $("#dataTable").DataTable({
+                // "ajax": {
+                //     "url": "/Holiday/GetData",
+                //     "type": "GET",
+                //     "datatype": "json"
+                //  },
+                "language": {
+                    //"emptyTable" : "No Holidays Available for current year, Click on <b>Add New Holiday</b> Button to add Holidays"
+                }
+            });
+        });
+
+        function OpenModal(url) {
+            debugger;
+            var $buttonClicked = $(this);
+            var id = $buttonClicked.attr('data-id');
+            var options = { "backdrop": "static", keyboard: true };
+            $.ajax({
+                type: "GET",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (data) {
+                    debugger;
+                    $('#myModalContent').html(data);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+            //$("#closebtn").on('click',function(){  
+            //    $('#myModal').modal('hide');    
+
+            $("#closbtn").click(function () {
+                $('#myModal').modal('hide');
+            });
+        }
+
+        /*function PopupForm(url) {
+            var formDiv = $('<div/>');
+            $.get(url).done(function (response) {
+                formDiv.html(response);
+
+                Popup = formDiv.dialog({
+                    autoOpen: true,
+                    resizeable: false,
+                    title: "Fill TimeSheet Row details",
+                    height: 700,
+                    width: 700,
+                    close: function () {
+                        Popup.dialog('destroy').remove();
+                    }
+                });
+            });
+        }*/
+
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            //Popup.dialog('close');
+                            $('#myModal').modal('hide');
+
+                            location.reload(true);
+                            //dataTable.ajax.reload();
+
+                            //notify.js plugin
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+
+        function Delete(id, category_typeID)
+        {
+            if (confirm('Are you sure you want to remove this Category/CategoryType from TimeSheet?'))
+            {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete", "TimeSheet")/?id=' + id + '&category_typeID=' + category_typeID,
+                    success: function (data)
+                    {
+                        if (data.success)
+                        {
+                            location.reload(true);
+                            //dataTable.ajax.reload();
+
+                            //notify.js plugin
+                            $.notify(data.message, {
+                                globalPosition: "top center",
+                                className: "success"
+                            })
+                        }
+                    }
+                })
+            }
+        }
+
+        $(function () {
+            $("#subtotal").html(sumColumn(4));
+            $("#total").html(sumColumn(5));
+        });
+
+        function sumColumn(index) {
+            var total = 0;
+            $("td:nth-child(" + index + ")").each(function () {
+                total += parseInt($(this).text(), 10) || 0;
+            });
+            return total;
+        }
+
+    </script>
+}

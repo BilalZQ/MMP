@@ -6,6 +6,10 @@
 
 @using (Html.BeginForm("EditSector", "Sector", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
 {
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Edit Sector</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    </div>
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.sector_id)
     <div class="form-group">

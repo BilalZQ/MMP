@@ -24,8 +24,8 @@ namespace MMP.Models
         public Nullable<int> tsmr_generated_by { get; set; }
         public int days { get; set; }
         public Nullable<System.DateTime> tsmr_created_at { get; set; }
-        public Nullable<System.DateTime> tsmr_start_date { get; set; }
-        public Nullable<System.DateTime> tsmr_valid_till { get; set; }
+        public System.DateTime tsmr_start_date { get; set; }
+        public System.DateTime tsmr_valid_till { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<timesheet> timesheets { get; set; }

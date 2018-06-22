@@ -16,5 +16,6 @@ namespace MMP.Models
 
         [NotMapped]
         public string endDate { get { return this.tsmr_valid_till.ToString(); } }
+
     }
 }

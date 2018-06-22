@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace MMP.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class HolidayController : Controller
     {
         [HttpGet]

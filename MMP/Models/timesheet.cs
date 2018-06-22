@@ -22,12 +22,12 @@ namespace MMP.Models
     
         public int timesheet_id { get; set; }
         public int timesheet_user { get; set; }
-        public Nullable<double> total_hours { get; set; }
         public Nullable<System.DateTime> time_my { get; set; }
         public Nullable<int> updated_by { get; set; }
         public string timesheet_status { get; set; }
         public Nullable<System.DateTime> timesheet_status_update { get; set; }
         public int timesheet_caller { get; set; }
+        public Nullable<System.DateTime> tsmr_extension { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<timesheet_details> timesheet_details { get; set; }

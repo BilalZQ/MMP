@@ -7,6 +7,10 @@
 @using (Html.BeginForm("EditHolidays", "Holiday", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
 {
     @Html.AntiForgeryToken()
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Edit Holiday</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    </div>
     @Html.ValidationSummary(true)
 
     @Html.HiddenFor(model => model.hd_id)

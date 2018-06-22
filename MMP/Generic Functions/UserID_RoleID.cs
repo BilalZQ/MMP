@@ -24,6 +24,7 @@ namespace MMP.Generic_Functions
         {
             using (mmpEntities mP = new mmpEntities())
             {
+                //USE SUB QUERY
                 user user = mP.users.Where(x => x.user_name == userName).FirstOrDefault<user>();
                 role role = mP.roles.Where(x => x.role_id == user.role_id).FirstOrDefault<role>();
                 return role.role_name;                

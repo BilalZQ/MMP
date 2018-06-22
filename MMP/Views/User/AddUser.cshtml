@@ -4,12 +4,16 @@
 }
 
 
+
 @using (Html.BeginForm("AddUser", "User", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
 {
-
+    
     @Html.AntiForgeryToken()
     <div class="form-horizontal">
-        <hr />
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">Add New User</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        </div>
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-group">
@@ -70,7 +74,7 @@
         </div>
 
         <div class="form-group">
-            <input type="submit" value="Submit" class="btn btn-primary" />
+            <input type="submit" id="submitBtn" value="Submit" class="btn btn-primary" />
             <input type="reset" value="Reset" class="btn" />
         </div>
 
@@ -79,6 +83,8 @@
 
 
 }
+
+
 
 @section Scripts{
     <script src="~/Scripts/jquery.validate.min.js"></script>

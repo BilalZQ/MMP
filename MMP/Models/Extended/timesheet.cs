@@ -10,5 +10,8 @@ namespace MMP.Models
     {
         [NotMapped]
         public string ts_status_update { get { return this.timesheet_status_update.ToString(); } }
+        
+        [NotMapped]
+        public string extendedDate { get { return this.tsmr_extension.ToString(); } }
     }
 }

@@ -1,0 +1,104 @@
+﻿
+@{
+    ViewBag.Title = "UserPresence";
+}
+
+<!-- ============================================================== -->
+<!-- Page wrapper  -->
+<!-- ============================================================== -->
+<div class="page-wrapper">
+    <!-- ============================================================== -->
+    <!-- Container fluid  -->
+    <!-- ============================================================== -->
+    <div class="container-fluid">
+        <!-- ============================================================== -->
+        <!-- Bread crumb and right sidebar toggle -->
+        <!-- ============================================================== -->
+        <div class="row page-titles">
+            <div class="col-md-5 col-8 align-self-center">
+                <h3 class="text-themecolor">Dashboard</h3>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                    <li class="breadcrumb-item active">User Presence</li>
+                </ol>
+            </div>
+            <div class="col-md-7 col-4 align-self-center">
+                <a href="https://wrappixel.com/templates/materialpro/" class="btn waves-effect waves-light btn-danger pull-right hidden-sm-down"> Upgrade to Pro</a>
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Bread crumb and right sidebar toggle -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Start Page Content -->
+        <!-- ============================================================== -->
+        <!-- Row -->
+        <table id="presenceTable" class="table table-striped table-bordered" style="width:70%">
+            <thead>
+                <tr>
+                    <th>P ID</th>
+                    <th>Date</th>
+                    <th>Total Working Hours</th>
+                    <th>Leave Status</th>
+                    <th>User Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+        </table>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End PAge Content -->
+    <!-- ============================================================== -->
+</div>
+<!-- ============================================================== -->
+<!-- End Container fluid  -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- footer -->
+<!-- ============================================================== -->
+<footer class="footer"> © 2017 Material Pro Admin by wrappixel.com </footer>
+<!-- ============================================================== -->
+<!-- End footer -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- End Page wrapper  -->
+<!-- ============================================================== -->
+
+
+@section Scripts{
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+    <script>
+        var Popup, dataTable;
+
+        $(document).ready(function () {
+            dataTable = $("#presenceTable").DataTable({
+                "ajax": {
+                    "url": "/Presence/GetData/" +@ViewBag.user_id,
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "p.p_id" },
+                    { "data": "p.day" },
+                    { "data": "p.total_hours" },
+                    { "data": "p.leave_status" },
+                    { "data": "u.user_name" },
+                    { "data": "p.p_id", "render": function (data) {
+                        return "<a class= 'btn btn-danger btn-sm' style='margin-left:5px' onclick=Delete("+data+")><i class= 'fa fa-trash'></i> Delete</a>"
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "150px"
+                    }
+                ],
+                "language": {
+                    "emptyTable" : "No Entries in attendance table"
+                }
+            });
+        });
+
+    </script>
+}
+

@@ -25,7 +25,7 @@ namespace MMP.Models.ViewModels.Category
 
         public int leave_details_id { get; set; }  
 
-        [Display(Name = "Number of leaves")]
+        [Display(Name = "No. of leaves")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "No. of leaves required")]
         public int no_of_leaves { get; set; }
 

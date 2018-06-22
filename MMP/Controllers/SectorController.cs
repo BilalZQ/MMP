@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace MMP.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class SectorController : Controller
     {
         [HttpGet]

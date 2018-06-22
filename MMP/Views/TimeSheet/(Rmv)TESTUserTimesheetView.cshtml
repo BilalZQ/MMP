@@ -1,0 +1,207 @@
+﻿@model List<MMP.Models.ViewModels.TimeSheet.ParentVM>
+
+<form class='form-group' id="form" name="time" action="" method="post">
+
+    @using (Html.BeginForm("UserTimesheetView", "TimeSheet", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+    {
+        
+
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+
+        <div class="containernew table-responsive" id="">
+            <div class="panel panel-primary table-responsive">
+                <div class="panel panel-heading" style="background:black" onmouseover="this.style.background='blue';" onmouseout="this.style.background='black';">
+
+                </div>
+
+                <div><a href="#" id="addNew">Add New</a></div>
+
+                <div class="panel panel-body ">
+                    <div class="row ">
+                        <table class="table" id="timesheetTable">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Category Type</th>
+                                    <th>Name</th>
+
+                                    @for (int i = 0; i < 7; i++)
+                                    {
+                                        <th>Date</th>
+                                    }
+                                    <th id="wwtf">
+                                        <input name="date[]" type="hidden" value="">
+                                    </th>
+                                    <th></th>
+
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th><button type="button" id="add_row" name="button" class=" add_row btn btn-default"> Add More</button> </th>
+                                    <th><input type="text" name="datefilter" value="" /></th>
+                                    <th><button type="submit" name="button" id="submit" class="btn  sumbit btn-default"> Countine</button></th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+
+                                    @for (int i = 0; i < 7; i++)
+                                    {
+                                        <td>
+                                            <input type="checkbox" name="" class="form-check-input" id="checkbox100" value="1">
+                                        </td>
+                                    }
+
+                                </tr>
+                                
+                                @if (Model != null && Model.Count() > 0)
+                                {
+                                    foreach (var parent in Model)
+                                    {
+                                        <tr class="table_row">
+                                            <td>
+                                                <select data-live-search="true" data-live-search-style="startsWith" class="projectcate" id="projectcategory" name="projectcategory[]">
+                                                    <option value="">  @parent.tsd_category_id</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select data-live-search="true" data-live-search-style="startsWith" name="projectcode[]" class="projectscode" id="projectscode0">
+
+                                                    <option value=""> @parent.tsd_category_type_id</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <ol class="list-group">
+                                                    <input name="projectname[]" type="hidden" value="" />
+                                                    <li class="form-control" id="productname" value="we"></li>
+                                                </ol>
+                                            </td>
+
+                                            @foreach (var child in parent.timesheet_day_details)
+                                            {
+                                                <td>
+                                                    <div class="input-group timenumber">
+                                                        <input type="text" id="hours" name="time[]" class="form-control input-number" style="min-width: 4em;" value="@child.workhours" max="1000">
+                                                    </div>
+                                                </td>
+
+                                            }
+
+                                            <td></td>
+
+                                        </tr>
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    }
+    
+</form>
+
+
+@section Scripts{
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            //1.Add new row
+            $("#addNew").click(function (e) {
+                e.preventDefault();
+                var $tableBody = $("#timesheetTable");
+                var $trLast = $tableBody.find("tr:last");
+                var $trNew = $trLast.clone();
+
+                //alert($trNew.find(':input:first').attr('name'));
+                var suffix = $trNew.find(':input:first').attr('name').match(/\d+/);
+                $trNew.find("td:last").html('<a href="#" class="remove">Remove</a>');
+                $.each($trNew.find(':input'), function (i, val) {
+                    //Replaced Name (emp_id in this case)
+                    var oldN = $(this).attr('name');
+                    var newN = oldN.replace('[' + suffix + ']', '[' + (parseInt(suffix) + 1) + ']');
+                    $(this).attr('name', newN);
+                    //Replaced Value
+                    var type = $(this).attr('type');
+
+                    if (type == "text") {
+                        $(this).attr('value', '');
+                    }
+
+                    //for another type replace with default value
+                    $(this).removeClass("input-validation-error");
+                });
+                $trLast.after($trNew);
+
+                // Re-assign Validation
+                var form = $("form")
+                    .removeData("validator")
+                    .removeData("unobtrusiveValidation");
+                $.validator.unobtrusive.parse(form);
+            });
+            // 2. Remove
+            /*$('a.remove').live("click", function (e) {
+                e.preventDefault();
+                $(this).parent().remove();
+            });*/
+            // 2. Remove
+            $(document).on('click', 'a.remove', function (e) {
+                e.preventDefault();
+                var self = $(this);
+                $(this).parent().parent().remove();
+            });
+
+        });
+
+
+        function getCategoryTypeList(ele) {
+            debugger;
+
+            var id = $(ele).data('assigned-id');
+            alert(id);
+            
+            //$(id).each(function () {
+              //  $(this).remove();
+            //});
+            //$(id).empty();
+
+            var categoryId = $("#categoryDropDown").val();
+            $.ajax({
+                url: '/TimeSheet/GetCategoryType',
+                type: 'POST',
+                datatype: 'application/json',
+                contentType: 'application/json',
+                data: JSON.stringify({ categoryId: +categoryId }),
+                success: function (result) {
+                    $(id).html("");
+                    $(id).append($('<option></option>').val(null).html("---Select Category Type---"));
+                    $.each($.parseJSON(result), function (i, ctd) // ctd => category type details
+                    {
+                        $(id).append($('<option></option>').val(ctd.ctd_id).html(ctd.ctd_name))
+                    })
+
+                },
+                error: function () { alert("Whooaaa! Something went wrong..") },
+            });
+        }
+
+        /*function worthlessfunc(oObject)
+        {
+            var id = oObject.id;
+            alert(id);
+        }*/
+    </script>
+}

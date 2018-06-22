@@ -3,13 +3,19 @@
 @{
     ViewBag.Title = "Insert Holidays";
 }
+@{
+    Layout = "";
+}
 
-<!DOCTYPE html>
 
 <div style="width: 700px; padding: 5px; background-color:white; ">
     @using (Html.BeginForm("AddHolidays", "Holiday", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
     {
         @Html.AntiForgeryToken()
+        <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Add Holidays</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    </div>
         @Html.ValidationSummary(true)
 
         if (ViewBag.Message != null)
@@ -48,7 +54,7 @@
                         </td>
                         <td>
                             @if (j > 0)
-                        {
+                            {
                                 <a href="#" class="remove">Remove</a>
                             }
                         </td>
@@ -73,6 +79,7 @@
             var $trLast = $tableBody.find("tr:last");
             var $trNew = $trLast.clone();
 
+            //alert($trNew.find(':input:first').attr('name'));
             var suffix = $trNew.find(':input:first').attr('name').match(/\d+/);
             $trNew.find("td:last").html('<a href="#" class="remove">Remove</a>');
             $.each($trNew.find(':input'), function (i, val) {

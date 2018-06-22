@@ -14,6 +14,7 @@ using System.Web.Security;
 
 namespace MMP.Controllers
 {
+    
     public class UserController : Controller
     {
         // GET: User
@@ -157,7 +158,7 @@ namespace MMP.Controllers
             return RedirectToAction("Login", "User");
         }
 
-        [Authorize]
+        [Authorize(Roles = "admin")]
         //USER DETAILS  // TODO: Restrict Access to Admin
         public ActionResult UserDetails(int id = 0)
         {
@@ -165,7 +166,7 @@ namespace MMP.Controllers
             return View();
         }
 
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public ActionResult GetData(int id = 0)
         {
             using (mmpEntities mP = new mmpEntities())
@@ -190,7 +191,7 @@ namespace MMP.Controllers
             }
         }
 
-
+        [Authorize(Roles = "admin")]
         #region Add new user
         [HttpGet]
         public ActionResult AddUser()
@@ -205,6 +206,7 @@ namespace MMP.Controllers
 
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AddUser(AddUser newUser)
@@ -265,6 +267,7 @@ namespace MMP.Controllers
         }
         #endregion
 
+        [Authorize(Roles = "admin")]
         #region EDIT USER
         [HttpGet]
         public ActionResult EditUser(int id = 0)
@@ -295,6 +298,7 @@ namespace MMP.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditUser(EditUser editUser)
@@ -342,6 +346,7 @@ namespace MMP.Controllers
         }
         #endregion
 
+        [Authorize(Roles = "admin")]
         #region Change Password
         [HttpGet]
         public ActionResult ChangePassword(int id = 0)
@@ -362,6 +367,7 @@ namespace MMP.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ChangePassword(ChangePasswordVM userpassVM)
@@ -381,7 +387,7 @@ namespace MMP.Controllers
         #endregion
 
 
-
+        [Authorize(Roles = "admin")]
         #region Delete User
         [HttpPost]
         public ActionResult Delete(int id)
