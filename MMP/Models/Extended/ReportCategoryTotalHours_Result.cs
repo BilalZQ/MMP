@@ -5,7 +5,8 @@ using System.Web;
 
 namespace MMP.Models
 {
-    public partial class ReportUsProjectTotalWorkHours_Result
+    public partial class ReportCategoryTotalHours_Result
     {
+       
     }
 }

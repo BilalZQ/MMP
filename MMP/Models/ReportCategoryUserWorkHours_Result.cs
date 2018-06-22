@@ -11,10 +11,10 @@ namespace MMP.Models
 {
     using System;
     
-    public partial class ReportUsProjectWorkHours_Result
+    public partial class ReportCategoryUserWorkHours_Result
     {
-        public System.DateTime tdd_day { get; set; }
         public string ctd_name { get; set; }
-        public double workhours { get; set; }
+        public string user_name { get; set; }
+        public double totalHours { get; set; }
     }
 }

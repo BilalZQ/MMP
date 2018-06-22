@@ -893,7 +893,10 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PresenceController.cs" />
     <Compile Include="Controllers\RegionController.cs" />
+    <Compile Include="Controllers\Reports\CategoryReportController.cs" />
+    <Compile Include="Controllers\Reports\LeaveReportController.cs" />
     <Compile Include="Controllers\Reports\ProjectReportController.cs" />
+    <Compile Include="Controllers\Reports\SectorProjectsController.cs" />
     <Compile Include="Controllers\SectorController.cs" />
     <Compile Include="Controllers\TimeSheetController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -911,6 +914,8 @@
     <Compile Include="Models\Extended\category_type_details.cs" />
     <Compile Include="Models\Extended\holiday_details.cs" />
     <Compile Include="Models\Extended\presence.cs" />
+    <Compile Include="Models\Extended\ReportCategoryTotalHours_Result.cs" />
+    <Compile Include="Models\Extended\ReportLeaves_Result.cs" />
     <Compile Include="Models\Extended\ReportUsProjectTotalWorkHours_Result.cs" />
     <Compile Include="Models\Extended\ReportUsProjectWorkHours_Result.cs" />
     <Compile Include="Models\Extended\timesheet.cs" />
@@ -949,6 +954,21 @@
     <Compile Include="Models\region.cs">
       <DependentUpon>mmpModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ReportCategoryTotalHours_Result.cs">
+      <DependentUpon>mmpModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ReportCategoryUserWorkHours_Result.cs">
+      <DependentUpon>mmpModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ReportLeavesTotal_Result.cs">
+      <DependentUpon>mmpModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ReportLeaves_Result.cs">
+      <DependentUpon>mmpModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ReportSectorProjectTotalHours_Result.cs">
+      <DependentUpon>mmpModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ReportUsProjectTotalWorkHours_Result.cs">
       <DependentUpon>mmpModel.tt</DependentUpon>
     </Compile>
@@ -982,6 +1002,9 @@
     <Compile Include="Models\ViewModels\Holiday\AddHolidays.cs" />
     <Compile Include="Models\ViewModels\Region\AddRegion.cs" />
     <Compile Include="Models\ViewModels\Region\EditRegion.cs" />
+    <Compile Include="Models\ViewModels\Reports\SSProjectReport.cs" />
+    <Compile Include="Models\ViewModels\Reports\USCategoryReport.cs" />
+    <Compile Include="Models\ViewModels\Reports\USLeaveReport.cs" />
     <Compile Include="Models\ViewModels\Reports\USProjectReport.cs" />
     <Compile Include="Models\ViewModels\Sector\AddSector.cs" />
     <Compile Include="Models\ViewModels\Sector\EditSector.cs" />
@@ -1048,6 +1071,9 @@
     <Content Include="Views\TimeSheet\AdminTimeSheetEdit.cshtml" />
     <Content Include="Views\Presence\UserPresence.cshtml" />
     <Content Include="Views\ProjectReport\USProjectReport.cshtml" />
+    <Content Include="Views\CategoryReport\USCategoryReport.cshtml" />
+    <Content Include="Views\LeaveReport\USLeaveReport.cshtml" />
+    <Content Include="Views\SectorProjects\SSProjectReport.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1057,6 +1083,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Leave\" />
     <Folder Include="Views\USProjectReport\" />
   </ItemGroup>
   <ItemGroup>

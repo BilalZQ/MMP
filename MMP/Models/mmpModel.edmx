@@ -394,6 +394,31 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="ReportCategoryTotalHours" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="mmp">
+          <Parameter Name="category_id" Type="int" Mode="In" />
+          <Parameter Name="startDate" Type="varchar" Mode="In" />
+          <Parameter Name="endDate" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="ReportCategoryUserWorkHours" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="mmp">
+          <Parameter Name="category_id" Type="int" Mode="In" />
+          <Parameter Name="startDate" Type="varchar" Mode="In" />
+          <Parameter Name="endDate" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="ReportLeaves" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="mmp">
+          <Parameter Name="userID" Type="int" Mode="In" />
+          <Parameter Name="startDate" Type="varchar" Mode="In" />
+          <Parameter Name="endDate" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="ReportLeavesTotal" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="mmp">
+          <Parameter Name="userID" Type="int" Mode="In" />
+          <Parameter Name="startDate" Type="varchar" Mode="In" />
+          <Parameter Name="endDate" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="ReportSectorProjectTotalHours" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="mmp">
+          <Parameter Name="sectorID" Type="int" Mode="In" />
+          <Parameter Name="startDate" Type="varchar" Mode="In" />
+          <Parameter Name="endDate" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="ReportUsProjectTotalWorkHours" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="mmp">
           <Parameter Name="userID" Type="int" Mode="In" />
           <Parameter Name="startDate" Type="varchar" Mode="In" />
@@ -1020,6 +1045,31 @@
             <Parameter Name="startDate" Mode="In" Type="String" />
             <Parameter Name="endDate" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="ReportCategoryTotalHours" ReturnType="Collection(mmpModel.ReportCategoryTotalHours_Result)">
+            <Parameter Name="category_id" Mode="In" Type="Int32" />
+            <Parameter Name="startDate" Mode="In" Type="String" />
+            <Parameter Name="endDate" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ReportCategoryUserWorkHours" ReturnType="Collection(mmpModel.ReportCategoryUserWorkHours_Result)">
+            <Parameter Name="category_id" Mode="In" Type="Int32" />
+            <Parameter Name="startDate" Mode="In" Type="String" />
+            <Parameter Name="endDate" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ReportLeaves" ReturnType="Collection(mmpModel.ReportLeaves_Result)">
+            <Parameter Name="userID" Mode="In" Type="Int32" />
+            <Parameter Name="startDate" Mode="In" Type="String" />
+            <Parameter Name="endDate" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ReportLeavesTotal" ReturnType="Collection(mmpModel.ReportLeavesTotal_Result)">
+            <Parameter Name="userID" Mode="In" Type="Int32" />
+            <Parameter Name="startDate" Mode="In" Type="String" />
+            <Parameter Name="endDate" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ReportSectorProjectTotalHours" ReturnType="Collection(mmpModel.ReportSectorProjectTotalHours_Result)">
+            <Parameter Name="sectorID" Mode="In" Type="Int32" />
+            <Parameter Name="startDate" Mode="In" Type="String" />
+            <Parameter Name="endDate" Mode="In" Type="String" />
+          </FunctionImport>
         </EntityContainer>
         <ComplexType Name="ReportUsProjectWorkHours_Result" >
           <Property Type="DateTime" Name="tdd_day" Nullable="false" />
@@ -1027,6 +1077,32 @@
           <Property Type="Double" Name="workhours" Nullable="false" />
         </ComplexType>
         <ComplexType Name="ReportUsProjectTotalWorkHours_Result" >
+          <Property Type="String" Name="ctd_name" Nullable="false" />
+          <Property Type="Double" Name="totalHours" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="ReportCategoryTotalHours_Result" >
+          <Property Type="String" Name="ctd_name" Nullable="false" />
+          <Property Type="String" Name="totalHours" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="ReportCategoryUserWorkHours_Result" >
+          <Property Type="String" Name="ctd_name" Nullable="false" />
+          <Property Type="String" Name="user_name" Nullable="false" />
+          <Property Type="Double" Name="totalHours" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="ReportLeaves_Result" >
+          <Property Type="DateTime" Name="tdd_day" Nullable="false" />
+          <Property Type="String" Name="ctd_name" Nullable="false" />
+          <Property Type="Double" Name="workhours" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="ReportLeavesTotal_Result" >
+          <Property Type="String" Name="ctd_name" Nullable="false" />
+          <Property Type="String" Name="ctd_code" Nullable="false" />
+          <Property Type="Double" Name="totalHoursAllowed" Nullable="false" />
+          <Property Type="String" Name="encashable" Nullable="false" />
+          <Property Type="String" Name="carry_forward" Nullable="false" />
+          <Property Type="Double" Name="totalHours" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="ReportSectorProjectTotalHours_Result" >
           <Property Type="String" Name="ctd_name" Nullable="false" />
           <Property Type="Double" Name="totalHours" Nullable="false" />
         </ComplexType>
@@ -1204,6 +1280,45 @@
           <FunctionImportMapping FunctionImportName="ReportUsProjectTotalWorkHours" FunctionName="mmpModel.Store.ReportUsProjectTotalWorkHours">
             <ResultMapping>
               <ComplexTypeMapping TypeName="mmpModel.ReportUsProjectTotalWorkHours_Result" >
+                <ScalarProperty Name="ctd_name" ColumnName="ctd_name" />
+                <ScalarProperty Name="totalHours" ColumnName="totalHours" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ReportCategoryTotalHours" FunctionName="mmpModel.Store.ReportCategoryTotalHours">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="mmpModel.ReportCategoryTotalHours_Result" />
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ReportCategoryUserWorkHours" FunctionName="mmpModel.Store.ReportCategoryUserWorkHours">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="mmpModel.ReportCategoryUserWorkHours_Result" >
+                <ScalarProperty Name="ctd_name" ColumnName="ctd_name" />
+                <ScalarProperty Name="user_name" ColumnName="user_name" />
+                <ScalarProperty Name="totalHours" ColumnName="totalHours" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ReportLeaves" FunctionName="mmpModel.Store.ReportLeaves">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="mmpModel.ReportLeaves_Result" />
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ReportLeavesTotal" FunctionName="mmpModel.Store.ReportLeavesTotal">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="mmpModel.ReportLeavesTotal_Result" >
+                <ScalarProperty Name="ctd_name" ColumnName="ctd_name" />
+                <ScalarProperty Name="ctd_code" ColumnName="ctd_code" />
+                <ScalarProperty Name="totalHoursAllowed" ColumnName="totalHoursAllowed" />
+                <ScalarProperty Name="encashable" ColumnName="encashable" />
+                <ScalarProperty Name="carry_forward" ColumnName="carry_forward" />
+                <ScalarProperty Name="totalHours" ColumnName="totalHours" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ReportSectorProjectTotalHours" FunctionName="mmpModel.Store.ReportSectorProjectTotalHours">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="mmpModel.ReportSectorProjectTotalHours_Result" >
                 <ScalarProperty Name="ctd_name" ColumnName="ctd_name" />
                 <ScalarProperty Name="totalHours" ColumnName="totalHours" />
               </ComplexTypeMapping>

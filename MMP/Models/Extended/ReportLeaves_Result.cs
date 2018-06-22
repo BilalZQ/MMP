@@ -6,9 +6,8 @@ using System.Web;
 
 namespace MMP.Models
 {
-    public partial class ReportUsProjectWorkHours_Result
+    public partial class ReportLeaves_Result
     {
-
         [NotMapped]
         public string day { get { return this.tdd_day.ToString("MM/dd/yyyy"); } }
     }

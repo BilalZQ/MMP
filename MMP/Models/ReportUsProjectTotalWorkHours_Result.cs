@@ -13,5 +13,7 @@ namespace MMP.Models
     
     public partial class ReportUsProjectTotalWorkHours_Result
     {
+        public string ctd_name { get; set; }
+        public double totalHours { get; set; }
     }
 }
