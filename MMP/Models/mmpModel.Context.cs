@@ -43,40 +43,6 @@ namespace MMP.Models
         public virtual DbSet<timesheet> timesheets { get; set; }
         public virtual DbSet<user> users { get; set; }
     
-        public virtual ObjectResult<ReportUsProjectWorkHours_Result> ReportUsProjectWorkHours(Nullable<int> userID, string startDate, string endDate)
-        {
-            var userIDParameter = userID.HasValue ?
-                new ObjectParameter("userID", userID) :
-                new ObjectParameter("userID", typeof(int));
-    
-            var startDateParameter = startDate != null ?
-                new ObjectParameter("startDate", startDate) :
-                new ObjectParameter("startDate", typeof(string));
-    
-            var endDateParameter = endDate != null ?
-                new ObjectParameter("endDate", endDate) :
-                new ObjectParameter("endDate", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportUsProjectWorkHours_Result>("ReportUsProjectWorkHours", userIDParameter, startDateParameter, endDateParameter);
-        }
-    
-        public virtual ObjectResult<ReportUsProjectTotalWorkHours_Result> ReportUsProjectTotalWorkHours(Nullable<int> userID, string startDate, string endDate)
-        {
-            var userIDParameter = userID.HasValue ?
-                new ObjectParameter("userID", userID) :
-                new ObjectParameter("userID", typeof(int));
-    
-            var startDateParameter = startDate != null ?
-                new ObjectParameter("startDate", startDate) :
-                new ObjectParameter("startDate", typeof(string));
-    
-            var endDateParameter = endDate != null ?
-                new ObjectParameter("endDate", endDate) :
-                new ObjectParameter("endDate", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportUsProjectTotalWorkHours_Result>("ReportUsProjectTotalWorkHours", userIDParameter, startDateParameter, endDateParameter);
-        }
-    
         public virtual ObjectResult<ReportCategoryTotalHours_Result> ReportCategoryTotalHours(Nullable<int> category_id, string startDate, string endDate)
         {
             var category_idParameter = category_id.HasValue ?
@@ -160,6 +126,40 @@ namespace MMP.Models
                 new ObjectParameter("endDate", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportSectorProjectTotalHours_Result>("ReportSectorProjectTotalHours", sectorIDParameter, startDateParameter, endDateParameter);
+        }
+    
+        public virtual ObjectResult<ReportUsProjectTotalWorkHours_Result> ReportUsProjectTotalWorkHours(Nullable<int> userID, string startDate, string endDate)
+        {
+            var userIDParameter = userID.HasValue ?
+                new ObjectParameter("userID", userID) :
+                new ObjectParameter("userID", typeof(int));
+    
+            var startDateParameter = startDate != null ?
+                new ObjectParameter("startDate", startDate) :
+                new ObjectParameter("startDate", typeof(string));
+    
+            var endDateParameter = endDate != null ?
+                new ObjectParameter("endDate", endDate) :
+                new ObjectParameter("endDate", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportUsProjectTotalWorkHours_Result>("ReportUsProjectTotalWorkHours", userIDParameter, startDateParameter, endDateParameter);
+        }
+    
+        public virtual ObjectResult<ReportUsProjectWorkHours_Result> ReportUsProjectWorkHours(Nullable<int> userID, string startDate, string endDate)
+        {
+            var userIDParameter = userID.HasValue ?
+                new ObjectParameter("userID", userID) :
+                new ObjectParameter("userID", typeof(int));
+    
+            var startDateParameter = startDate != null ?
+                new ObjectParameter("startDate", startDate) :
+                new ObjectParameter("startDate", typeof(string));
+    
+            var endDateParameter = endDate != null ?
+                new ObjectParameter("endDate", endDate) :
+                new ObjectParameter("endDate", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ReportUsProjectWorkHours_Result>("ReportUsProjectWorkHours", userIDParameter, startDateParameter, endDateParameter);
         }
     }
 }

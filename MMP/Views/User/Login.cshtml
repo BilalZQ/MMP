@@ -45,11 +45,6 @@
                                     @Html.EditorFor(model => model.user_password, new { htmlAttributes = new { @class = "form-control", placeholder = "Password" } })
                                     @Html.ValidationMessageFor(model => model.user_password, "", new { @class = "text-danger" })
                                 </div>
-                                <div class="checkbox">
-                                    <label>
-                                        @Html.EditorFor(model => model.RememberMe)  Remember Me
-                                    </label>
-                                </div>
                                 
 
                                 <input type="submit" value="Login" class="btn btn-primary" />
@@ -62,9 +57,6 @@
 
     }
 
-    <div>
-        @Html.ActionLink("Register Now", "Registration", "user")
-    </div>
     
     <script src="~/Lumino - Login/js/jquery-1.11.1.min.js"></script>
     <script src="~/Lumino - Login/js/bootstrap.min.js"></script>

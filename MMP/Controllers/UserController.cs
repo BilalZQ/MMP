@@ -17,6 +17,8 @@ namespace MMP.Controllers
     
     public class UserController : Controller
     {
+        
+        /*
         // GET: User
         [HttpGet]
         public ActionResult Registration()
@@ -94,6 +96,7 @@ namespace MMP.Controllers
             ViewBag.Status = status;
             return View(Ruser);
         }
+        */
 
         [HttpGet]
         public ActionResult Login()
@@ -117,7 +120,7 @@ namespace MMP.Controllers
                     {
                         int timeout = login.RememberMe ? 525600 : 20; // 525600 => 1 year
                         //var ticket = new FormsAuthenticationTicket(login.user_name, login.RememberMe, timeout);
-                        var authTicket = new FormsAuthenticationTicket(v.user_id, v.user_name, DateTime.Now, DateTime.Now.AddMinutes(20), /* expiry */ false, Roles, "/");
+                        var authTicket = new FormsAuthenticationTicket(v.user_id, v.user_name, DateTime.Now, DateTime.Now.AddMinutes(60), /* expiry */ false, Roles, "/");
                         string encrypted = FormsAuthentication.Encrypt(authTicket);
                         var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encrypted);
                         cookie.Expires = DateTime.Now.AddMinutes(timeout);

@@ -15,6 +15,6 @@ namespace MMP.Models
     {
         public System.DateTime tdd_day { get; set; }
         public string ctd_name { get; set; }
-        public double workhours { get; set; }
+        public double totalHours { get; set; }
     }
 }

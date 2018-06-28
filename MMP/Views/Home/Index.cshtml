@@ -21,7 +21,6 @@
                         </ol>
                     </div>
                     <div class="col-md-7 col-4 align-self-center">
-                        <a href="https://wrappixel.com/templates/materialpro/" class="btn waves-effect waves-light btn-danger pull-right hidden-sm-down"> Upgrade to Pro</a>
                     </div>
                 </div>
                 <!-- ============================================================== -->
@@ -32,66 +31,76 @@
                 <!-- ============================================================== -->
                 <!-- Row -->
                 <div class="row">
+                    
                     <!-- Column -->
-                    <div class="col-lg-8 col-md-7">
-                        <div class="card">
-                            <div class="card-block">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="d-flex flex-wrap">
-                                            <div>
-                                                <h3 class="card-title">Sales Overview</h3>
-                                                <h6 class="card-subtitle">Ample Admin Vs Pixel Admin</h6>
-                                            </div>
-                                            <div class="ml-auto">
-                                                <ul class="list-inline">
-                                                    <li>
-                                                        <h6 class="text-muted text-success"><i class="fa fa-circle font-10 m-r-10 "></i>Ample</h6>
-                                                    </li>
-                                                    <li>
-                                                        <h6 class="text-muted  text-info"><i class="fa fa-circle font-10 m-r-10"></i>Pixel</h6>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="amp-pxl" style="height: 360px;"></div>
-                                    </div>
+                    <div class="col-md-8 col-8 align-self-center">
+                        <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                    </div>
+                    <!--/.column-->
+                    <!--column-->
+                    <div class="col-md-2 col-8 align-self-center">
+                        <div class="panel panel-default">
+
+                            <div class="panel-body">
+                                <div class="canvas-wrapper">
+                                    <a class="waves-effect waves-dark" href="@Url.Action("USProjectReport", "ProjectReport")" aria-expanded="false"><i class="mdi mdi-note-multiple-outline"></i><span class="hide-menu">User Project Report</span></a>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("USCategoryReport", "CategoryReport")" aria-expanded="false"><i class="mdi mdi-note-multiple-outline"></i><span class="hide-menu">Category Report</span></a>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("USLeaveReport", "LeaveReport")" aria-expanded="false"><i class="mdi mdi-note-multiple-outline"></i><span class="hide-menu">Leave Report</span></a>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("SSProjectReport", "SectorProjects")" aria-expanded="false"><i class="mdi mdi-note-multiple-outline"></i><span class="hide-menu">Sector Based Project Report</span></a>
+
                                 </div>
                             </div>
                         </div>
-                        <a class="waves-effect waves-dark" href="@Url.Action("USProjectReport", "ProjectReport")" aria-expanded="false"><i class="mdi mdi-help-circle"></i><span class="hide-menu">US Project Report</span></a>
-                        <a class="waves-effect waves-dark" href="@Url.Action("USCategoryReport", "CategoryReport")" aria-expanded="false"><i class="mdi mdi-help-circle"></i><span class="hide-menu">Category Report</span></a>
-                        <a class="waves-effect waves-dark" href="@Url.Action("USLeaveReport", "LeaveReport")" aria-expanded="false"><i class="mdi mdi-help-circle"></i><span class="hide-menu">Leave Report</span></a>
-                        <a class="waves-effect waves-dark" href="@Url.Action("SSProjectReport", "SectorProjects")" aria-expanded="false"><i class="mdi mdi-help-circle"></i><span class="hide-menu">Sector Based Project Report</span></a>
                     </div>
-                    <div class="col-lg-4 col-md-5">
-                        <div class="card">
-                            <div class="card-block">
-                                <h3 class="card-title">Our Visitors </h3>
-                                <h6 class="card-subtitle">Different Devices Used to Visit</h6>
-                                <div id="visitor" style="height:290px; width:100%;"></div>
-                            </div>
-                            <div>
-                                <hr class="m-t-0 m-b-0">
-                            </div>
-                            <div class="card-block text-center ">
-                                <ul class="list-inline m-b-0">
-                                    <li>
-                                        <h6 class="text-muted text-info"><i class="fa fa-circle font-10 m-r-10 "></i>Mobile</h6>
-                                    </li>
-                                    <li>
-                                        <h6 class="text-muted  text-primary"><i class="fa fa-circle font-10 m-r-10"></i>Desktop</h6>
-                                    </li>
-                                    <li>
-                                        <h6 class="text-muted  text-success"><i class="fa fa-circle font-10 m-r-10"></i>Tablet</h6>
+                    <!--/.column-->
+
+                    <!--column-->
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 align="center">Number of Projects assigned for each Sector</h2>
+                                <ul class="pull-right panel-settings panel-button-tab-right">
+                                    <li class="dropdown">
+                                        <a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
+                                            <em class="fa fa-cogs"></em>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li>
+                                                <ul class="dropdown-settings">
+                                                    <li>
+                                                        <a href="#">
+                                                            <em class="fa fa-cog"></em> Settings 1
+                                                        </a>
+                                                    </li>
+                                                    <li class="divider"></li>
+                                                    <li>
+                                                        <a href="#">
+                                                            <em class="fa fa-cog"></em> Settings 2
+                                                        </a>
+                                                    </li>
+                                                    <li class="divider"></li>
+                                                    <li>
+                                                        <a href="#">
+                                                            <em class="fa fa-cog"></em> Settings 3
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
                                     </li>
                                 </ul>
+                                <span class="pull-right clickable panel-toggle panel-button-tab-left"><em class="fa fa-toggle-up"></em></span>
+                            </div>
+                            <div class="panel-body">
+                                <div class="canvas-wrapper">
+                                    <canvas class="main-chart" id="bar-chart" height="200" width="600"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <!--/.column-->
+
+                </div><!--/.row-->            
                 <!-- Row -->
                 <!-- Row -->
                 <!-- ============================================================== -->
@@ -104,7 +113,7 @@
             <!-- ============================================================== -->
             <!-- footer -->
             <!-- ============================================================== -->
-            <footer class="footer"> © 2017 Material Pro Admin by wrappixel.com </footer>
+            <footer class="footer"> © 2018 MMP TimeSheets By Simsum </footer>
             <!-- ============================================================== -->
             <!-- End footer -->
             <!-- ============================================================== -->
@@ -112,4 +121,111 @@
         <!-- ============================================================== -->
         <!-- End Page wrapper  -->
         <!-- ============================================================== -->
+
+
+
+
+@section Scripts{
+    <script src="~/Lumino - Login/js/jquery-1.11.1.min.js"></script>
+    <script src="~/Lumino - Login/js/bootstrap.min.js"></script>
+    <script src="~/Lumino - Login/js/chart.min.js"></script>
+    <script src="~/Lumino - Login/js/chart-data.js"></script>
+    <script src="~/Lumino - Login/js/easypiechart.js"></script>
+    <script src="~/Lumino - Login/js/easypiechart-data.js"></script>
+    <script src="~/Lumino - Login/js/bootstrap-datepicker.js"></script><script src="~/Lumino - Login/js/custom.js"></script>
+    <script src="~/CanvasJs/canvasjs.min.js"></script>
+
+    <script>
+        window.onload = function () {
+
+            var chart1 = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                title: {
+                    text: "Number of users Based on roles"
+                },
+                data: [{
+                    type: "doughnut",
+                    startAngle: 60,
+                    indexLabelFontSize: 16,
+                    indexLabel: "{label} - {y}",
+                    toolTipContent: "<b>{label}:</b> {y}",
+                    dataPoints: @Html.Raw(ViewBag.DoughnutDataPoints)
+                    }]
+            });
+            
+
+             chart1.render();
+
+             $(document).ready(function (e) {
+                 setTimeout(removeWatermark, 10);
+             });
+             function removeWatermark() {
+                 $("div#chartContainer > div > img").remove();
+             }
+            
+
+
+            /*$.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "/Home/GetDoughnutData",
+                success: function (data) {
+                    var chart3 = document.getElementById("doughnut-chart").getContext("2d");
+                    alert(data.value)
+                    window.myDoughnut = new Chart(chart3).Doughnut([
+                        {
+                            value: 300,
+                            color: "#30a5ff",
+                            highlight: "#62b9fb",
+                            label: "USER"
+                        },
+                        {
+                            value: 323,
+                            color: "#ffb53e",
+                            highlight: "#fac878",
+                            label: "SUPERVISOR"
+                        },
+                        {
+                            value: 1350,
+                            color: "#1ebfae",
+                            highlight: "#3cdfce",
+                            label: "ADMIN"
+                        },
+
+                    ], {
+                        responsive: true,
+                        segmentShowStroke: false
+                    });
+                }
+            });*/
+
+
+
+
+            var chart2 = document.getElementById("bar-chart").getContext("2d");
+            window.myBar = new Chart(chart2).Bar({
+                labels: @Html.Raw(ViewBag.Sectors),
+                datasets: [
+                    {
+                        fillColor: "rgba(78,129,188,1)",
+                        strokeColor: "rgba(78,129,188,1)",
+                        highlightFill: "rgba(78,129,188,1)",
+                        highlightStroke: "rgba(78,129,188,1)",
+                        data: @Html.Raw(ViewBag.ProjecsCount)
+                    }
+                ]
+
+            }, {
+                responsive: true,
+                scaleLineColor: "rgba(0,0,0,.2)",
+                scaleGridLineColor: "rgba(0,0,0,.05)",
+                scaleFontColor: "#c5c7cc"
+            });
+
+
+
+
+        }
+    </script>
+}
     

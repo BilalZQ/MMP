@@ -50,7 +50,7 @@ var randomScalingFactor = function(){ return Math.round(Math.random()*1000)};
 
 	var pieData = [
 			{
-				value: 300,
+				value: 31231200,
 				color:"#30a5ff",
 				highlight: "#62b9fb",
 				label: "Blue"
@@ -84,19 +84,19 @@ var randomScalingFactor = function(){ return Math.round(Math.random()*1000)};
 					label: "Blue"
 				},
 				{
-					value: 50,
+					value: 4321350,
 					color: "#ffb53e",
 					highlight: "#fac878",
 					label: "Orange"
 				},
 				{
-					value: 100,
+                    value: 1350,
 					color: "#1ebfae",
 					highlight: "#3cdfce",
 					label: "Teal"
 				},
 				{
-					value: 120,
+                    value: 3350,
 					color: "#f9243f",
 					highlight: "#f6495f",
 					label: "Red"

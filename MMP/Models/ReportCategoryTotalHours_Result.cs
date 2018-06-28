@@ -14,6 +14,6 @@ namespace MMP.Models
     public partial class ReportCategoryTotalHours_Result
     {
         public string ctd_name { get; set; }
-        public string totalHours { get; set; }
+        public double totalHours { get; set; }
     }
 }

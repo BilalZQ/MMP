@@ -159,7 +159,7 @@ namespace MMP.Controllers
             return View(hd);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public ActionResult Delete(int id)
         {
             using (mmpEntities mP = new mmpEntities())
@@ -169,7 +169,7 @@ namespace MMP.Controllers
                 mP.SaveChanges();
                 return Json(new { success = true, message = "Deleted Successfully" }, JsonRequestBehavior.AllowGet);
             }
-        }
+        }*/
         
         ///
         [NonAction]

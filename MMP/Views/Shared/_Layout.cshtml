@@ -53,17 +53,19 @@
                 <!-- Logo -->
                 <!-- ============================================================== -->
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="index.html">
+                    <a class="navbar-brand" href="@Url.Action("Index", "Home")">
                         <!-- Logo icon --><b>
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                             <!-- Light Logo icon -->
-                            <img src="~/assets/images/logo-light-icon.png" alt="homepage" class="light-logo" />
+                            <!--<img src="~/assets/images/logo-light-icon.png" alt="homepage" class="light-logo" />-->
                         </b>
                         <!--End Logo icon -->
                         <!-- Logo text --><span>
 
                             <!-- Light Logo text -->
-                            <img src="~/assets/images/logo-light-text.png" class="light-logo" alt="homepage" />
+                            <!--<img src="~/assets/images/logo-light-text.png" class="light-logo" alt="homepage" />-->
+                        <img src="https://i.imgur.com/pvK1Ekq.png" class="light-logo" />
+
                         </span>
                     </a>
                 </div>
@@ -80,12 +82,12 @@
                         <!-- ============================================================== -->
                         <!-- Search -->
                         <!-- ============================================================== -->
-                        <li class="nav-item hidden-sm-down search-box">
+                        <!--<li class="nav-item hidden-sm-down search-box">
                             <a class="nav-link hidden-sm-down text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="ti-search"></i></a>
                             <form class="app-search">
                                 <input type="text" class="form-control" placeholder="Search & enter"> <a class="srh-btn"><i class="ti-close"></i></a>
                             </form>
-                        </li>
+                        </li>-->
                     </ul>
                     <!-- ============================================================== -->
                     <!-- User profile and search -->
@@ -95,7 +97,7 @@
                         <!-- Profile -->
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="~/assets/images/users/1.jpg" alt="user" class="profile-pic m-r-10" />@HttpContext.Current.User.Identity.Name</a>
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><!--<img src="~/assets/images/users/1.jpg" alt="user" class="profile-pic m-r-10" />-->Welcome,  @HttpContext.Current.User.Identity.Name.ToUpper()</a>
                         </li>
                     </ul>
                 </div>
@@ -112,46 +114,67 @@
             <div class="scroll-sidebar">
                 <!-- Sidebar navigation-->
                 <nav class="sidebar-nav">
-                    <ul id="sidebarnav">
-                        <li>
-                            <a class="waves-effect waves-dark" href="@Url.Action("Index", "Home")" aria-expanded="false"><i class="mdi mdi-gauge"></i><span class="hide-menu">Dashboard</span></a>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="@Url.Action("UserDetails", "User")" aria-expanded="false"><i class="mdi mdi-account-check"></i><span class="hide-menu">Users</span></a>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="@Url.Action("AdminTimesheets", "TimeSheet")" aria-expanded="false"><i class="mdi mdi-table"></i><span class="hide-menu">Admin TimeSheets</span></a>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="@Url.Action("SupervisorTimesheets", "TimeSheet")" aria-expanded="false"><i class="mdi mdi-table"></i><span class="hide-menu">Supervisor TimeSheets</span></a>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="@Url.Action("SupervisorUserTimesheets", "TimeSheet")" aria-expanded="false"><i class="mdi mdi-table"></i><span class="hide-menu">Supervisor User TimeSheets</span></a>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="@Url.Action("UserTimesheets", "TimeSheet")" aria-expanded="false"><i class="mdi mdi-table"></i><span class="hide-menu">User TimeSheets</span></a>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="@Url.Action("AdminAllTimeSheets", "TimeSheet")" aria-expanded="false"><i class="mdi mdi-emoticon"></i><span class="hide-menu">All TimeSheets(Admin)</span></a>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="@Url.Action("CategoryDetails", "Category")" aria-expanded="false"><i class="mdi mdi-earth"></i><span class="hide-menu">Categories</span></a>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="@Url.Action("Holidays", "Holiday")" aria-expanded="false"><i class="mdi mdi-book-open-variant"></i><span class="hide-menu">Holidays</span></a>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="@Url.Action("RegionDetails", "Region")" aria-expanded="false"><i class="mdi mdi-help-circle"></i><span class="hide-menu">Regions</span></a>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="@Url.Action("SectorDetails", "Sector")" aria-expanded="false"><i class="mdi mdi-help-circle"></i><span class="hide-menu">Sectors</span></a>
-                        </li>
-                        <li>
-                            <a class="waves-effect waves-dark" href="@Url.Action("UserPresence", "Presence")" aria-expanded="false"><i class="mdi mdi-help-circle"></i><span class="hide-menu">User Presence (Admin)</span></a>
-                        </li>
-                    </ul>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <ul id="sidebarnav">
+                            @if (MMP.Generic_Functions.UserID_RoleID.getRole(HttpContext.Current.User.Identity.Name) == "admin")
+                            {
+                                <li>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("Index", "Home")" aria-expanded="false"><i class="mdi mdi-gauge"></i><span class="hide-menu">Dashboard</span></a>
+                                </li>
+                                <li>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("UserDetails", "User")" aria-expanded="false"><i class="mdi mdi-account-check"></i><span class="hide-menu">Users</span></a>
+                                </li>
+                                <li>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("AdminTimesheets", "TimeSheet")" aria-expanded="false"><i class="mdi mdi-table"></i><span class="hide-menu">My TimeSheets</span></a>
+                                </li>
+                            }
+                            @if (MMP.Generic_Functions.UserID_RoleID.getRole(HttpContext.Current.User.Identity.Name) != "admin")
+                            {
+                                <li>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("UserTimesheets", "TimeSheet")" aria-expanded="false"><i class="mdi mdi-table"></i><span class="hide-menu">My TimeSheets</span></a>
+                                </li>
+                            }
+                            <!--<li>
+                                <a class="waves-effect waves-dark" href="@Url.Action("AdminTimesheets", "TimeSheet")" aria-expanded="false"><i class="mdi mdi-table"></i><span class="hide-menu">Admin TimeSheets</span></a>
+                                </li>
+                            <li>
+                                <a class="waves-effect waves-dark" href="@Url.Action("SupervisorTimesheets", "TimeSheet")" aria-expanded="false"><i class="mdi mdi-table"></i><span class="hide-menu">Supervisor TimeSheets</span></a>
+                            </li>-->
+                            @if (MMP.Generic_Functions.UserID_RoleID.getRole(HttpContext.Current.User.Identity.Name) == "supervisor")
+                            {
+                                <li>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("SupervisorUserTimesheets", "TimeSheet")" aria-expanded="false"><i class="mdi mdi-table"></i><span class="hide-menu">User TimeSheets</span></a>
+                                </li>
+                            }
+
+                            @if (MMP.Generic_Functions.UserID_RoleID.getRole(HttpContext.Current.User.Identity.Name) == "admin")
+                            {
+                                <li>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("AdminAllTimeSheets", "TimeSheet")" aria-expanded="false"><i class="mdi mdi-emoticon"></i><span class="hide-menu">All TimeSheets</span></a>
+                                </li>
+                                <li>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("CategoryDetails", "Category")" aria-expanded="false"><i class="mdi mdi-apps"></i><span class="hide-menu">Categories</span></a>
+                                </li>
+                                <li>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("Holidays", "Holiday")" aria-expanded="false"><i class="mdi mdi-book-open-variant"></i><span class="hide-menu">Holidays</span></a>
+                                </li>
+                                <li>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("RegionDetails", "Region")" aria-expanded="false"><i class="mdi mdi-apps"></i><span class="hide-menu">Regions</span></a>
+                                </li>
+                                <li>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("SectorDetails", "Sector")" aria-expanded="false"><i class="mdi mdi-chart-pie"></i><span class="hide-menu">Sectors</span></a>
+                                </li>
+                                <!--<li>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("UserPresence", "Presence")" aria-expanded="false"><i class="mdi mdi-calendar-check"></i><span class="hide-menu">User Logs</span></a>
+                                </li>-->
+                            }
+
+                        </ul>
+                    }
+                    
                     <div class="text-center m-t-30">
-                        <a href="https://wrappixel.com/templates/materialpro/" class="btn waves-effect waves-light btn-warning hidden-md-down"> Upgrade to Pro</a>
+                        <!--<a href="https://wrappixel.com/templates/materialpro/" class="btn waves-effect waves-light btn-warning hidden-md-down"> Upgrade to Pro</a>-->
                     </div>
                 </nav>
                 <!-- End Sidebar navigation -->
@@ -159,12 +182,13 @@
             <!-- End Sidebar scroll-->
             <!-- Bottom points-->
             <div class="sidebar-footer">
-                <!-- item--><a href="" class="link" data-toggle="tooltip" title="Settings"><i class="ti-settings"></i></a>
-                <!-- item--><a href="" class="link" data-toggle="tooltip" title="Email"><i class="mdi mdi-gmail"></i></a>
+                <!-- item--><a class="link" data-toggle="tooltip" title="Settings"></a>
                 @using (Html.BeginForm("Logout", "User", FormMethod.Post, new { id = "logoutForm" }))
                 {
                 <!-- item--><a href="javascript:document.getElementById('logoutForm').submit()" class="link" data-toggle="tooltip" title="Logout"><i class="mdi mdi-power"></i></a>
                 }
+                <!-- item--><a class="link" data-toggle="tooltip" title="Settings"></a>
+               
             </div>
             <!-- End Bottom points-->
         </aside>

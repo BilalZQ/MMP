@@ -211,7 +211,7 @@ namespace MMP.Controllers
                             tdd_day = y.tsdd.tdd_day,
                             workhours = y.tsdd.workhours,
                             tsd_id = y.tsdd.tsd_id
-                        }).ToList()
+                        }).OrderBy(y => y.tdd_id).ToList()
                     });
 
                     return View(model.ToList());
@@ -573,14 +573,14 @@ namespace MMP.Controllers
         // View Timesheets: User
         // AUTHORIZE ALL ACTION RESULTS FOR USER
 
-        [Authorize(Roles = "user")]
+        [Authorize(Roles = "user, admin, supervisor")]
         [HttpGet]
         public ActionResult UserPreviousTimeSheets()
         {
             return View();
         }
 
-        [Authorize(Roles = "user")]
+        [Authorize(Roles = "user, admin, supervisor")]
         [HttpGet]
         public ActionResult UserTimesheets()
         {

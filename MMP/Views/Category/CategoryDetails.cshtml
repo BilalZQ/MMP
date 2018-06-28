@@ -23,7 +23,6 @@
                 </ol>
             </div>
             <div class="col-md-7 col-4 align-self-center">
-                <a href="https://wrappixel.com/templates/materialpro/" class="btn waves-effect waves-light btn-danger pull-right hidden-sm-down"> Upgrade to Pro</a>
             </div>
         </div>
         <!-- ============================================================== -->
@@ -77,7 +76,7 @@
 <!-- ============================================================== -->
 <!-- footer -->
 <!-- ============================================================== -->
-<footer class="footer"> © 2017 Material Pro Admin by wrappixel.com </footer>
+<footer class="footer"> © 2018 MMP TimeSheets By Simsum </footer>
 <!-- ============================================================== -->
 <!-- End footer -->
 <!-- ============================================================== -->
@@ -114,7 +113,7 @@
                     { "data": "encashable" },
                     { "data": "carry_forward" },
                     { "data": "ctd.ctd_id", "render": function (data, type, full) {
-                        return "<a class= 'btn btn-default btn-sm' onclick=OpenModal2(" + '\'' + full.category.category_name + '\'' + ',' + data + /*',' + full.project_id + ',' + full.leave_id +*/")><i class= 'fa fa-pencil'></i> Edit</a><a class= 'btn btn-danger btn-sm' style='margin-left:5px' onclick=Delete(" + data + ")><i class= 'fa fa-trash'></i> Delete</a>"
+                        return "<a class= 'btn btn-default btn-sm' onclick=OpenModal2(" + '\'' + full.category.category_name + '\'' + ',' + data + /*',' + full.project_id + ',' + full.leave_id +*/")><i class= 'fa fa-pencil'></i> Edit</a>"//<a class= 'btn btn-danger btn-sm' style='margin-left:5px' onclick=Delete(" + data + ")><i class= 'fa fa-trash'></i> Delete</a>"
                     },
                         "orderable": false,
                         "searchable": false,
@@ -273,28 +272,8 @@
             }
             return false;
         }
-
-        function Delete(id)
-        {
-            if (confirm('Are you sure you want to remove this Category Type?'))
-            {
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("Delete", "Category")/' + id,
-                    success: function (data) {
-                        if (data.success) {
-                            dataTable.ajax.reload();
-
-                            //notify.js plugin
-                            $.notify(data.message, {
-                                globalPosition: "top center",
-                                className: "success"
-                            })
-                        }
-                    }
-                })
-            }
-        }
+        
+        
 
     </script>
 }
