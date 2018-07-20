@@ -15,7 +15,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.sector_name, "Sector Name", new { @class = "control-label" })
         @Html.EditorFor(model => model.sector_name, new { htmlAtrributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.sector_name)
+        @Html.ValidationMessageFor(model => model.sector_name, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
         <input type="submit" value="Submit" class="btn btn-primary" />
@@ -23,4 +23,8 @@
     </div>
 
 
+}
+@section Scripts{
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
 }

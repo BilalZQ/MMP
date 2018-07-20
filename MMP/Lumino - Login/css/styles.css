@@ -996,7 +996,8 @@ h1.page-header {
   margin-left: 5px; }
 
 .table {
-  background: #fff; }
+    background: #FFFFFF;
+}
 
 .fixed-table-container {
   border: 1px solid #e9ecf2; }

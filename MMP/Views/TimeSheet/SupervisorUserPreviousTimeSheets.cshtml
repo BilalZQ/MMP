@@ -17,7 +17,7 @@
         <!-- ============================================================== -->
         <div class="row page-titles">
             <div class="col-md-5 col-8 align-self-center">
-                <h3 class="text-themecolor">Dashboard</h3>
+                <!-- <h3 class="text-themecolor">Dashboard</h3>-->
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
                     <li class="breadcrumb-item active">Supervisor User Previous TimeSheets</li>
@@ -38,7 +38,8 @@
         <table id="timesheetsTable" class="table table-striped table-bordered" style="width:70%">
             <thead>
                 <tr>
-                    <th>UserName</th>
+                    <th>Employee ID</th>
+                    <th>Employee Name</th>
                     <th>Supervisor</th>
                     <th>Status</th>
                     <th>Updated at</th>
@@ -87,6 +88,7 @@
                     "datatype": "json"
                 },
                 "columns": [
+                    { "data": "user.employee_id" },
                     { "data": "user.user_name" },
                     { "data": "supervisorName" },
                     { "data": "ts.timesheet_status" },
@@ -97,7 +99,7 @@
                     { "data": "tsmr.endDate" },
                     { "data": "ts.extendedDate" },
                     { "data": "ts.timesheet_id", "render": function (data) {
-                        return "<a class= 'btn btn-default btn-sm' onclick=redirctEditView("+ data +")><i class= 'fa fa-pencil'></i> View/Edit Timesheet</a><a class= 'btn btn-danger btn-sm' style='margin-left:5px' ><i class= 'fa fa-trash'></i> Delete</a>"
+                        return "<a class= 'btn btn-default btn-sm' onclick=redirctEditView(" + data + ")><i class= 'fa fa-pencil'></i> View/Edit Timesheet</a><a class= 'btn btn-danger btn-sm'  style='margin-left:5px' onclick=redirectUserPresence(" + full.user.user_id +")><i class= 'fa fa-trash'></i> View Presence</a>"//<a class= 'btn btn-danger btn-sm' style='margin-left:5px' ><i class= 'fa fa-trash'></i> Delete</a>"
                         },
                         "orderable": false,
                         "searchable": false,
@@ -162,7 +164,10 @@
         {
             location.href = '@Url.Action("SupervisorUserTimeSheets", "TimeSheet")';
         }
-
+         function redirectUserPresence()
+        {
+            location.href = '@Url.Action("SuperVisorUserPresence", "Presence")';
+        }
     </script>
 }
 

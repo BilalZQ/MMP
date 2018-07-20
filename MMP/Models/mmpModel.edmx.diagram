@@ -38,6 +38,9 @@
         <AssociationConnector Association="mmpModel.FK_timesheets_approver" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_timesheets_user" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_users_supervisor" ManuallyRouted="false" />
+        <AssociationConnector Association="mmpModel.FK_user_primary_department" />
+        <AssociationConnector Association="mmpModel.FK_user_primary_project" />
+        <AssociationConnector Association="mmpModel.FK_pd_region" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

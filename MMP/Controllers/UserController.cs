@@ -112,10 +112,12 @@ namespace MMP.Controllers
             String message = "";
             using (mmpEntities mP = new mmpEntities())
             {
-                var v = mP.users.Where(a => a.user_name == login.user_name).FirstOrDefault();
-                string Roles = UserID_RoleID.getRole(v.user_name);
+                var v = mP.users.Where(a => a.employee_id == login.employee_id && a.user_status == "active").FirstOrDefault();                
                 if (v != null)
                 {
+                    string Roles = UserID_RoleID.getRole(v.user_name);
+                    Debug.WriteLine(string.IsNullOrEmpty(login.user_password));
+
                     if (string.Compare(Crypto.Hash(login.user_password), v.user_password) == 0)
                     {
                         int timeout = login.RememberMe ? 525600 : 20; // 525600 => 1 year
@@ -140,12 +142,14 @@ namespace MMP.Controllers
                     }
                     else
                     {
-                        message = "Password or username is Invalid";
+                        ModelState.AddModelError("PasswordERR", "Password is incorrect");
+                        message = "Password is incorrect";
                     }
                 }
                 else
                 {
-                    message = "Password or username is Invalid";
+                    ModelState.AddModelError("EmployeeIDERR", "Employee ID does not exist");
+                    message = "Employee ID does not exist";
                 }
             }
 
@@ -175,17 +179,21 @@ namespace MMP.Controllers
             using (mmpEntities mP = new mmpEntities())
             {
                 mP.Configuration.ProxyCreationEnabled = false;
-                var query = from user in mP.users
+                var query = (from user in mP.users
                             join role in mP.roles on user.role_id equals role.role_id
                             join region in mP.regions on user.region_id equals region.region_id
                             join u in mP.users on user.supervisor equals u.user_id into us from u in us.DefaultIfEmpty()
+                            join upd in mP.category_type_details on user.user_primary_department equals upd.ctd_id into upds from upd in upds.DefaultIfEmpty()
+                            join upp in mP.category_type_details on user.user_primary_project equals upp.ctd_id into upps from upp in upps.DefaultIfEmpty()
                             select new
                             {
                                 user,
                                 user_role = role.role_name,
-                                supervisor = u.user_name,
-                                region = region.region_name
-                            };
+                                supervisor = u.employee_id,
+                                region = region.region_name,
+                                user_primary_department = upd.ctd_name,
+                                user_primary_project = upp.ctd_name
+                            }).Where(x => x.user.user_status == "active");
                 if (id != 0)
                 {
                     query = query.Where(x => x.user.user_id == id);
@@ -204,6 +212,9 @@ namespace MMP.Controllers
                 ViewBag.roles = mP.roles.ToList<role>();
                 ViewBag.regions = mP.regions.ToList<region>();
                 ViewBag.supervisors = mP.users.Where(a => a.role_id == mP.roles.FirstOrDefault(x => x.role_name == "supervisor").role_id).ToList<user>();
+                ViewBag.departments = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "departments").category_id)).ToList<category_type_details>();
+                ViewBag.projects = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "projects").category_id)).ToList<category_type_details>();
+
                 return View(new AddUser());
             }
 
@@ -214,59 +225,79 @@ namespace MMP.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddUser(AddUser newUser)
         {
-            if (ModelState.IsValid)
+            using (mmpEntities mP = new mmpEntities())
             {
-                #region User Already Exists
+                ViewBag.roles = mP.roles.ToList<role>();
+                ViewBag.regions = mP.regions.ToList<region>();
+                ViewBag.supervisors = mP.users.Where(a => a.role_id == mP.roles.FirstOrDefault(x => x.role_name == "supervisor").role_id).ToList<user>();
+                ViewBag.departments = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "departments").category_id)).ToList<category_type_details>();
+                ViewBag.projects = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "projects").category_id)).ToList<category_type_details>();
+                
+                #region Employee ID Already Exists
+                var isEmployeeIDExists = isEmployeeIDExist(newUser.employee_id);
+                if (isEmployeeIDExists)
+                {
+                    ModelState.AddModelError("EmployeeExist", "Employee already exists");
+                    return View(newUser);
+                }
+                #endregion
+                
+                /*#region User Already Exists
                 var isUserExists = isUserExist(newUser.user_name);
                 if (isUserExists)
                 {
                     ModelState.AddModelError("UserExist", "User already exists");
                     return View(newUser);
                 }
-                #endregion
+                #endregion*/
 
                 #region Email Already exists
                 var isEmailExists = IsEmailExist(newUser.user_email);
                 if (isEmailExists)
                 {
                     ModelState.AddModelError("EmailExist", "Email already exists");
+                    newUser.user_name = "Enter New Name";
                     return View(newUser);
                 }
                 #endregion
 
-                #region Password Hashing
-                newUser.user_password = Crypto.Hash(newUser.user_password);
-                newUser.confirmPassword = Crypto.Hash(newUser.confirmPassword);
-                #endregion
-
-                user user = new user()
+                if (ModelState.IsValid)
                 {
-                    role_id = newUser.role_id,
-                    user_name = newUser.user_name,
-                    user_email = newUser.user_email,
-                    user_password = newUser.user_password,
-                    created_at = DateTime.Now,
-                    updated_at = DateTime.Now,
-                    supervisor = newUser.supervisor,
-                    region_id = newUser.region_id
+                    ModelState.AddModelError("UserExist", "User already exists");                    
 
-                };
+                    #region Password Hashing
+                    newUser.user_password = Crypto.Hash(newUser.user_password);
+                    newUser.confirmPassword = Crypto.Hash(newUser.confirmPassword);
+                    #endregion
 
-                #region Save to Database 
-                using (mmpEntities mP = new mmpEntities())
-                {
+                    user user = new user()
+                    {
+                        role_id = newUser.role_id,
+                        employee_id = newUser.employee_id,
+                        user_name = newUser.user_name,
+                        user_email = newUser.user_email,
+                        designation = newUser.designation,
+                        user_password = newUser.user_password,
+                        created_at = DateTime.Now,
+                        supervisor = newUser.supervisor,
+                        region_id = newUser.region_id,
+                        user_primary_department = newUser.user_primary_department,
+                        user_primary_project = newUser.user_primary_project,
+                        user_status = "active"
+                    };
+
+                    #region Save to Database 
                     mP.users.Add(user);
                     mP.SaveChanges();
+                    #endregion
+
+                    return Json(new { success = true, message = "Saved Successfully" });
                 }
-                #endregion
-
-                return Json(new { success = true, message = "Saved Successfully" });
+                else
+                {
+                    return Json(new { success = true, message = "Invalid Request" });
+                }
             }
-            else
-            {
-                return Json(new { success = true, message = "Invalid Request" });
-            }
-
         }
         #endregion
 
@@ -279,18 +310,25 @@ namespace MMP.Controllers
             {
                 ViewBag.roles = mP.roles.ToList<role>();
                 ViewBag.regions = mP.regions.ToList<region>();
-                ViewBag.supervisors = mP.users.Where(a => a.role_id == mP.roles.FirstOrDefault(x => x.role_name == "supervisor" & a.user_id != id).role_id).ToList<user>();
+                ViewBag.supervisors = mP.users.Where(a => a.role_id == mP.roles.FirstOrDefault(x => x.role_name == "supervisor" && a.user_id != id).role_id).ToList<user>();
+                ViewBag.departments = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "departments").category_id)).ToList<category_type_details>();
+                ViewBag.projects = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "projects").category_id)).ToList<category_type_details>();
+
                 if (id != 0)
                 {
                     user u = mP.users.Where(x => x.user_id == id).FirstOrDefault<user>();
                     EditUser editUser = new EditUser()
                     {
                         user_id = u.user_id,
+                        employee_id = u.employee_id,
                         user_name = u.user_name,
                         role_id = u.role_id,
                         user_email = u.user_email,
+                        designation = u.designation,
                         supervisor = u.supervisor,
-                        region_id = u.region_id
+                        region_id = u.region_id,
+                        user_primary_department = u.user_primary_department,
+                        user_primary_project = u.user_primary_project
                     };
                     return View(editUser);
                 }
@@ -310,18 +348,30 @@ namespace MMP.Controllers
             {
                 ViewBag.roles = mP.roles.ToList<role>();
                 ViewBag.regions = mP.regions.ToList<region>();
-                ViewBag.supervisors = mP.users.Where(a => a.user_id == mP.roles.FirstOrDefault(x => x.role_name == "supervisor").role_id & a.user_id != editUser.user_id).ToList<user>();
+                ViewBag.supervisors = mP.users.Where(a => a.user_id == mP.roles.FirstOrDefault(x => x.role_name == "supervisor").role_id && a.user_id != editUser.user_id).ToList<user>();
+                ViewBag.departments = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "departments").category_id)).ToList<category_type_details>();
+                ViewBag.projects = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "projects").category_id)).ToList<category_type_details>();
 
                 if (ModelState.IsValid)
                 {
-                    #region User Already Exists
+                    #region Employee ID Already Exists
+                    var isEmployeeIDExists = isEmployeeIDExist(editUser.employee_id, editUser.user_id);
+                    if (isEmployeeIDExists)
+                    {
+                        ModelState.AddModelError("EmployeeExist", "Employee already exists");
+                        return View(editUser);
+                    }
+                    #endregion
+
+
+                    /*#region User Already Exists
                     var isUserExists = isUserExist(editUser.user_name, editUser.user_id);
                     if (isUserExists)
                     {
                         ModelState.AddModelError("UserExist", "Username already exists");
                         return View(editUser);
                     }
-                    #endregion
+                    #endregion*/
 
                     #region Email Already Exists
                     var isEmailExists = IsEmailExist(editUser.user_email, editUser.user_id);
@@ -335,9 +385,14 @@ namespace MMP.Controllers
                     user user = mP.users.Where(x => x.user_id == editUser.user_id).First();
                     user.user_name = editUser.user_name;
                     user.role_id = editUser.role_id;
+                    user.employee_id = editUser.employee_id;
                     user.user_email = editUser.user_email;
+                    user.designation = editUser.designation;
                     user.supervisor = editUser.supervisor;
+                    user.updated_at = DateTime.Now;
                     user.region_id = editUser.region_id;
+                    user.user_primary_department = editUser.user_primary_department;
+                    user.user_primary_project = editUser.user_primary_project;
                     mP.Entry(user).State = EntityState.Modified;
                     mP.SaveChanges();
 
@@ -398,34 +453,32 @@ namespace MMP.Controllers
             using (mmpEntities mP = new mmpEntities())
             {
                 user userDetails = mP.users.Where(x => x.user_id == id).FirstOrDefault<user>();
-                mP.users.Remove(userDetails);
+                //mP.users.Remove(userDetails);
+                //mP.SaveChanges();
+                userDetails.user_status = "inactive";
+                mP.Entry(userDetails).State = EntityState.Modified;
                 mP.SaveChanges();
                 return Json(new { success = true, message = "Deleted Successfully" }, JsonRequestBehavior.AllowGet);
             }
         }
-        #endregion
+        #endregion        
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //==================================================================================================================================================================
 
 
         //Non Action
         [NonAction]
+        public bool isEmployeeIDExist(string employeeID, int user_id = 0)
+        {
+            using (mmpEntities mP = new mmpEntities())
+            {
+                var v = mP.users.Where(a => a.employee_id == employeeID && a.user_id != user_id).FirstOrDefault();
+                return v != null;
+            }
+        }
+
+        /*[NonAction]
         public bool isUserExist(string userName, int user_id = 0)
         {
             using (mmpEntities mP = new mmpEntities())
@@ -433,7 +486,7 @@ namespace MMP.Controllers
                 var v = mP.users.Where(a => a.user_name == userName && a.user_id != user_id).FirstOrDefault();
                 return v != null;
             }
-        }
+        }*/
 
         [NonAction]
         public bool IsEmailExist(string email, int user_id = 0)

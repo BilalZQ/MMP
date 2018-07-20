@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="mmpModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="mmpModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="categories">
           <Key>
             <PropertyRef Name="category_id" />
@@ -69,6 +69,7 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="sector_id" Type="int" Nullable="false" />
+          <Property Name="region_id" Type="int" Nullable="false" />
           <Property Name="project_model" Type="enum" />
           <Property Name="category_type_id" Type="int" Nullable="false" />
         </EntityType>
@@ -142,13 +143,18 @@
           </Key>
           <Property Name="user_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="role_id" Type="int" Nullable="false" />
+          <Property Name="employee_id" Type="varchar" MaxLength="45" Nullable="false" />
           <Property Name="user_name" Type="varchar" MaxLength="45" Nullable="false" />
           <Property Name="user_email" Type="varchar" MaxLength="100" />
           <Property Name="user_password" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="designation" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="created_at" Type="datetime" Precision="0" />
           <Property Name="updated_at" Type="datetime" Precision="0" />
           <Property Name="supervisor" Type="int" />
           <Property Name="region_id" Type="int" Nullable="false" />
+          <Property Name="user_primary_department" Type="int" />
+          <Property Name="user_primary_project" Type="int" />
+          <Property Name="user_status" Type="enum" />
         </EntityType>
         <Association Name="FK_CT_category_id">
           <End Role="categories" Type="Self.categories" Multiplicity="1">
@@ -215,6 +221,20 @@
             </Principal>
             <Dependent Role="project_details">
               <PropertyRef Name="category_type_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_pd_region">
+          <End Role="regions" Type="Self.regions" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="project_details" Type="Self.project_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="regions">
+              <PropertyRef Name="region_id" />
+            </Principal>
+            <Dependent Role="project_details">
+              <PropertyRef Name="region_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -342,6 +362,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_user_primary_department">
+          <End Role="category_type_details" Type="Self.category_type_details" Multiplicity="0..1" />
+          <End Role="users" Type="Self.users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category_type_details">
+              <PropertyRef Name="ctd_id" />
+            </Principal>
+            <Dependent Role="users">
+              <PropertyRef Name="user_primary_department" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_user_primary_project">
+          <End Role="category_type_details" Type="Self.category_type_details" Multiplicity="0..1" />
+          <End Role="users" Type="Self.users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category_type_details">
+              <PropertyRef Name="ctd_id" />
+            </Principal>
+            <Dependent Role="users">
+              <PropertyRef Name="user_primary_project" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_users_region">
           <End Role="regions" Type="Self.regions" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -465,6 +509,10 @@
             <End Role="category_type_details" EntitySet="category_type_details" />
             <End Role="project_details" EntitySet="project_details" />
           </AssociationSet>
+          <AssociationSet Name="FK_pd_region" Association="Self.FK_pd_region">
+            <End Role="regions" EntitySet="regions" />
+            <End Role="project_details" EntitySet="project_details" />
+          </AssociationSet>
           <AssociationSet Name="FK_pd_sector" Association="Self.FK_pd_sector">
             <End Role="sectors" EntitySet="sectors" />
             <End Role="project_details" EntitySet="project_details" />
@@ -501,6 +549,14 @@
             <End Role="users" EntitySet="users" />
             <End Role="timesheets" EntitySet="timesheets" />
           </AssociationSet>
+          <AssociationSet Name="FK_user_primary_department" Association="Self.FK_user_primary_department">
+            <End Role="category_type_details" EntitySet="category_type_details" />
+            <End Role="users" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_user_primary_project" Association="Self.FK_user_primary_project">
+            <End Role="category_type_details" EntitySet="category_type_details" />
+            <End Role="users" EntitySet="users" />
+          </AssociationSet>
           <AssociationSet Name="FK_users_region" Association="Self.FK_users_region">
             <End Role="regions" EntitySet="regions" />
             <End Role="users" EntitySet="users" />
@@ -518,8 +574,7 @@
             <End Role="timesheet_mr" EntitySet="timesheet_mr" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="mmpModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -546,6 +601,8 @@
           <NavigationProperty Name="leave_details" Relationship="Self.FK_ld_category_type" FromRole="category_type_details" ToRole="leave_details" />
           <NavigationProperty Name="project_details" Relationship="Self.FK_pd_category_type" FromRole="category_type_details" ToRole="project_details" />
           <NavigationProperty Name="timesheet_details" Relationship="Self.FK_td_category_type" FromRole="category_type_details" ToRole="timesheet_details" />
+          <NavigationProperty Name="users" Relationship="mmpModel.FK_user_primary_department" FromRole="category_type_details" ToRole="user" />
+          <NavigationProperty Name="users1" Relationship="mmpModel.FK_user_primary_project" FromRole="category_type_details" ToRole="user" />
         </EntityType>
         <EntityType Name="holiday_details">
           <Key>
@@ -602,6 +659,8 @@
           <Property Name="category_type_id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="category_type_details" Relationship="Self.FK_pd_category_type" FromRole="project_details" ToRole="category_type_details" />
           <NavigationProperty Name="sector" Relationship="Self.FK_pd_sector" FromRole="project_details" ToRole="sectors" />
+          <Property Name="region_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="region" Relationship="mmpModel.FK_pd_region" FromRole="project_details" ToRole="region" />
         </EntityType>
         <EntityType Name="region">
           <Key>
@@ -610,6 +669,7 @@
           <Property Name="region_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="region_name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="users" Relationship="Self.FK_users_region" FromRole="regions" ToRole="users" />
+          <NavigationProperty Name="project_details" Relationship="mmpModel.FK_pd_region" FromRole="region" ToRole="project_details" />
         </EntityType>
         <EntityType Name="role">
           <Key>
@@ -703,6 +763,13 @@
           <NavigationProperty Name="timesheets1" Relationship="Self.FK_timesheets_user" FromRole="users" ToRole="timesheets" />
           <NavigationProperty Name="users1" Relationship="Self.FK_users_supervisor" FromRole="users" ToRole="users1" />
           <NavigationProperty Name="user1" Relationship="Self.FK_users_supervisor" FromRole="users1" ToRole="users" />
+          <Property Name="employee_id" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="designation" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="user_primary_department" Type="Int32" />
+          <Property Name="user_primary_project" Type="Int32" />
+          <Property Name="user_status" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="category_type_details" Relationship="mmpModel.FK_user_primary_department" FromRole="user" ToRole="category_type_details" />
+          <NavigationProperty Name="category_type_details1" Relationship="mmpModel.FK_user_primary_project" FromRole="user" ToRole="category_type_details" />
         </EntityType>
         <Association Name="FK_CT_category_id">
           <End Role="categories" Type="Self.category" Multiplicity="1">
@@ -1071,6 +1138,18 @@
             <Parameter Name="startDate" Mode="In" Type="String" />
             <Parameter Name="endDate" Mode="In" Type="String" />
           </FunctionImport>
+          <AssociationSet Name="FK_user_primary_department" Association="mmpModel.FK_user_primary_department">
+            <End Role="category_type_details" EntitySet="category_type_details" />
+            <End Role="user" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_user_primary_project" Association="mmpModel.FK_user_primary_project">
+            <End Role="category_type_details" EntitySet="category_type_details" />
+            <End Role="user" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_pd_region" Association="mmpModel.FK_pd_region">
+            <End Role="region" EntitySet="regions" />
+            <End Role="project_details" EntitySet="project_details" />
+          </AssociationSet>
         </EntityContainer>
         <ComplexType Name="ReportCategoryTotalHours_Result" >
           <Property Type="String" Name="ctd_name" Nullable="false" />
@@ -1105,8 +1184,46 @@
         <ComplexType Name="ReportUsProjectWorkHours_Result" >
           <Property Type="DateTime" Name="tdd_day" Nullable="false" />
           <Property Type="String" Name="ctd_name" Nullable="false" />
-          <Property Type="Double" Name="totalHours" Nullable="false" />
+          <Property Type="Double" Name="workhours" Nullable="false" />
         </ComplexType>
+        <Association Name="FK_user_primary_department">
+          <End Type="mmpModel.category_type_details" Role="category_type_details" Multiplicity="0..1" />
+          <End Type="mmpModel.user" Role="user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category_type_details">
+              <PropertyRef Name="ctd_id" />
+            </Principal>
+            <Dependent Role="user">
+              <PropertyRef Name="user_primary_department" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_user_primary_project">
+          <End Type="mmpModel.category_type_details" Role="category_type_details" Multiplicity="0..1" />
+          <End Type="mmpModel.user" Role="user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category_type_details">
+              <PropertyRef Name="ctd_id" />
+            </Principal>
+            <Dependent Role="user">
+              <PropertyRef Name="user_primary_project" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_pd_region">
+          <End Type="mmpModel.region" Role="region" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="mmpModel.project_details" Role="project_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="region">
+              <PropertyRef Name="region_id" />
+            </Principal>
+            <Dependent Role="project_details">
+              <PropertyRef Name="region_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1180,6 +1297,7 @@
           <EntitySetMapping Name="project_details">
             <EntityTypeMapping TypeName="mmpModel.project_details">
               <MappingFragment StoreEntitySet="project_details">
+                <ScalarProperty Name="region_id" ColumnName="region_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="sector_id" ColumnName="sector_id" />
                 <ScalarProperty Name="project_model" ColumnName="project_model" />
@@ -1261,6 +1379,11 @@
           <EntitySetMapping Name="users">
             <EntityTypeMapping TypeName="mmpModel.user">
               <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="user_status" ColumnName="user_status" />
+                <ScalarProperty Name="user_primary_project" ColumnName="user_primary_project" />
+                <ScalarProperty Name="user_primary_department" ColumnName="user_primary_department" />
+                <ScalarProperty Name="designation" ColumnName="designation" />
+                <ScalarProperty Name="employee_id" ColumnName="employee_id" />
                 <ScalarProperty Name="user_id" ColumnName="user_id" />
                 <ScalarProperty Name="role_id" ColumnName="role_id" />
                 <ScalarProperty Name="user_name" ColumnName="user_name" />
@@ -1280,7 +1403,10 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="ReportCategoryUserWorkHours" FunctionName="mmpModel.Store.ReportCategoryUserWorkHours">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="mmpModel.ReportCategoryUserWorkHours_Result" />
+              <ComplexTypeMapping TypeName="mmpModel.ReportCategoryUserWorkHours_Result" >
+                <ScalarProperty Name="ctd_name" ColumnName="ctd_name" />
+                <ScalarProperty Name="user_name" ColumnName="user_name" />
+              </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="ReportLeaves" FunctionName="mmpModel.Store.ReportLeaves">
@@ -1305,7 +1431,11 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="ReportUsProjectWorkHours" FunctionName="mmpModel.Store.ReportUsProjectWorkHours">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="mmpModel.ReportUsProjectWorkHours_Result" />
+              <ComplexTypeMapping TypeName="mmpModel.ReportUsProjectWorkHours_Result" >
+                <ScalarProperty Name="tdd_day" ColumnName="tdd_day" />
+                <ScalarProperty Name="ctd_name" ColumnName="ctd_name" />
+                <ScalarProperty Name="workhours" ColumnName="workHours" />
+              </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
         </EntityContainerMapping>

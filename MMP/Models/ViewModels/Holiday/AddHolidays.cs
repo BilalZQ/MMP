@@ -11,6 +11,7 @@ namespace MMP.Models.ViewModels.Holiday
     {
         [Display(Name = "Holiday Name")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Holiday Name is required")]
+        [System.Web.Mvc.Remote("CheckExistingHolidays", "ModelValidation", HttpMethod = "POST", ErrorMessage = "Holiday already exists", AdditionalFields = "hy_id")]
         public string hd_name { get; set; }
 
         [Display(Name = "Starting from")]
@@ -18,6 +19,7 @@ namespace MMP.Models.ViewModels.Holiday
         public System.DateTime hd_from { get; set; }
 
         [Display(Name = "till")]
+        [System.Web.Mvc.Remote("CheckHolidayDateRange", "ModelValidation", HttpMethod = "POST", ErrorMessage = "To Date should be equal to or greater than start date", AdditionalFields = "hy_id, hd_from")]
         public System.DateTime hd_to { get; set; }
 
         [Display(Name = "Holiday Year")]

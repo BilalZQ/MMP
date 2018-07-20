@@ -33,11 +33,11 @@ namespace MMP.Controllers.Reports
             using (mmpEntities mP = new mmpEntities())
             {
                 // Use Stored Procedure
-                var objCustomerlist = mP.users.Where(c => c.user_name.ToUpper()
+                var objUserlist = mP.users.Where(c => c.user_status == "active" && c.employee_id.ToUpper()
                             .Contains(term.ToUpper()))
-                            .Select(c => new { Name = c.user_name, ID = c.user_id })
+                            .Select(c => new { Name = c.employee_id, ID = c.user_id })
                             .Distinct().ToList();
-                return Json(objCustomerlist, JsonRequestBehavior.AllowGet);
+                return Json(objUserlist, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -47,18 +47,24 @@ namespace MMP.Controllers.Reports
             {
                 mP.Configuration.ProxyCreationEnabled = false;
 
-                var query = from user in mP.users
-                            join role in mP.roles on user.role_id equals role.role_id
-                            join region in mP.regions on user.region_id equals region.region_id
-                            join u in mP.users on user.supervisor equals u.user_id into us
-                            from u in us.DefaultIfEmpty()
-                            select new
-                            {
-                                user,
-                                user_role = role.role_name,
-                                supervisor = u.user_name,
-                                region = region.region_name
-                            };
+                var query = (from user in mP.users
+                             join role in mP.roles on user.role_id equals role.role_id
+                             join region in mP.regions on user.region_id equals region.region_id
+                             join u in mP.users on user.supervisor equals u.user_id into us
+                             from u in us.DefaultIfEmpty()
+                             join upd in mP.category_type_details on user.user_primary_department equals upd.ctd_id into upds
+                             from upd in upds.DefaultIfEmpty()
+                             join upp in mP.category_type_details on user.user_primary_project equals upp.ctd_id into upps
+                             from upp in upps.DefaultIfEmpty()
+                             select new
+                             {
+                                 user,
+                                 user_role = role.role_name,
+                                 supervisor = u.user_name,
+                                 region = region.region_name,
+                                 user_primary_department = upd.ctd_name,
+                                 user_primary_project = upp.ctd_name
+                             }).Where(x => x.user.user_status == "active");
                 if (id != 0)
                 {
                     query = query.Where(x => x.user.user_id == id);
@@ -78,8 +84,9 @@ namespace MMP.Controllers.Reports
                 Debug.WriteLine(endDate);
 
                 var ret = mP.ReportUsProjectWorkHours(id, startDate, endDate).ToList<ReportUsProjectWorkHours_Result>();
+               
 
-                return Json(new { data = ret}, JsonRequestBehavior.AllowGet);
+                return Json(new { data = ret }, JsonRequestBehavior.AllowGet);
             }
         }
 

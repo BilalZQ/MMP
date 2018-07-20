@@ -32,6 +32,7 @@ namespace MMP.Controllers
                                             join proj in mP.project_details on ctd.ctd_id equals proj.category_type_id into projps from proj in projps.DefaultIfEmpty()
                                             join category in mP.categories on ctd.category_id equals category.category_id
                                             join sector in mP.sectors on proj.sector_id equals sector.sector_id into sectorps from sector in sectorps.DefaultIfEmpty()
+                                            join region in mP.regions on proj.region_id equals region.region_id into regionps from region in regionps.DefaultIfEmpty()
                                             select new
                                             {
                                                 ctd,
@@ -39,7 +40,9 @@ namespace MMP.Controllers
                                                 proj,
                                                 category,
                                                 sector,
+                                                region,
                                                 sector_name = proj == null ? "" : sector.sector_name,
+                                                region_name = proj == null ? "" : region.region_name,
                                                 project_model = proj == null ? "" : proj.project_model,
                                                 no_of_leaves = ld == null ? "" : ld.no_of_leaves.ToString(),
                                                 encashable = ld == null ? "" : ld.encashable,
@@ -79,7 +82,7 @@ namespace MMP.Controllers
                     {
                         ctd_id = query.ctd_id,
                         dept_name = query.ctd_name,
-                        dept_code = query.ctd_code,
+                        code = query.ctd_code,
                         category_id = query.category_id,
                         ctd_created_at = query.ctd_created_at
                     };
@@ -96,17 +99,17 @@ namespace MMP.Controllers
             {
                 using (mmpEntities mP = new mmpEntities())
                 {
-                    #region Department Name already exists 
+                    /*#region Department Name already exists 
                     var isDepartmentNameAssigned = IsCategoryTypeAssigned(aed.dept_name, aed.ctd_id, 1);
                     if (isDepartmentNameAssigned)
                     {
                         ModelState.AddModelError("DeparmentAssigned", "Department Name is already assigned");
                         return View(aed);
                     }
-                    #endregion
+                    #endregion*/
 
                     #region Department Code already assigned
-                    var isDepartmentCodeAssigned = IsCategoryTypeAssigned(aed.dept_code, aed.ctd_id, 0);
+                    var isDepartmentCodeAssigned = IsCategoryTypeAssigned(aed.code, aed.ctd_id, 0);
                     if (isDepartmentCodeAssigned)
                     {
                         ModelState.AddModelError("DepartmentAssigned", "Department Code is already assigned");
@@ -119,7 +122,7 @@ namespace MMP.Controllers
                         category_type_details ctd = new category_type_details()
                         {
                             ctd_name = aed.dept_name,
-                            ctd_code = aed.dept_code,
+                            ctd_code = aed.code,
                             category_id = aed.category_id,
                             ctd_created_at = DateTime.Now
 
@@ -135,7 +138,7 @@ namespace MMP.Controllers
                         {
                             ctd_id = aed.ctd_id,
                             ctd_name = aed.dept_name,
-                            ctd_code = aed.dept_code,
+                            ctd_code = aed.code,
                             category_id = aed.category_id,
                             ctd_created_at = aed.ctd_created_at,
                             ctd_updated_at = DateTime.Now
@@ -160,6 +163,7 @@ namespace MMP.Controllers
             using (mmpEntities mP = new mmpEntities())
             {
                 ViewBag.Sectors = mP.sectors.ToList<sector>();
+                ViewBag.Regions = mP.regions.ToList<region>();
                 if (id == 0)
                 {
                     return View(new AddorEditProject() { category_id = mP.categories.First(x => x.category_name == "projects").category_id });
@@ -175,11 +179,12 @@ namespace MMP.Controllers
                     {
                         ctd_id = ctd.ctd_id,
                         proj_name = ctd.ctd_name,
-                        proj_code = ctd.ctd_code,
+                        code = ctd.ctd_code,
                         category_id = ctd.category_id,
                         ctd_created_at = ctd.ctd_created_at,
                         proj_details_id = pd.id,
                         sector_id = pd.sector_id,
+                        region_id  = pd.region_id,
                         proj_model = pd.project_model
                     };
                     return View(aep);
@@ -196,17 +201,18 @@ namespace MMP.Controllers
                 using (mmpEntities mP = new mmpEntities())
                 {
                     ViewBag.Sectors = mP.sectors.ToList<sector>();
-                    #region Project Name is already assigned
+                    ViewBag.Regions = mP.regions.ToList<region>();
+                    /*#region Project Name is already assigned
                     var isProjectNameAssigned = IsCategoryTypeAssigned(aep.proj_name, aep.ctd_id, 1);
                     if (isProjectNameAssigned)
                     {
                         ModelState.AddModelError("ProjectAssigned", "Project Name is already assigned");
                         return View(aep);
                     }
-                    #endregion
+                    #endregion*/
 
                     #region Project Code is already assigned
-                    var isProjectCodeAssigned = IsCategoryTypeAssigned(aep.proj_code, aep.ctd_id, 0);
+                    var isProjectCodeAssigned = IsCategoryTypeAssigned(aep.code, aep.ctd_id, 0);
                     if (isProjectCodeAssigned)
                     {
                         ModelState.AddModelError("ProjectAssigned", "Project Code is already assigned");
@@ -219,17 +225,18 @@ namespace MMP.Controllers
                         category_type_details ctd = new category_type_details()
                         {
                             ctd_name = aep.proj_name,
-                            ctd_code = aep.proj_code,
+                            ctd_code = aep.code,
                             category_id = aep.category_id,
                             ctd_created_at = DateTime.Now
                         };
                         
                         mP.category_type_details.Add(ctd);
-                        mP.SaveChanges();
+                        //mP.SaveChanges();
 
                         project_details pd = new project_details()
                         {
                             sector_id = aep.sector_id,
+                            region_id = aep.region_id,
                             project_model = aep.proj_model,
                             category_type_id = ctd.ctd_id
                         };
@@ -243,7 +250,7 @@ namespace MMP.Controllers
                         {
                             ctd_id = aep.ctd_id,
                             ctd_name = aep.proj_name,
-                            ctd_code = aep.proj_code,
+                            ctd_code = aep.code,
                             category_id = aep.category_id,
                             ctd_created_at = aep.ctd_created_at,
                             ctd_updated_at = DateTime.Now
@@ -253,6 +260,7 @@ namespace MMP.Controllers
                         {
                             id = aep.proj_details_id,
                             sector_id = aep.sector_id,
+                            region_id = aep.region_id,
                             project_model = aep.proj_model,
                             category_type_id = aep.ctd_id
                         };
@@ -294,7 +302,7 @@ namespace MMP.Controllers
                     {
                         ctd_id = ctd.ctd_id,
                         leave_name = ctd.ctd_name,
-                        leave_code = ctd.ctd_code,
+                        code = ctd.ctd_code,
                         category_id = ctd.category_id,
                         ctd_created_at = ctd.ctd_created_at,
                         leave_details_id = ld.id,
@@ -315,30 +323,30 @@ namespace MMP.Controllers
             {
                 using (mmpEntities mP = new mmpEntities())
                 {
-                    #region Leave Name already assigned 
+                    /*#region Leave Name already assigned 
                     var isLeaveNameAssigned = IsCategoryTypeAssigned(ael.leave_name, ael.ctd_id, 1);
                     if (isLeaveNameAssigned)
                     {
                         ModelState.AddModelError("LeaveAssigned", "Leave Name is already assigned");
                         return View(ael);
                     }
-                    #endregion
+                    #endregion*/
 
                     #region Leave Code already assigned
-                    var isLeaveCodeAssigned = IsCategoryTypeAssigned(ael.leave_code, ael.ctd_id, 0);
-                    if (isLeaveCodeAssigned)
-                    {
-                        ModelState.AddModelError("LeaveAssigned", "Leave Code is already assigned");
-                        return View(ael);
-                    }
-                    #endregion
+                    var isLeaveCodeAssigned = IsCategoryTypeAssigned(ael.code, ael.ctd_id, 0);
+                     if (isLeaveCodeAssigned)
+                     {
+                         ModelState.AddModelError("LeaveAssigned", "Leave Code is already assigned");
+                         return View(ael);
+                     }
+                     #endregion
 
                     if (ael.ctd_id == 0)
                     {
                         category_type_details ctd = new category_type_details()
                         {
                             ctd_name = ael.leave_name,
-                            ctd_code = ael.leave_code,
+                            ctd_code = ael.code,
                             category_id = ael.category_id,
                             ctd_created_at = DateTime.Now
                         };
@@ -364,7 +372,7 @@ namespace MMP.Controllers
                         {
                             ctd_id = ael.ctd_id,
                             ctd_name = ael.leave_name,
-                            ctd_code = ael.leave_code,
+                            ctd_code = ael.code,
                             category_id = ael.category_id,
                             ctd_created_at = ael.ctd_created_at,
                             ctd_updated_at = DateTime.Now
@@ -395,7 +403,7 @@ namespace MMP.Controllers
         }
 
         
-        //Non Acion fuckery
+        //Non Acion 
         [NonAction]
         public bool IsCategoryTypeAssigned(string ctd, int ctd_id = 0, int flag = 0)
         {

@@ -1019,6 +1019,7 @@
     <Compile Include="Models\ViewModels\Reports\USProjectReport.cs" />
     <Compile Include="Models\ViewModels\Sector\AddSector.cs" />
     <Compile Include="Models\ViewModels\Sector\EditSector.cs" />
+    <Compile Include="Models\ViewModels\TimeSheet\ExtendTimeSheet.cs" />
     <Compile Include="Models\ViewModels\TimeSheet\TimeSheetView.cs" />
     <Compile Include="Models\ViewModels\User\AddUser.cs" />
     <Compile Include="Models\ViewModels\User\ChangePasswordVM.cs" />
@@ -1026,6 +1027,7 @@
     <Compile Include="Models\ViewModels\User\Login.cs" />
     <Compile Include="Models\ViewModels\User\Registration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validations\ModelValidationController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -1085,6 +1087,8 @@
     <Content Include="Views\CategoryReport\USCategoryReport.cshtml" />
     <Content Include="Views\LeaveReport\USLeaveReport.cshtml" />
     <Content Include="Views\SectorProjects\SSProjectReport.cshtml" />
+    <Content Include="Views\TimeSheet\ExtendTimeSheet.cshtml" />
+    <Content Include="Views\Presence\SuperVisorUserPresence.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

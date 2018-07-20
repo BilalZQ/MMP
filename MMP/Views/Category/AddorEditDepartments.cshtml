@@ -16,14 +16,14 @@
         @Html.LabelFor(model => model.dept_name, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-8">
             @Html.EditorFor(model => model.dept_name, new { htmlAtrributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.dept_name)
+            @Html.ValidationMessageFor(model => model.dept_name, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(model => model.dept_code, "Code", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.code, "Code", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-8">
-            @Html.EditorFor(model => model.dept_code, new { htmlAtrributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.dept_code)
+            @Html.EditorFor(model => model.code, new { htmlAtrributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.code, "", new { @class = "text-danger" })
         </div>
     </div>
         
@@ -37,3 +37,12 @@
 
 
 }
+
+
+@section Scripts{
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+}
+
+
+

@@ -28,9 +28,9 @@ namespace MMP.Controllers.Reports
             using (mmpEntities mP = new mmpEntities())
             {
                 // Use Stored Procedure
-                var objCustomerlist = mP.users.Where(c => c.user_name.ToUpper()
+                var objCustomerlist = mP.users.Where(c => c.user_status == "active" && c.employee_id.ToUpper()
                             .Contains(term.ToUpper()))
-                            .Select(c => new { Name = c.user_name, ID = c.user_id })
+                            .Select(c => new { Name = c.employee_id, ID = c.user_id })
                             .Distinct().ToList();
                 return Json(objCustomerlist, JsonRequestBehavior.AllowGet);
             }

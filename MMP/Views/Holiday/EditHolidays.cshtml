@@ -17,12 +17,12 @@
     <div class="form-group">
         @Html.LabelFor(model => model.hd_name, "Holiday Name", new { @class = "control-label" })
         @Html.EditorFor(model => model.hd_name, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.hd_name)
+        @Html.ValidationMessageFor(model => model.hd_name, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
         @Html.LabelFor(model => model.hd_from, "Holiday From", new { @class = "control-label" })
         @Html.EditorFor(model => model.hd_from, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.hd_from)
+        @Html.ValidationMessageFor(model => model.hd_from, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
         @Html.LabelFor(model => model.hd_to, "Holiday Till", new { @class = "control-label" })

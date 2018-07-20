@@ -17,7 +17,8 @@ namespace MMP.Models.ViewModels.Category
 
         [Display(Name = "Leave Code")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Leave Code is required")]
-        public string leave_code { get; set; }
+        [System.Web.Mvc.Remote("CheckExistingCategoryTypeCode", "ModelValidation", HttpMethod = "POST", ErrorMessage = "Code is already assigned to another category type", AdditionalFields = "ctd_id")]
+        public string code { get; set; }
 
         public int category_id { get; set; }
 

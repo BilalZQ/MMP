@@ -38,12 +38,14 @@
                         <form role="form">
                             <fieldset>
                                 <div class="form-group">
-                                    @Html.EditorFor(model => model.user_name, new { htmlAttributes = new { @class = "form-control", placeholder = "User Name" } })
-                                    @Html.ValidationMessageFor(model => model.user_name, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.employee_id, new { htmlAttributes = new { @class = "form-control", placeholder = "Employee ID" } })
+                                    @Html.ValidationMessageFor(model => model.employee_id, "", new { @class = "text-danger" })
+                                    @Html.ValidationMessage("EmployeeIDERR", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group">
                                     @Html.EditorFor(model => model.user_password, new { htmlAttributes = new { @class = "form-control", placeholder = "Password" } })
                                     @Html.ValidationMessageFor(model => model.user_password, "", new { @class = "text-danger" })
+                                    @Html.ValidationMessage("PasswordERR", new { @class = "text-danger" })
                                 </div>
                                 
 
@@ -56,6 +58,13 @@
         </div><!-- /.row -->
 
     }
+
+    <!--@if (ViewBag.Message != null)
+    {
+    <div style="border: solid 1px green">
+        @ViewBag.Message
+    </div>
+    }-->
 
     
     <script src="~/Lumino - Login/js/jquery-1.11.1.min.js"></script>

@@ -16,9 +16,9 @@ namespace MMP.Models.ViewModels.Reports
         [Required(AllowEmptyStrings = false, ErrorMessage = "End Date is required")]
         public string date_to { get; set; }
 
-        [Display(Name = "User Name")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "User Name is required")]
-        public string userName { get; set; }
+        [Display(Name = "Employee ID")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Employee ID is required")]
+        public string employee_id { get; set; }
 
         public string userID { get; set; }
     }

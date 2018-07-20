@@ -50,7 +50,7 @@ namespace MMP.Controllers
                                   {
                                       ts,
                                       user,
-                                      supervisorName = supervisor.user_name == null ? "" : supervisor.user_name,
+                                      supervisorName = supervisor.employee_id == null ? "" : supervisor.employee_id,
                                       tsmr
                                   }).OrderByDescending(x => x.tsmr.tsmr_created_at);
 
@@ -66,7 +66,7 @@ namespace MMP.Controllers
             {
                 mP.Configuration.ProxyCreationEnabled = false;
                 var timesheet = mP.timesheet_mr.Where(x => x.tsmr_valid_till > DateTime.Now).FirstOrDefault<timesheet_mr>();
-                
+
                 if (timesheet == null)
                 {
                     DateTime startDate = StartOfWeek(DateTime.Today, DayOfWeek.Monday);
@@ -83,7 +83,7 @@ namespace MMP.Controllers
 
                     int timesheetID = tsmr.tsmr_id;
 
-                    foreach (user user in mP.users)
+                    foreach (user user in mP.users.Where(x => x.user_status == "active"))
                     {
                         timesheet ts = new timesheet()
                         {
@@ -154,9 +154,9 @@ namespace MMP.Controllers
                                   {
                                       ts,
                                       user,
-                                      supervisorName = supervisor.user_name == null ? "" : supervisor.user_name,
+                                      supervisorName = supervisor.employee_id == null ? "" : supervisor.employee_id,
                                       tsmr
-                                  }).OrderByDescending(x => x.tsmr.tsmr_created_at);
+                                  }).Where(x => x.user.user_status == "active").OrderByDescending(x => x.tsmr.tsmr_created_at);
 
                 if (flag.Equals("currentTimeSheets", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -333,7 +333,7 @@ namespace MMP.Controllers
             }
             return View();
         }
-        
+
 
         // ===========================================================================================================================================================================
 
@@ -363,7 +363,7 @@ namespace MMP.Controllers
 
         [Authorize(Roles = "supervisor")]
         [HttpGet]
-        public ActionResult GetUserDataForSupervisor(string flag)// MERGE WITH THE ONE BELOW [GetData]
+        public ActionResult GetUserDataForSupervisor(string flag) //MERGE WITH THE ONE BELOW [GetData]
         {
             using (mmpEntities mP = new mmpEntities())
             {
@@ -380,10 +380,10 @@ namespace MMP.Controllers
                                   {
                                       ts,
                                       user,
-                                      supervisorName = supervisor.user_name == null ? "" : supervisor.user_name,
+                                      supervisorName = supervisor.employee_id == null ? "" : supervisor.employee_id,
                                       tsmr
-                                  }).Where(x => x.user.supervisor == userID).OrderByDescending(x => x.tsmr.tsmr_created_at);
-                
+                                  }).Where(x => x.user.supervisor == userID && x.user.user_status == "active").OrderByDescending(x => x.tsmr.tsmr_created_at);
+
                 if (flag.Equals("currentTimeSheets", StringComparison.InvariantCultureIgnoreCase))
                 {
                     return Json(new { data = timesheets.Where(x => x.ts.tsmr_extension > DateTime.Now).AsNoTracking().ToList() }, JsonRequestBehavior.AllowGet);
@@ -411,7 +411,7 @@ namespace MMP.Controllers
             {
                 mP.Configuration.ProxyCreationEnabled = false;
 
-                
+
                 if (id != 0)
                 {
                     ViewBag.Categories = mP.categories.ToList<category>();
@@ -420,7 +420,7 @@ namespace MMP.Controllers
 
                     var timesheetCaller = mP.timesheets.Where(x => x.timesheet_id == id).FirstOrDefault();
                     var timesheetUser = mP.users.Where(x => x.user_id == timesheetCaller.timesheet_user).FirstOrDefault();
-                    if (timesheetUser.supervisor == UserID_RoleID.getUserID())
+                    if (timesheetUser.supervisor == UserID_RoleID.getUserID() && timesheetUser.user_status == "active")
                     {
                         var timesheetMR = mP.timesheet_mr.Where(x => x.tsmr_id == timesheetCaller.timesheet_caller).FirstOrDefault();
                         ViewBag.startDate = timesheetMR.tsmr_start_date;
@@ -489,11 +489,11 @@ namespace MMP.Controllers
 
                     var user = mP.users.Where(x => x.user_id == ts.timesheet_user).FirstOrDefault();
 
-                    if (user.supervisor == UserID_RoleID.getUserID() && ts.tsmr_extension >= DateTime.Now && ts.timesheet_status == "submitted") //Do this properly
+                    if (user.supervisor == UserID_RoleID.getUserID() && ts.tsmr_extension >= DateTime.Now && ts.timesheet_status == "submitted" && user.user_status == "active") //Do this properly
                     {
                         switch (submit)
                         {
-                            case "Reject":                                
+                            case "Reject":
                                 ts.timesheet_status = "rejected";
                                 ViewBag.Message = "TimeSheet Rejected";
                                 break;
@@ -506,7 +506,7 @@ namespace MMP.Controllers
                         ts.updated_by = UserID_RoleID.getUserID();
                         ts.timesheet_status_update = DateTime.Now;
 
-                        mP.Entry(ts).State = EntityState.Modified;                        
+                        mP.Entry(ts).State = EntityState.Modified;
 
                         mP.SaveChanges();
 
@@ -515,7 +515,7 @@ namespace MMP.Controllers
                     }
                     else if (ts.tsmr_extension < DateTime.Now)
                     {
-                        ViewBag.Message = string.Format("Too late, You done fucked up now");
+                        ViewBag.Message = string.Format("Cannot edit TimeSheet's past their extension date.");
                         return View(pvm);
                     }
                     else
@@ -532,7 +532,7 @@ namespace MMP.Controllers
                                 ViewBag.Message = string.Format("Cannot Accept/Reject a Rejected TimeSheet");
                                 break;
                         }
-                        
+
                         return View(pvm);
                     }
 
@@ -560,7 +560,7 @@ namespace MMP.Controllers
                                   {
                                       ts,
                                       user,
-                                      supervisorName = supervisor.user_name == null ? "" : supervisor.user_name,
+                                      supervisorName = supervisor.employee_id == null ? "" : supervisor.employee_id,
                                       tsmr
                                   }).Where(x => x.user.user_id == userID || x.user.supervisor == userID).OrderByDescending(x => x.user.user_id == userID).ThenBy(x => x.tsmr.tsmr_created_at);
 
@@ -586,7 +586,7 @@ namespace MMP.Controllers
         {
             return View();
         }
-        
+
 
         // ===========================================================================================================================================================================
 
@@ -610,9 +610,9 @@ namespace MMP.Controllers
                                   {
                                       ts,
                                       user,
-                                      supervisorName = supervisor.user_name == null ? "" : supervisor.user_name,
+                                      supervisorName = supervisor.employee_id == null ? "" : supervisor.employee_id,
                                       tsmr
-                                  }).Where(x => x.user.user_id == userID).OrderByDescending(x => x.tsmr.tsmr_created_at);
+                                  }).Where(x => x.user.user_id == userID && x.user.user_status == "active").OrderByDescending(x => x.tsmr.tsmr_created_at);
 
                 if (flag.Equals("currentTimeSheets", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -712,7 +712,7 @@ namespace MMP.Controllers
                     ViewBag.startDate = timeSheetMR.tsmr_start_date;
                     ViewBag.endDate = timeSheetMR.tsmr_valid_till;
 
-                    
+
                     if (ts.timesheet_user == UserID_RoleID.getUserID() && ts.tsmr_extension >= DateTime.Now && (ts.timesheet_status == "saved" || ts.timesheet_status == "rejected")) //Do this properly
                     {
                         switch (submit)
@@ -799,7 +799,7 @@ namespace MMP.Controllers
                     }
                     else if (ts.tsmr_extension < DateTime.Now)
                     {
-                        ViewBag.Message = string.Format("Too late, You done fucked up now");
+                        ViewBag.Message = string.Format("Cannot edit TimeSheet's past their extension date.");
                         return View(pvm);
                     }
 
@@ -891,7 +891,7 @@ namespace MMP.Controllers
                     {
                         return Json(new { success = true, message = "Go back to your own TimeSheet" }, JsonRequestBehavior.AllowGet);
                     }
-                    
+
                 }
                 else
                 {
@@ -899,6 +899,66 @@ namespace MMP.Controllers
                 }
             }
         }
+
+
+        #region Extend TimeSheet date
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public ActionResult ExtendTimeSheet(int id = 0)
+        {
+            using (mmpEntities mP = new mmpEntities())
+            {
+                if (id != 0)
+                {
+                    var timesheet = mP.timesheets.Where(x => x.timesheet_id == id).FirstOrDefault();
+                    var timesheet_caller = mP.timesheet_mr.Where(x => x.tsmr_id == timesheet.timesheet_caller).FirstOrDefault();
+                    ExtendTimeSheet ets = new ExtendTimeSheet()
+                    {
+                        tsd_timesheet_id = timesheet.timesheet_id,
+                        tsmr_valid_till = timesheet_caller.tsmr_valid_till,
+                        tsmr_extension = timesheet.tsmr_extension
+                    };
+
+                    return View(ets);
+                }
+                else
+                {
+                    return View();
+                }
+                
+            }
+        }
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ExtendTimeSheet(ExtendTimeSheet ets)
+        {
+            if (ModelState.IsValid)
+            {
+                using (mmpEntities mP = new mmpEntities())
+                {
+                    if (ets.tsmr_extension >= ets.tsmr_valid_till && ets.tsmr_extension > DateTime.Now && ets.tsmr_extension < ets.tsmr_valid_till.AddMonths(6))
+                    {
+                        timesheet ts = mP.timesheets.Where(x => x.timesheet_id == ets.tsd_timesheet_id).FirstOrDefault();
+                        ts.tsmr_extension = ets.tsmr_extension;
+                        mP.Entry(ts).State = EntityState.Modified;
+                        mP.SaveChanges();
+                        return Json(new { success = true, message = "TimeSheet submittion date successfully extended" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Failed to extend TimeSheet submittion date" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                }
+            }
+            else
+            {
+                return Json(new { success = false, message = "Invalid ModelState" }, JsonRequestBehavior.AllowGet);
+            }
+            
+        }
+        #endregion
 
         #region Delete TimeSheet Row from tables [timesheet_details] & [timesheet_day_details]
         [HttpPost]

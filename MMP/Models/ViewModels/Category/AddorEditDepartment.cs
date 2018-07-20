@@ -16,7 +16,8 @@ namespace MMP.Models.ViewModels.Category
 
         [Display(Name = "Department Code")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Department Code is required")]
-        public string dept_code { get; set; }
+        [System.Web.Mvc.Remote("CheckExistingCategoryTypeCode", "ModelValidation", HttpMethod = "POST", ErrorMessage = "Code is already assigned to another category type", AdditionalFields = "ctd_id")]
+        public string code { get; set; }
 
         public int category_id { get; set; }   
         

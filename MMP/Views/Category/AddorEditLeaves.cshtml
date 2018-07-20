@@ -16,14 +16,14 @@
         @Html.LabelFor(model => model.leave_name, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-8">
             @Html.EditorFor(model => model.leave_name, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.leave_name)
+            @Html.ValidationMessageFor(model => model.leave_name, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(model => model.leave_code, "Code", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.code, "Code", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-8">
-            @Html.EditorFor(model => model.leave_code, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.leave_code)
+            @Html.EditorFor(model => model.code, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.code, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -61,3 +61,11 @@
     </div>
 
 }
+
+
+
+@section Scripts{
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+}
+

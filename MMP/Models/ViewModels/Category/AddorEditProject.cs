@@ -17,7 +17,8 @@ namespace MMP.Models.ViewModels.Category
 
         [Display(Name = "Project Code")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Project Code is required")]
-        public string proj_code { get; set; }
+        [System.Web.Mvc.Remote("CheckExistingCategoryTypeCode", "ModelValidation", HttpMethod = "POST", ErrorMessage = "Code is already assigned to another category type", AdditionalFields = "ctd_id")]
+        public string code { get; set; }
 
         public int category_id { get; set; }
         
@@ -26,8 +27,12 @@ namespace MMP.Models.ViewModels.Category
         public int proj_details_id { get; set; }
 
         [Display(Name = "Sector Name")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Sector Name is required")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Sector is required")]
         public int sector_id { get; set; }
+
+        [Display(Name = "Region Name")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Region is required")]
+        public int region_id { get; set; }
 
         [Display(Name = "Project Model")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Project Model is required ")]

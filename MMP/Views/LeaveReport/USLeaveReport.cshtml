@@ -22,7 +22,7 @@
             <!-- ============================================================== -->
             <div class="row page-titles">
                 <div class="col-md-5 col-8 align-self-center">
-                    <h3 class="text-themecolor">Dashboard</h3>
+                    <!-- <h3 class="text-themecolor">Dashboard</h3>-->
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
                         <li class="breadcrumb-item active">US Leave Report</li>
@@ -51,9 +51,9 @@
                     @Html.ValidationMessageFor(model => model.date_to, "", new { @class = "text-danger" })
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(model => model.userName, htmlAttributes: new { @class = "" })
-                    @Html.TextBoxFor(model => model.userName, new { /*@class = "form-control"*/ })
-                    @Html.ValidationMessageFor(model => model.userName, "", new { @class = "text-danger" })
+                    @Html.LabelFor(model => model.employee_id, htmlAttributes: new { @class = "" })
+                    @Html.TextBoxFor(model => model.employee_id, new { /*@class = "form-control"*/ })
+                    @Html.ValidationMessageFor(model => model.employee_id, "", new { @class = "text-danger" })
                     @Html.HiddenFor(model => model.userID)
                     <a class="btn btn-success" style="margin-bottom:10px" onclick="Search()"><i class="fa fa-plus"></i> Search!</a>
                 </div>
@@ -143,7 +143,7 @@
         });
 
         $(document).ready(function () {
-                $("#userName").autocomplete({
+            $("#employee_id").autocomplete({
                     source: function (request, response) {
                         $.ajax({
                             url: '@Url.Action("GetUser", "LeaveReport")',

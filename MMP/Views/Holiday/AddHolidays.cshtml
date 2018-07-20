@@ -43,14 +43,15 @@
                         @Html.HiddenFor(a => a[j].hy_id)
                         <td>
                             @Html.EditorFor(a => a[j].hd_name, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(a => a[j].hd_name)
+                            @Html.ValidationMessageFor(a => a[j].hd_name, "", new { @class = "text-danger" })
                         </td>
                         <td>
                             @Html.EditorFor(a => a[j].hd_from, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(a => a[j].hd_from)
+                            @Html.ValidationMessageFor(a => a[j].hd_from, "", new { @class = "text-danger" })
                         </td>
                         <td>
                             @Html.EditorFor(a => a[j].hd_to, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(a => a[j].hd_to, "", new { @class = "text-danger" })
                         </td>
                         <td>
                             @if (j > 0)
@@ -69,7 +70,11 @@
 </div>
 
 
+
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
 <script>
+
     $(document).ready(function () {
 
         //1.Add new row

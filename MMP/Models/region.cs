@@ -18,6 +18,7 @@ namespace MMP.Models
         public region()
         {
             this.users = new HashSet<user>();
+            this.project_details = new HashSet<project_details>();
         }
     
         public int region_id { get; set; }
@@ -25,5 +26,7 @@ namespace MMP.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<user> users { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<project_details> project_details { get; set; }
     }
 }

@@ -84,7 +84,7 @@ namespace MMP.Controllers
 
                     foreach (var i in AHD)
                     {
-                        #region Holiday Already Exists
+                        /*#region Holiday Already Exists
                         var isHolidayAssigned = IsHolidayAssigned(i.hd_name, i.hy_id, i.hd_from.Date);
                         if (isHolidayAssigned)
                         {
@@ -98,7 +98,7 @@ namespace MMP.Controllers
                             ModelState.AddModelError("InvalidDate", "To Date should be equal to or greater than start date");
                             return View(AHD);
                         }
-                        #endregion
+                        #endregion*/
                         holiday_details hd = new holiday_details()
                         {
                             hd_name = i.hd_name,

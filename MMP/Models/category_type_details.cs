@@ -20,6 +20,8 @@ namespace MMP.Models
             this.leave_details = new HashSet<leave_details>();
             this.project_details = new HashSet<project_details>();
             this.timesheet_details = new HashSet<timesheet_details>();
+            this.users = new HashSet<user>();
+            this.users1 = new HashSet<user>();
         }
     
         public int ctd_id { get; set; }
@@ -36,5 +38,9 @@ namespace MMP.Models
         public virtual ICollection<project_details> project_details { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<timesheet_details> timesheet_details { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<user> users { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<user> users1 { get; set; }
     }
 }

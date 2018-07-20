@@ -100,6 +100,14 @@ namespace MMP.Controllers
             {
                 using (mmpEntities mP = new mmpEntities())
                 {
+                    #region Sector Already Exists
+                    var isSectorExists = IsSectorExist(ae.sector_name);
+                    if (isSectorExists)
+                    {
+                        ModelState.AddModelError("SectorExists", "Sector already exists");
+                        return View(ae);
+                    }
+                    #endregion
                     sector sector = new sector()
                     {
                         sector_id = ae.sector_id,

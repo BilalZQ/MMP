@@ -16,19 +16,23 @@ namespace MMP.Controllers
         // GET: Home
         public ActionResult Index()
         {
-
-            if (User.Identity.IsAuthenticated && UserID_RoleID.getRole(User.Identity.Name) != "admin")
-            {
-                //send them to the AuthenticatedIndex page instead of the index page
-                return RedirectToAction("UserTimesheets", "TimeSheet");
-            }
-
-
-            List<string> sectors = new List<string>();
-            List<int> project_count = new List<int>();
-
             using (mmpEntities mP = new mmpEntities())
             {
+
+                if (User.Identity.IsAuthenticated && UserID_RoleID.getRole(User.Identity.Name) != "admin")
+                {
+                    //send them to the AuthenticatedIndex page instead of the index page
+                    int user_id = UserID_RoleID.getUserID();
+                    var ts_id = mP.timesheets.OrderByDescending(x => x.time_my).FirstOrDefault(x => x.timesheet_user == user_id).timesheet_id;
+                    //return RedirectToAction("UserTimesheets", "TimeSheet");
+                    return RedirectToAction("TimeSheetEditView", "TimeSheet", new { id = ts_id });
+                    //'@Url.Action("TimeSheetEditView", "TimeSheet")/'+id
+                }
+
+
+                List<string> sectors = new List<string>();
+                List<int> project_count = new List<int>();
+
                 List<DataPoint> dataPoints = new List<DataPoint>();
 
                 mP.Configuration.ProxyCreationEnabled = false;
@@ -57,7 +61,7 @@ namespace MMP.Controllers
                 foreach (var item in projectsPerSector)
                 {
                     sectors.Add(item.value.ToString().ToUpper());
-                    project_count.Add(item.count);                    
+                    project_count.Add(item.count);
                 }
 
                 ViewBag.DoughnutDataPoints = JsonConvert.SerializeObject(dataPoints);

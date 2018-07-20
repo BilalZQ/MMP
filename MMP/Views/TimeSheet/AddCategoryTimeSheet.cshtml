@@ -62,7 +62,7 @@
             @Html.LabelFor(model => model.tsd_category_id, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.tsd_category_id, new SelectList(ViewBag.Categories, "category_id", "category_name"), "---Select Category---", new { @class = "form-control", @ClientIDMode = "static", @id = "categoryDropDown", @onchange = "javascript:getCategoryTypeList();" })
-                @Html.ValidationMessageFor(model => model.tsd_category_id)
+                @Html.ValidationMessageFor(model => model.tsd_category_id, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -70,7 +70,7 @@
             @Html.LabelFor(model => model.tsd_category_type_id, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownListFor(model => model.tsd_category_type_id , Enumerable.Empty<SelectListItem>(), "---Select Category Type---", new { @class = "form-control", @id = "CategoryTypeDropDown" })
-                @Html.ValidationMessageFor(model => model.tsd_category_type_id)
+                @Html.ValidationMessageFor(model => model.tsd_category_type_id, "", new { @class = "text-danger" })
             </div>
         </div>
          
@@ -86,11 +86,17 @@
 }
 
 @section Scripts{
-    <script src="~/Scripts/jquery.validate.min.js"></script>
-    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-    <script>
-    </script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
 }
+
+
+
+
+
+
+
+
 
 
 

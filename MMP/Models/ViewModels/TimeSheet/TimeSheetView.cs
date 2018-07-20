@@ -41,6 +41,7 @@ namespace MMP.Models.ViewModels.TimeSheet
 
         [Display(Name = "Category Type ")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Category Type is required")]
+        [System.Web.Mvc.Remote("CheckExistingTimeSheetCategory", "ModelValidation", HttpMethod = "POST", ErrorMessage = "Category type already added to timeSheet", AdditionalFields = "tsd_timesheet_id")]
         public int tsd_category_type_id { get; set; }
     }
 }

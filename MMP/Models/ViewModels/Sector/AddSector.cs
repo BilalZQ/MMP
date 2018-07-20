@@ -10,6 +10,7 @@ namespace MMP.Models.ViewModels.Sector
     {
         [Display(Name = "Sector Name")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Sector Name is required")]
+        [System.Web.Mvc.Remote("CheckExistingSectors", "ModelValidation", HttpMethod = "POST", ErrorMessage = "Sector name already exists")]
         public string sector_name { get; set; }
     }
 }

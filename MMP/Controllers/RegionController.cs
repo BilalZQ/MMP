@@ -102,6 +102,15 @@ namespace MMP.Controllers
             {
                 using (mmpEntities mP = new mmpEntities())
                 {
+                    #region Region Already exists
+                    var isRegionExists = IsRegionExist(ae.region_name);
+                    if (isRegionExists)
+                    {
+                        ModelState.AddModelError("RegionExists", "Region already exists");
+                        return View(ae);
+                    }
+                    #endregion
+
                     region region = new region()
                     {
                         region_id = ae.region_id,

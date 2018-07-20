@@ -1,0 +1,48 @@
+﻿@model MMP.Models.ViewModels.TimeSheet.ExtendTimeSheet
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("ExtendTimeSheet", "TimeSheet", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Extend TimeSheet</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    </div>
+    @Html.HiddenFor(model => model.tsd_timesheet_id)
+    @Html.HiddenFor(model => model.tsmr_valid_till)
+
+    <div class="form-group">
+              
+        @Html.LabelFor(model => model.tsmr_extension, "Extended Date", htmlAttributes: new { @class = "control-label col-md-8" })
+        <div class="col-md-8">
+           @Html.EditorFor(model => model.tsmr_extension, new { htmlAttributes = new { /*@class = "form-control",*/ @id = "tsmr_extention_date" } })
+            @Html.ValidationMessageFor(model => model.tsmr_extension, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group col-md-8">
+        <input type="submit" value="Submit" class="btn btn-primary" />
+        <input type="reset" value="Reset" class="btn" />
+    </div>
+
+
+}
+
+
+
+
+@section Scripts{
+
+<script src="~/Scripts/jquery.validate.min.js"></script>
+
+<script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script>
+        
+        $(function () {
+            $('.tsmr_extention_date').datepicker();
+        }); 
+    </script>
+}
+   

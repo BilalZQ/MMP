@@ -12,6 +12,7 @@ namespace MMP.Models.ViewModels.Region
 
         [Display(Name = "Region Name")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Region Name is required")]
+        [System.Web.Mvc.Remote("CheckExistingRegions", "ModelValidation", HttpMethod = "POST", ErrorMessage = "Region name already exists", AdditionalFields = "region_id")]
         public string region_name { get; set; }
     }
 }
