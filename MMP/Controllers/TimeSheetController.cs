@@ -116,6 +116,7 @@ namespace MMP.Controllers
                 }
                 else
                 {
+                    ViewBag.Message = "TimeSheet already exists for current week";
                     return Json(new { success = true, message = "TimeSheet already exists for current week" }, JsonRequestBehavior.AllowGet);
                 }
             }

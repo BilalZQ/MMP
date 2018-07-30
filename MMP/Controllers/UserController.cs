@@ -125,7 +125,7 @@ namespace MMP.Controllers
                         var authTicket = new FormsAuthenticationTicket(v.user_id, v.user_name, DateTime.Now, DateTime.Now.AddMinutes(60), /* expiry */ false, Roles, "/");
                         string encrypted = FormsAuthentication.Encrypt(authTicket);
                         var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encrypted);
-                        cookie.Expires = DateTime.Now.AddMinutes(timeout);
+                        cookie.Expires = DateTime.Now.AddMinutes(60);
                         cookie.HttpOnly = true;
                         Response.Cookies.Add(cookie);
 

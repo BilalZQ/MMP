@@ -75,11 +75,22 @@
 <!-- End Page wrapper  -->
 <!-- ============================================================== -->
 
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-danger">
+        <strong>Failed!</strong>@ViewBag.Message
+    </div>
+}
+@ViewBag.Message
 
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
 @section Scripts{
+
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+
     <script>
         var Popup, dataTable;
 
@@ -150,7 +161,8 @@
                             $.notify(data.message, {
                                 globalPosition: "top center",
                                 className: "success"
-                            })
+                            });
+
                         }
                     }
                 });
@@ -162,6 +174,7 @@
         {
             if (confirm('Generate New Timesheet?'))
             {
+
                 $.ajax({
                     type: "POST",
                     url: '@Url.Action("GenerateTimeSheets", "Timesheet")',
@@ -169,11 +182,19 @@
                         if (data.success) {
                             dataTable.ajax.reload();
 
+                            toastr.options = {
+                                timeOut: 0,
+                                positionClass: "toast-top-center"
+                            };
+                            toastr.error(data.message, "Error");
+                            
                             //notify.js plugin
-                            /*$.notify(data.message, {
-                                globalPosition: "top center",
-                                className: "success"
-                            })*/
+                            $.notify("Your class starts in 15min", {
+                                className: 'info',
+                                clickToHide: false,
+                                autoHide: false,
+                                globalPosition: 'top right'
+                            });
                         }
                     }
                 })
@@ -213,6 +234,6 @@
         }
 
 
-    </script>
+</script>
 }
 
