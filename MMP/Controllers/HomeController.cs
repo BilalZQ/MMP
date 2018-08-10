@@ -3,6 +3,7 @@ using MMP.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
@@ -35,6 +36,9 @@ namespace MMP.Controllers
 
                 List<DataPoint> dataPoints = new List<DataPoint>();
 
+
+                List<DataPoint> timeSheet_status_count = new List<DataPoint>();
+
                 mP.Configuration.ProxyCreationEnabled = false;
                 var usersPerRole = from user in mP.users
                                    group user by user.role into userGroup
@@ -50,6 +54,9 @@ namespace MMP.Controllers
                     //Debug.WriteLine(item.count);
                     dataPoints.Add(new DataPoint(item.value.ToString().ToUpper(), item.count));
                 }
+
+                //var timeSheetCountByStatus = from 
+
 
                 var projectsPerSector = from pd in mP.project_details
                                         group pd by pd.sector into projectGroup
@@ -73,6 +80,33 @@ namespace MMP.Controllers
                 //Debug.WriteLine(JsonConvert.SerializeObject(project_count));
 
                 return View();
+            }
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public ActionResult GetTimeSheetCountByStatus()
+        {
+            using (mmpEntities mP = new mmpEntities())
+            {
+                mP.Configuration.ProxyCreationEnabled = false;
+
+                var query = (from tsmr in mP.timesheet_mr
+                             join ts in mP.timesheets on tsmr.tsmr_id equals ts.timesheet_caller
+                             select new
+                             {
+                                 tsmr,
+                                 ts
+                             }).Where(x => x.tsmr.tsmr_valid_till >= DateTime.Now).GroupBy(x => new {
+                                                                                                x.ts.timesheet_status
+                                                                                                })
+                                                                                   .Select(x => new
+                                                                                   {
+                                                                                       timeSheet_Status = x.Key.timesheet_status,
+                                                                                       timeSheet_Count = x.Count()
+                                                                                   });
+
+                return Json(new { data = query.AsNoTracking().ToList() }, JsonRequestBehavior.AllowGet);
             }
         }
         

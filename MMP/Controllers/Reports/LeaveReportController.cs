@@ -36,27 +36,49 @@ namespace MMP.Controllers.Reports
             }
         }
 
-        public ActionResult GetTotalLeaves(int id = 0, string startDate = "", string endDate = "")
+        public ActionResult GetTotalLeaves(string employee_id = "", string startDate = "", string endDate = "")
         {
             using (mmpEntities mP = new mmpEntities())
             {
                 mP.Configuration.ProxyCreationEnabled = false;
 
-                var ret = mP.ReportLeavesTotal(id, startDate, endDate).ToList<ReportLeavesTotal_Result>();
+                var user = mP.users.Where(x => x.employee_id == employee_id).FirstOrDefault<user>();
 
-                return Json(new { data = ret }, JsonRequestBehavior.AllowGet);
+                if (user != null)
+                {
+                    var ret = mP.ReportLeavesTotal(user.user_id, startDate, endDate).ToList<ReportLeavesTotal_Result>();
+
+                    return Json(new { data = ret }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { data = "" }, JsonRequestBehavior.AllowGet);
+                }
+
+
             }
         }
 
-        public ActionResult GetUserLeaves(int id = 0, string startDate = "", string endDate = "")
+        public ActionResult GetUserLeaves(string employee_id = "", string startDate = "", string endDate = "")
         {
             using (mmpEntities mP = new mmpEntities())
             {
                 mP.Configuration.ProxyCreationEnabled = false;
 
-                var ret = mP.ReportLeaves(id, startDate, endDate).ToList<ReportLeaves_Result>();
+                var user = mP.users.Where(x => x.employee_id == employee_id).FirstOrDefault<user>();
 
-                return Json(new { data = ret }, JsonRequestBehavior.AllowGet);
+                if (user != null)
+                {
+                    var ret = mP.ReportLeaves(user.user_id, startDate, endDate).ToList<ReportLeaves_Result>();
+
+                    return Json(new { data = ret }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { data = "" }, JsonRequestBehavior.AllowGet);
+                }
+
+                
             }
         }
 

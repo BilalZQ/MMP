@@ -117,7 +117,7 @@ namespace MMP.Controllers
                 else
                 {
                     ViewBag.Message = "TimeSheet already exists for current week";
-                    return Json(new { success = true, message = "TimeSheet already exists for current week" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = "TimeSheet already exists for current week" }, JsonRequestBehavior.AllowGet);
                 }
             }
         }
@@ -157,6 +157,7 @@ namespace MMP.Controllers
                                       user,
                                       supervisorName = supervisor.employee_id == null ? "" : supervisor.employee_id,
                                       tsmr
+                                      //month = Convert.ToDateTime(tsmr.startDate).ToString("MMMM")
                                   }).Where(x => x.user.user_status == "active").OrderByDescending(x => x.tsmr.tsmr_created_at);
 
                 if (flag.Equals("currentTimeSheets", StringComparison.InvariantCultureIgnoreCase))
@@ -188,6 +189,11 @@ namespace MMP.Controllers
 
                     var timesheetCaller = mP.timesheets.Where(x => x.timesheet_id == id).FirstOrDefault();
                     var timesheetMR = mP.timesheet_mr.Where(x => x.tsmr_id == timesheetCaller.timesheet_caller).FirstOrDefault();
+                    
+                    // ADD USER TO THE TIMESHEET EDIT VIEW
+                    ViewBag.UserName = mP.users.FirstOrDefault(x => x.user_id == timesheetCaller.timesheet_user).user_name;
+
+
                     ViewBag.startDate = timesheetMR.tsmr_start_date;
                     ViewBag.endDate = timesheetMR.tsmr_valid_till;
 
@@ -244,8 +250,30 @@ namespace MMP.Controllers
                     ViewBag.TimeSheetID = tsd_timesheet_id;
                     timesheet ts = mP.timesheets.Where(x => x.timesheet_id == tsd_timesheet_id).First();
                     var timeSheetMR = mP.timesheet_mr.Where(x => x.tsmr_id == ts.timesheet_caller).FirstOrDefault();
+
+
+                    // ADD USER TO THE TIMESHEET EDIT VIEW
+                    ViewBag.UserName = mP.users.FirstOrDefault(x => x.user_id == ts.timesheet_user).user_name;
+
+
                     ViewBag.startDate = timeSheetMR.tsmr_start_date;
                     ViewBag.endDate = timeSheetMR.tsmr_valid_till;
+
+                    if (submit == "Calculate")
+                    {
+                        return View(pvm);
+                    }
+
+                    // *** TimeSheet 7.5 Check ***
+                    for (int i = 0; i < timeSheetMR.days; i++)
+                    {
+                        if (pvm.Sum(x => x.timesheet_day_details[i].workhours).Value > 7.5)
+                        {
+                            ViewBag.Message = string.Format("Error! Make sure sum of each column is less than 7.5.");
+                            return View(pvm);
+                        }
+                    }
+                    // *** TimeSheet 7.5 Check ***
 
                     if (ts.timesheet_status == "submitted" || ts.timesheet_status == "rejected" || ts.timesheet_status == "accepted") //Do this properly
                     {
@@ -263,6 +291,8 @@ namespace MMP.Controllers
                                 ts.timesheet_status = "rejected";
                                 ViewBag.Message = "TimeSheet Rejected";
                                 break;
+                            //case "Calculate":
+                                //return View(pvm);
                         }
                         //ts.timesheet_status = ts.timesheet_status == "rejected" ? "submitted" : "saved"; //Based on button press (cannot be saved, can only be submitted)
                         ts.updated_by = UserID_RoleID.getUserID();
@@ -327,8 +357,15 @@ namespace MMP.Controllers
                     }
                     else if (ts.timesheet_status == ("saved")) //Do this properly
                     {
-                        ViewBag.Message = string.Format("Cannot edit a Saved TimeSheet");
-                        return View(pvm);
+                        if (submit == "Calculate")
+                        {
+                            return View(pvm);
+                        }
+                        else
+                        {
+                            ViewBag.Message = string.Format("Cannot edit a Saved TimeSheet");
+                            return View(pvm);
+                        }
                     }
                 }
             }
@@ -421,6 +458,12 @@ namespace MMP.Controllers
 
                     var timesheetCaller = mP.timesheets.Where(x => x.timesheet_id == id).FirstOrDefault();
                     var timesheetUser = mP.users.Where(x => x.user_id == timesheetCaller.timesheet_user).FirstOrDefault();
+
+
+                    // ADD USER TO THE TIMESHEET EDIT VIEW
+                    ViewBag.UserName = mP.users.FirstOrDefault(x => x.user_id == timesheetCaller.timesheet_user).user_name;
+
+
                     if (timesheetUser.supervisor == UserID_RoleID.getUserID() && timesheetUser.user_status == "active")
                     {
                         var timesheetMR = mP.timesheet_mr.Where(x => x.tsmr_id == timesheetCaller.timesheet_caller).FirstOrDefault();
@@ -485,6 +528,10 @@ namespace MMP.Controllers
                     ViewBag.TimeSheetID = tsd_timesheet_id;
                     timesheet ts = mP.timesheets.Where(x => x.timesheet_id == tsd_timesheet_id).First();
                     var timeSheetMR = mP.timesheet_mr.Where(x => x.tsmr_id == ts.timesheet_caller).FirstOrDefault();
+
+                    // ADD USER TO THE TIMESHEET EDIT VIEW
+                    ViewBag.UserName = mP.users.FirstOrDefault(x => x.user_id == ts.timesheet_user).user_name;
+
                     ViewBag.startDate = timeSheetMR.tsmr_start_date;
                     ViewBag.endDate = timeSheetMR.tsmr_valid_till;
 
@@ -644,6 +691,12 @@ namespace MMP.Controllers
                     ViewBag.TimeSheetID = id;
 
                     var timesheetCaller = mP.timesheets.Where(x => x.timesheet_id == id).FirstOrDefault();
+
+
+                    // ADD USER TO THE TIMESHEET EDIT VIEW
+                    ViewBag.UserName = mP.users.FirstOrDefault(x => x.user_id == timesheetCaller.timesheet_user).user_name;
+
+
                     if (timesheetCaller.timesheet_user == UserID_RoleID.getUserID())
                     {
                         var timeSheetMR = mP.timesheet_mr.Where(x => x.tsmr_id == timesheetCaller.timesheet_caller).FirstOrDefault();
@@ -710,9 +763,28 @@ namespace MMP.Controllers
                     ViewBag.TimeSheetID = tsd_timesheet_id;
                     timesheet ts = mP.timesheets.Where(x => x.timesheet_id == tsd_timesheet_id).First();
                     var timeSheetMR = mP.timesheet_mr.Where(x => x.tsmr_id == ts.timesheet_caller).FirstOrDefault();
+
+                    // ADD USER TO THE TIMESHEET EDIT VIEW
+                    ViewBag.UserName = mP.users.FirstOrDefault(x => x.user_id == ts.timesheet_user).user_name;
+
                     ViewBag.startDate = timeSheetMR.tsmr_start_date;
                     ViewBag.endDate = timeSheetMR.tsmr_valid_till;
 
+                    if (submit == "Calculate")
+                    {
+                        return View(pvm);
+                    }
+
+                    // *** TimeSheet 7.5 Check ***
+                    for (int i = 0; i < timeSheetMR.days; i++)
+                    {
+                        if (pvm.Sum(x => x.timesheet_day_details[i].workhours).Value > 7.5)
+                        {
+                            ViewBag.Message = string.Format("Error! Make sure sum of each column is less than 7.5.");
+                            return View(pvm);
+                        }
+                    }
+                    // *** TimeSheet 7.5 Check ***
 
                     if (ts.timesheet_user == UserID_RoleID.getUserID() && ts.tsmr_extension >= DateTime.Now && (ts.timesheet_status == "saved" || ts.timesheet_status == "rejected")) //Do this properly
                     {
@@ -731,6 +803,8 @@ namespace MMP.Controllers
                                 ts.timesheet_status = "submitted";
                                 ViewBag.Message = "TimeSheet Submitted Successfully";
                                 break;
+                            //case "Calculate":
+                                //return View(pvm);
                         }
                         //ts.timesheet_status = ts.timesheet_status == "rejected" ? "submitted" : "saved"; //Based on button press (cannot be saved, can only be submitted)
                         ts.updated_by = UserID_RoleID.getUserID();

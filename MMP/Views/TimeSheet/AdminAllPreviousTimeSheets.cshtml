@@ -46,24 +46,28 @@
             </div>
         </div>   
 
-        <table id="timesheetsTable" class="table table-striped table-bordered" style="width:70%">
-            <thead>
-                <tr>
-                    <th>Employee ID</th>
-                    <th>Employee Name</th>
-                    <th>Supervisor</th>
-                    <th>Status</th>
-                    <th>Updated at</th>
-                    <th>Updated by</th>
-                    <th>Created At</th>
-                    <th>Start Date</th>
-                    <th>Valid Till</th>
-                    <th>Extended Date</th>
-                    <th></th>
-                </tr>
-            </thead>
+        <div class="table-responsive">
+            <table id="timesheetsTable" class="table table-striped table-bordered" style="width:70%">
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Employee Name</th>
+                        <th>Supervisor</th>
+                        <th>Status</th>
+                        <th>Updated at</th>
+                        <th>Updated by</th>
+                        <th>Created At</th>
+                        <th>Start Date</th>
+                        <th>Valid Till</th>
+                        <th>Extended Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
 
-        </table>
+            </table>
+        </div>
+
+        
     </div>
     <!-- ============================================================== -->
     <!-- End PAge Content -->
@@ -88,6 +92,8 @@
 @section Scripts{
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.18/api/fnFilterClear.js"></script>
+    <script src="https://cdn.datatables.net/rowgroup/1.0.3/js/dataTables.rowGroup.min.js"></script>
     <script>
         var Popup, dataTable;
 

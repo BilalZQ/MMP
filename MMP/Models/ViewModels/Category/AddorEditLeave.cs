@@ -26,7 +26,7 @@ namespace MMP.Models.ViewModels.Category
 
         public int leave_details_id { get; set; }  
 
-        [Display(Name = "No. of leaves")]
+        [Display(Name = "Total leaves allowed in this category")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "No. of leaves required")]
         public int no_of_leaves { get; set; }
 

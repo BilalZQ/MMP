@@ -506,10 +506,10 @@ namespace MMP.Controllers
             var URL = "/User/";
             var link = Request.Url.AbsoluteUri.Replace(Request.Url.PathAndQuery, URL);
 
-            var fromEmail = new MailAddress("bilal@gmail.com", "MEW");
+            var fromEmail = new MailAddress("bilal@gmail.com", " MMP");
             var toEmail = new MailAddress(email);
             var fromEmailPassword = "********"; // Replace with Actual Password
-            String subject = "Your account is successfully created.";
+            String subject = "MMP TimeSheets Alerts";
 
             String body = "<br></br>Your account of mew was successfully created. Click on the link below to get redirected to the website<br></br>" +
                 "<a href='" + link + "'>" + link + "</a>";

@@ -13,14 +13,14 @@
     @Html.HiddenFor(model => model.ctd_id)
     
     <div class="form-group">
-        @Html.LabelFor(model => model.leave_name, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.leave_name, "Name", htmlAttributes: new { @class = "control-label col-md-8" })
         <div class="col-md-8">
             @Html.EditorFor(model => model.leave_name, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.leave_name, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(model => model.code, "Code", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.code, "Code", htmlAttributes: new { @class = "control-label col-md-8" })
         <div class="col-md-8">
             @Html.EditorFor(model => model.code, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.code, "", new { @class = "text-danger" })
@@ -32,7 +32,7 @@
     @Html.HiddenFor(model => model.leave_details_id)
 
     <div class="form-group">
-        @Html.LabelFor(model => model.no_of_leaves, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.no_of_leaves, htmlAttributes: new { @class = "control-label col-md-8" })
         <div class="col-md-8">
             @Html.EditorFor(model => model.no_of_leaves, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.no_of_leaves)
@@ -40,7 +40,7 @@
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.encashable, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.encashable, htmlAttributes: new { @class = "control-label col-md-8" })
         <div class="col-md-8">
             @Html.DropDownListFor(model => model.encashable, Model.selector, "Select", new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.encashable, "", new { @class = "text-danger" })
@@ -48,7 +48,7 @@
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.carry_forward, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.carry_forward, htmlAttributes: new { @class = "control-label col-md-8" })
         <div class="col-md-8">
             @Html.DropDownListFor(model => model.carry_forward, Model.selector, "Select", new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.carry_forward, "", new { @class = "text-danger" })

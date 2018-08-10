@@ -3,7 +3,9 @@
 @{
     ViewBag.Title = "Accept/Reject TimeSheet";
 }   
-
+@{
+    var Rowtotal = 0.0;
+}
 
 <!-- ============================================================== -->
 <!-- Page wrapper  -->
@@ -39,6 +41,13 @@
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true)
 
+            if (ViewBag.UserName != null)
+            {
+                <div style="border: solid 1px green">
+                    <p><b>USERNAME: </b>@ViewBag.UserName </p>
+                </div>
+            }
+
             if (ViewBag.Message != null)
             {
                 <div style="border: solid 1px green">
@@ -48,63 +57,90 @@
 
         <!--<div><a href="#" id="addNew">Add New Category/CategoryType</a></div>-->
 
-            <table id="dataTable" border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                    <th>Category</th>
-                    <th>Category Type</th>
-                    <th>Category Type Code</th>
-                    @if (Model != null && Model.Count > 0)
+            <div class="table-responsive">
+                <table id="dataTable" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th>Category</th>
+                        <th>Category Type</th>
+                        <th>Category Type Code</th>
+                        @if (Model != null && Model.Count > 0)
                 {
                     for (DateTime date = ViewBag.startDate; date.Date <= ViewBag.endDate.Date; date = date.AddDays(1))
                     {
-                            <th>@String.Format("{0:MMM-d\n(ddd)}", date)</th>
+                                <th>@String.Format("{0:MMM-d\n(ddd)}", date)</th>
+                            }
                         }
-                    }
-                    <th></th>
-                </tr>
-                @if (Model != null && Model.Count > 0)  // GET THEM IN ONE LOOP
+                        <th>Calculate Total</th>
+                        <th></th>
+                    </tr>
+                    @if (Model != null && Model.Count > 0)  // GET THEM IN ONE LOOP
                 {
                     for (int j = 0; j < Model.Count; j++)
                     {
-                        <tr style="border: 1px solid black">
-                            @Html.HiddenFor(a => a[j].tsd_id)
-                            @Html.HiddenFor(a => a[j].tsd_timesheet_id)
-                            <td>
-                                <!--@Html.DisplayFor(a => a[j].tsd_category_id, new { htmlAttributes = new { @class = "form-control" } })-->
-                                @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.Categories, "category_id", "category_name", Model[j].tsd_category_id), new { @class = "customDrowDown", @disabled = "disabled" })
-                                @Html.ValidationMessageFor(a => a[j].tsd_category_id)
-                            </td>
-                            <td>
-                                <!--@Html.DisplayFor(a => a[j].tsd_category_type_id, new { htmlAttributes = new { @class = "form-control" } })-->
-                                @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_name", Model[j].tsd_category_type_id), new { @class = "customDrowDown", @disabled = "disabled" })
-                                @Html.ValidationMessageFor(a => a[j].tsd_category_type_id)
-                            </td>
-
-                            <td>
-                                @Html.DropDownListFor(a => a[j].tsd_category_type_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_code", Model[j].tsd_category_type_id), new { @class = "customDrowDown", @disabled = "disabled" })
-                                @Html.ValidationMessageFor(a => a[j].tsd_category_type_id)
-                            </td>
-
-
-                            @for (int i = 0; i < Model[j].timesheet_day_details.Count(); i++)
-                        {
-                                @Html.HiddenFor(m => m[j].timesheet_day_details[i].tdd_id)
-                                @Html.HiddenFor(m => m[j].timesheet_day_details[i].tdd_day)
+                            <tr style="border: 1px solid black">
+                                @Html.HiddenFor(a => a[j].tsd_id)
+                                @Html.HiddenFor(a => a[j].tsd_timesheet_id)
                                 <td>
-                                    @Html.EditorFor(m => m[j].timesheet_day_details[i].workhours, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
-                                    @Html.ValidationMessageFor(m => m[j].timesheet_day_details[i].workhours)
+                                    <!--@Html.DisplayFor(a => a[j].tsd_category_id, new { htmlAttributes = new { @class = "form-control" } })-->
+                                    @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.Categories, "category_id", "category_name", Model[j].tsd_category_id), new { @class = "customDrowDown", @disabled = "disabled" })
+                                    @Html.ValidationMessageFor(a => a[j].tsd_category_id)
                                 </td>
-                                @Html.HiddenFor(m => m[j].timesheet_day_details[i].tsd_id)
-                            }
+                                <td>
+                                    <!--@Html.DisplayFor(a => a[j].tsd_category_type_id, new { htmlAttributes = new { @class = "form-control" } })-->
+                                    @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_name", Model[j].tsd_category_type_id), new { @class = "customDrowDown", @disabled = "disabled" })
+                                    @Html.ValidationMessageFor(a => a[j].tsd_category_type_id)
+                                </td>
 
+                                <td>
+                                    @Html.DropDownListFor(a => a[j].tsd_category_type_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_code", Model[j].tsd_category_type_id), new { @class = "customDrowDown", @disabled = "disabled" })
+                                    @Html.ValidationMessageFor(a => a[j].tsd_category_type_id)
+                                </td>
+
+
+                                @for (int i = 0; i < Model[j].timesheet_day_details.Count(); i++)
+                                {
+                                    @Html.HiddenFor(m => m[j].timesheet_day_details[i].tdd_id)
+                                    @Html.HiddenFor(m => m[j].timesheet_day_details[i].tdd_day)
+                                    <td>
+                                        @Html.EditorFor(m => m[j].timesheet_day_details[i].workhours, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @style = "float: center;text-align: center;" } })
+                                        @Html.ValidationMessageFor(m => m[j].timesheet_day_details[i].workhours)
+                                    </td>
+                                    @Html.HiddenFor(m => m[j].timesheet_day_details[i].tsd_id)
+
+
+                                    Rowtotal = (@Model[j].timesheet_day_details[i].workhours.Value) + Rowtotal;
+                                }
+
+                                <td align="center">@Rowtotal</td>
+                            </tr>
+                        }
+
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td align="center"><b>Total Hours per Day</b></td>
+                            <td>&nbsp;</td>
+                            @for (int i = 0; i < 7; i++) // CHANGE THIS VALUE BASED ON NUMBER OF DAYS IN A TIMESHEET
+                            {
+
+
+                                if (@Model.Sum(x => x.timesheet_day_details[i].workhours).Value > 7.5)
+                                {
+                                    <td align="center" bgcolor="#FF0000"><font color="white">@Model.Sum(x => x.timesheet_day_details[i].workhours).Value</font></td>
+                                }
+                                else
+                                {
+                                    <td align="center">@Model.Sum(x => x.timesheet_day_details[i].workhours).Value</td>
+                                }
+                            }
                         </tr>
+
                     }
 
-                }
 
 
-
-            </table>
+                </table>
+            </div>
+            
 
             if (ViewBag.Message != null)
             {

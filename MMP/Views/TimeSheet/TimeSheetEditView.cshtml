@@ -3,6 +3,9 @@
 @{
     ViewBag.Title = "Edit TimeSheet";
 }
+@{ 
+    var Rowtotal = 0.0;
+}
 
 <!-- ============================================================== -->
 <!-- Page wrapper  -->
@@ -49,6 +52,14 @@
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true)
 
+            if (ViewBag.UserName != null)
+            {
+                <div style="border: solid 1px green">
+                    <p><b>USERNAME: </b>@ViewBag.UserName </p>
+                </div>
+            }
+
+
             if (ViewBag.Message != null)
             {
                 <div style="border: solid 1px green">
@@ -58,72 +69,108 @@
 
         <!--<div><a href="#" id="addNew">Add New Category/CategoryType</a></div>-->
 
-            <table id="dataTable" border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                    <th>Category</th>
-                    <th>Category Type</th>
-                    <th>Category Type Code</th>
-                    @if (Model != null && Model.Count > 0) // Get this under 1 if
-                {
-                    for (DateTime date = ViewBag.startDate; date.Date <= ViewBag.endDate.Date; date = date.AddDays(1))
-                    {
-                            <th>@String.Format("{0:MMM-d\n(ddd)}", date)</th>
-                        }
-                    }
-                    <th></th>
-                </tr>
-                @if (Model != null && Model.Count > 0)
-                {
-                    for (int j = 0; j < Model.Count; j++)
-                    {
-                        <tr style="border: 1px solid black">
-                            @Html.HiddenFor(a => a[j].tsd_id, new { @name = "tsd_id_" + j })
-                            @Html.HiddenFor(a => a[j].tsd_timesheet_id, new { @name = "tsd_timesheet_id_" + j })
-                            <td>
-                                <!--@Html.DisplayFor(a => a[j].tsd_category_id, new { htmlAttributes = new { @class = "form-control" } })-->
-                                @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.Categories, "category_id", "category_name", Model[j].tsd_category_id), new { @class = "customDrowDown" })
-                                @Html.ValidationMessageFor(a => a[j].tsd_category_id)
-                            </td>
-                            <td>
-                                <!--@Html.DisplayFor(a => a[j].tsd_category_type_id, new { htmlAttributes = new { @class = "form-control" } })-->
-                                @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_name", Model[j].tsd_category_type_id), new { @class = "customDrowDown" })
-                                @Html.ValidationMessageFor(a => a[j].tsd_category_type_id)
-                            </td>
+            <div class="table-responsive" id="dataTable">
+                <table  border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th>Category</th>
+                        <th>Category Type</th>
+                        <th>Category Type Code</th>
 
-                            <td>
-                                @Html.DropDownListFor(a => a[j].tsd_category_type_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_code", Model[j].tsd_category_type_id), new { @class = "customDrowDown" })
-                                @Html.ValidationMessageFor(a => a[j].tsd_category_type_id)
-                            </td>
-
-
-                            @for (int i = 0; i < Model[j].timesheet_day_details.Count(); i++)
+                        @if (Model != null && Model.Count > 0) // Get this under 1 if
                         {
-                                @Html.HiddenFor(m => m[j].timesheet_day_details[i].tdd_id)
-                                @Html.HiddenFor(m => m[j].timesheet_day_details[i].tdd_day)
-                                <td>
-                                    @Html.EditorFor(m => m[j].timesheet_day_details[i].workhours, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(m => m[j].timesheet_day_details[i].workhours)
-                                </td>
-                                @Html.HiddenFor(m => m[j].timesheet_day_details[i].tsd_id)
+                            for (DateTime date = ViewBag.startDate; date.Date <= ViewBag.endDate.Date; date = date.AddDays(1))
+                            {
+                                <th>@String.Format("{0:MMM-d\n(ddd)}", date)</th>
                             }
 
+                        }
+                        <th>Calculate Total</th>
+                        <th></th>
+                    </tr>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        for (int j = 0; j < Model.Count; j++)
+                        {
+
+                            Rowtotal = 0.0;
+
+                            <tr style="border: 1px solid black">
+                                @Html.HiddenFor(a => a[j].tsd_id, new { @name = "tsd_id_" + j })
+                                @Html.HiddenFor(a => a[j].tsd_timesheet_id, new { @name = "tsd_timesheet_id_" + j })
+                                <td>
+                                    <!--@Html.DisplayFor(a => a[j].tsd_category_id, new { htmlAttributes = new { @class = "form-control" } })-->
+                                    @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.Categories, "category_id", "category_name", Model[j].tsd_category_id), new { @disabled = "disabled" })
+                                    @Html.HiddenFor(a => a[j].tsd_category_id)
+                                    @Html.ValidationMessageFor(a => a[j].tsd_category_id)
+                                </td>
+                                <td>
+                                    <!--@Html.DisplayFor(a => a[j].tsd_category_type_id, new { htmlAttributes = new { @class = "form-control" } })-->
+                                    @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_name", Model[j].tsd_category_type_id), new { @disabled = "disabled" })
+                                    @Html.HiddenFor(a => a[j].tsd_category_id)
+                                    @Html.ValidationMessageFor(a => a[j].tsd_category_type_id)
+                                </td>
+
+                                <td>
+                                    @Html.DropDownListFor(a => a[j].tsd_category_type_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_code", Model[j].tsd_category_type_id), new { @disabled = "disabled" })
+                                    @Html.HiddenFor(a => a[j].tsd_category_type_id)
+                                    @Html.ValidationMessageFor(a => a[j].tsd_category_type_id)
+                                </td>
 
 
-
-                            <td>
-                                @if (j >= 0)
+                                @for (int i = 0; i < Model[j].timesheet_day_details.Count(); i++)
                                 {
-                                    <a class="btn btn-danger" onclick="Delete(@Model[j].tsd_timesheet_id, @Model[j].tsd_category_type_id)"><i class="fa fa-trash"></i> Delete</a><!--NEED TO GIVE OPTION TO DELETE ROWS (CATEGORY AND CATEGORY TYPE ID WITH ALL ITS RESPECTIVE WORKHOUR ENTRIES)-->
+                                    @Html.HiddenFor(m => m[j].timesheet_day_details[i].tdd_id)
+                                    @Html.HiddenFor(m => m[j].timesheet_day_details[i].tdd_day)
+                                    <td>
+                                        @Html.EditorFor(m => m[j].timesheet_day_details[i].workhours, new { htmlAttributes = new { @class = "form-control", @onchange = "OnChangeEvent()", @style = "float: center;text-align: center;" } })
+                                        @Html.ValidationMessageFor(m => m[j].timesheet_day_details[i].workhours)                                        
+                                    </td>
+                                    @Html.HiddenFor(m => m[j].timesheet_day_details[i].tsd_id)
+
+
+                                    Rowtotal = (@Model[j].timesheet_day_details[i].workhours.Value) + Rowtotal;
+
+
                                 }
-                            </td>
+
+                                <td align="center">@Rowtotal</td>
+
+
+                                <td>
+                                    @if (j >= 0)
+                                    {
+                                        <a class="btn btn-danger" onclick="Delete(@Model[j].tsd_timesheet_id, @Model[j].tsd_category_type_id)"><i class="fa fa-trash"></i> Delete</a><!--NEED TO GIVE OPTION TO DELETE ROWS (CATEGORY AND CATEGORY TYPE ID WITH ALL ITS RESPECTIVE WORKHOUR ENTRIES)-->
+                                    }
+                                </td>
+                            </tr>
+
+                        }
+
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td align="center"><b>Total Hours per Day</b></td>
+                            <td>&nbsp;</td>
+                            @for (int i = 0; i < 7; i++) // CHANGE THIS VALUE BASED ON NUMBER OF DAYS IN A TIMESHEET
+                            {
+
+
+                                if (@Model.Sum(x => x.timesheet_day_details[i].workhours).Value > 7.5)
+                                {
+                                    <td align="center" bgcolor="#FF0000"><font color="white">@Model.Sum(x => x.timesheet_day_details[i].workhours).Value</font></td>
+                                }
+                                else
+                                {
+                                    <td align="center">@Model.Sum(x => x.timesheet_day_details[i].workhours).Value</td>
+                                }
+                            }
                         </tr>
-
                     }
-                }
 
 
 
-            </table>
+                </table>
+            </div>
+            
 
             if (ViewBag.Message != null)
             {
@@ -134,7 +181,8 @@
                 </script>
             }
 
-
+            
+            <input type="submit" name="submit" value="Calculate" class="btn btn-info" />
             <input type="submit" name="submit" value="Save" class="btn btn-primary" />
             <input type="submit" name="submit" value="Submit" class="btn btn-primary" />
         }
@@ -163,19 +211,8 @@
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
     <script>
         var Popup, dataTable;
-
-        $(document).ready(function () {
-            dataTable = $("#dataTable").DataTable({
-                // "ajax": {
-                //     "url": "/Holiday/GetData",
-                //     "type": "GET",
-                //     "datatype": "json"
-                //  },
-                "language": {
-                    //"emptyTable" : "No Holidays Available for current year, Click on <b>Add New Holiday</b> Button to add Holidays"
-                }
-            });
-        });
+        var table = $("#dataTable");
+        
 
         function OpenModal(url) {
             debugger;
@@ -198,8 +235,8 @@
                     alert("Dynamic content load failed.");
                 }
             });
-            //$("#closebtn").on('click',function(){  
-            //    $('#myModal').modal('hide');    
+            //$("#closebtn").on('click',function(){
+            //    $('#myModal').modal('hide');
 
             $("#closbtn").click(function () {
                 $('#myModal').modal('hide');
@@ -237,7 +274,7 @@
                             $('#myModal').modal('hide');
 
                             location.reload(true);
-                            //dataTable.ajax.reload();
+                            //table.ajax.reload();
 
                             //notify.js plugin
                             $.notify(data.message, {
@@ -258,10 +295,8 @@
                 $.ajax({
                     type: "POST",
                     url: '@Url.Action("Delete", "TimeSheet")/?id=' + id + '&category_typeID=' + category_typeID,
-                    success: function (data)
-                    {
-                        if (data.success)
-                        {
+                    success: function (data) {
+                        if (data.success) {
                             location.reload(true);
                             //dataTable.ajax.reload();
 
@@ -274,19 +309,6 @@
                     }
                 })
             }
-        }
-
-        $(function () {
-            $("#subtotal").html(sumColumn(4));
-            $("#total").html(sumColumn(5));
-        });
-
-        function sumColumn(index) {
-            var total = 0;
-            $("td:nth-child(" + index + ")").each(function () {
-                total += parseInt($(this).text(), 10) || 0;
-            });
-            return total;
         }
 
     </script>

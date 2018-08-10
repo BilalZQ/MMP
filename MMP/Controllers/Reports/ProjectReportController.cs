@@ -41,7 +41,7 @@ namespace MMP.Controllers.Reports
             }
         }
 
-        public ActionResult GetUserData(int id = 0)
+        public ActionResult GetUserData(string employee_id = "")
         {
             using (mmpEntities mP = new mmpEntities())
             {
@@ -65,40 +65,60 @@ namespace MMP.Controllers.Reports
                                  user_primary_department = upd.ctd_name,
                                  user_primary_project = upp.ctd_name
                              }).Where(x => x.user.user_status == "active");
-                if (id != 0)
+                if (employee_id != "")
                 {
-                    query = query.Where(x => x.user.user_id == id);
+                    query = query.Where(x => x.user.employee_id == employee_id);//x.user.user_id == id);
+                    return Json(new { data = query.AsNoTracking().ToList() }, JsonRequestBehavior.AllowGet);
                 }
-                return Json(new { data = query.AsNoTracking().ToList() }, JsonRequestBehavior.AllowGet);
+
+                return Json(new { data = "" }, JsonRequestBehavior.AllowGet);
             }
         }
 
 
-        public ActionResult GetUserProjects(int id = 0, string startDate = "", string endDate = "")
+        public ActionResult GetUserProjects(string employee_id = "", string startDate = "", string endDate = "")
         {
             using (mmpEntities mP = new mmpEntities())
             {
                 mP.Configuration.ProxyCreationEnabled = false;
 
-                Debug.WriteLine(startDate);
-                Debug.WriteLine(endDate);
+                //Debug.WriteLine(startDate);
+                //Debug.WriteLine(endDate);
+                var user = mP.users.Where(x => x.employee_id == employee_id).FirstOrDefault<user>();
 
-                var ret = mP.ReportUsProjectWorkHours(id, startDate, endDate).ToList<ReportUsProjectWorkHours_Result>();
-               
+                if (user != null)
+                {
+                    var ret = mP.ReportUsProjectWorkHours(user.user_id, startDate, endDate).ToList<ReportUsProjectWorkHours_Result>();
+                    return Json(new { data = ret }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { data = "" }, JsonRequestBehavior.AllowGet);
+                }
 
-                return Json(new { data = ret }, JsonRequestBehavior.AllowGet);
+
+                
             }
         }
 
-        public ActionResult GetUserProjectsTotalHours(int id = 0, string startDate = "", string endDate = "")
+        public ActionResult GetUserProjectsTotalHours(string employee_id = "", string startDate = "", string endDate = "")
         {
             using (mmpEntities mP = new mmpEntities())
             {
                 mP.Configuration.ProxyCreationEnabled = false;
 
-                var ret = mP.ReportUsProjectTotalWorkHours(id, startDate, endDate).ToList<ReportUsProjectTotalWorkHours_Result>();
+                var user = mP.users.Where(x => x.employee_id == employee_id).FirstOrDefault<user>();
 
-                return Json(new { data = ret }, JsonRequestBehavior.AllowGet);
+                if (user != null)
+                {
+                    var ret = mP.ReportUsProjectTotalWorkHours(user.user_id, startDate, endDate).ToList<ReportUsProjectTotalWorkHours_Result>();
+                    return Json(new { data = ret }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { data = "" }, JsonRequestBehavior.AllowGet);
+                }
+                
             }
         }
     }  
