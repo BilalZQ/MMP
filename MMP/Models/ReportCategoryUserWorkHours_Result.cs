@@ -15,6 +15,6 @@ namespace MMP.Models
     {
         public string ctd_name { get; set; }
         public string user_name { get; set; }
-        public Nullable<Double> totalHours { get; set; }
+        public double totalHours { get; set; }
     }
 }

@@ -1240,6 +1240,7 @@
     <Compile Include="Controllers\TimeSheetController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Generic Functions\Crypto.cs" />
+    <Compile Include="Generic Functions\EmailAlert.cs" />
     <Compile Include="Generic Functions\UserID_RoleID.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

@@ -36,7 +36,8 @@ namespace MMP.Controllers
                 {
                     holiday_year hy = new holiday_year()
                     {
-                        hy_name = "Holiday list for " + date.Year.ToString(),
+                        //hy_name = "Holiday list for " + date.Year.ToString(),
+                        hy_name = "Holiday list",
                         creation_date = date,
                         year = (Int16)date.Year // Cast int to short
                     };
@@ -46,12 +47,18 @@ namespace MMP.Controllers
                 }
                 else
                 {
-                    var holidays =  (from hd in mP.holiday_details
+                    /*var holidays =  (from hd in mP.holiday_details
                                     join hy in mP.holiday_year on hd.hy_id equals hy.hy_id
                                     select new
                                     {
                                         hd,
                                         year = hy.year
+                                    }).OrderByDescending(x => x.year);*/
+                    var holidays = (from hd in mP.holiday_details
+                                    select new
+                                    {
+                                        hd,
+                                        year = hd.hd_to.Year
                                     }).OrderByDescending(x => x.year);
 
                     return Json(new { data = holidays.AsNoTracking().ToList() }, JsonRequestBehavior.AllowGet);
@@ -67,7 +74,7 @@ namespace MMP.Controllers
                 mP.Configuration.ProxyCreationEnabled = false;
 
                 holiday_year hy = mP.holiday_year.Where(x => x.year == DateTime.Now.Year).OrderByDescending(x => x.hy_id).First<holiday_year>();
-                List<AddHolidays> AHD = new List<AddHolidays> { new AddHolidays { hd_name = "", hd_from = DateTime.Now, hd_to = DateTime.Now, hy_id = hy.hy_id } };
+                List<AddHolidays> AHD = new List<AddHolidays> { new AddHolidays { hd_name = "", hd_from = DateTime.Now, hd_to = DateTime.Now, hy_id = 0 } };
                 return View(AHD);
             }
         }
@@ -84,7 +91,7 @@ namespace MMP.Controllers
 
                     foreach (var i in AHD)
                     {
-                        /*#region Holiday Already Exists
+                        #region Holiday Already Exists
                         var isHolidayAssigned = IsHolidayAssigned(i.hd_name, i.hy_id, i.hd_from.Date);
                         if (isHolidayAssigned)
                         {
@@ -92,19 +99,26 @@ namespace MMP.Controllers
                             return View(AHD);
                         }
                         #endregion
+                        DateTime startDate = StartOfWeek(DateTime.Today, DayOfWeek.Monday);
+                        DateTime endDate = startDate.AddDays(6);
                         #region Validate dates
                         if (i.hd_from.Date > i.hd_to.Date)
                         {
                             ModelState.AddModelError("InvalidDate", "To Date should be equal to or greater than start date");
                             return View(AHD);
                         }
-                        #endregion*/
+                        if (i.hd_from.Date < endDate)
+                        {
+                            ModelState.AddModelError("InvalidDate", "Cannot add dates for previous and current weeks");
+                            return View(AHD);
+                        }
+                        #endregion
                         holiday_details hd = new holiday_details()
                         {
                             hd_name = i.hd_name,
                             hd_from = i.hd_from,
                             hd_to = i.hd_to,
-                            hy_id = i.hy_id,
+                            //hy_id = null, // Since we are not using holiday_year table anymore
                             generated_by = 1 // AUTOMATE USER ID 
                         };
                         mP.holiday_details.Add(hd);                        
@@ -117,7 +131,7 @@ namespace MMP.Controllers
             return View(AHD);
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public ActionResult EditHolidays(int id = 0)
         {
             using (mmpEntities mP = new mmpEntities())
@@ -144,8 +158,10 @@ namespace MMP.Controllers
                         return View(hd);
                     }
                     #endregion
+                    DateTime startDate = StartOfWeek(DateTime.Today, DayOfWeek.Monday);
+                    DateTime endDate = startDate.AddDays(6);
                     #region Validate dates
-                    if (hd.hd_from.Date > hd.hd_to.Date)
+                    if (hd.hd_from.Date > hd.hd_to.Date && hd.hd_from.Date > endDate)
                     {
                         ModelState.AddModelError("InvalidDate", "To Date should be equal to or greater than start date");
                         return View(hd);
@@ -157,19 +173,30 @@ namespace MMP.Controllers
                 }
             }
             return View(hd);
-        }
+        }*/
 
-        /*[HttpPost]
+        [HttpPost]
         public ActionResult Delete(int id)
         {
             using (mmpEntities mP = new mmpEntities())
             {
+
+                DateTime startDate = StartOfWeek(DateTime.Today, DayOfWeek.Monday);
+                DateTime endDate = startDate.AddDays(6);
                 holiday_details hd = mP.holiday_details.Where(x => x.hd_id == id).FirstOrDefault<holiday_details>();
-                mP.holiday_details.Remove(hd);
-                mP.SaveChanges();
-                return Json(new { success = true, message = "Deleted Successfully" }, JsonRequestBehavior.AllowGet);
+                if (hd.hd_from > endDate)
+                {
+                    mP.holiday_details.Remove(hd);
+                    mP.SaveChanges();
+                    return Json(new { success = true, message = "Deleted Successfully" }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Cannot delete holiday entries for current and previous weeks!" }, JsonRequestBehavior.AllowGet);
+                }
+                
             }
-        }*/
+        }
         
         ///
         [NonAction]
@@ -177,11 +204,18 @@ namespace MMP.Controllers
         {
              using (mmpEntities mP = new mmpEntities())
             {
-                var v = mP.holiday_details.Where(a => (a.hd_name == hd_name || a.hd_from == fromdate) && a.hy_id == hy_id && a.hd_id != hd_id).FirstOrDefault();
+                var v = mP.holiday_details.Where(a => (a.hd_name == hd_name || a.hd_from == fromdate) /*&& a.hy_id == hy_id*/ && a.hd_id != hd_id).FirstOrDefault();
                 Debug.WriteLine(v == null ? "empty" : "not empty");
                 return v != null;
             }
         }
-        
+
+        [NonAction]
+        public static DateTime StartOfWeek(DateTime dt, DayOfWeek startOfWeek)
+        {
+            int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
+            return dt.AddDays(-1 * diff).Date;
+        }
+
     }
 }

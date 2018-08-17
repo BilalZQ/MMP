@@ -31,7 +31,7 @@
           <Property Name="hd_name" Type="varchar" MaxLength="45" Nullable="false" />
           <Property Name="hd_from" Type="date" Nullable="false" />
           <Property Name="hd_to" Type="date" Nullable="false" />
-          <Property Name="hy_id" Type="int" Nullable="false" />
+          <Property Name="hy_id" Type="int" />
           <Property Name="generated_by" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="holiday_year">
@@ -102,6 +102,7 @@
           <Property Name="tdd_day" Type="date" Nullable="false" />
           <Property Name="workhours" Type="double" />
           <Property Name="tsd_id" Type="int" />
+          <Property Name="holiday_id" Type="int" />
         </EntityType>
         <EntityType Name="timesheet_details">
           <Key>
@@ -183,7 +184,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_hd_holidayYear">
-          <End Role="holiday_year" Type="Self.holiday_year" Multiplicity="1">
+          <End Role="holiday_year" Type="Self.holiday_year" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
           <End Role="holiday_details" Type="Self.holiday_details" Multiplicity="*" />
@@ -305,6 +306,18 @@
             </Principal>
             <Dependent Role="timesheet_details">
               <PropertyRef Name="tsd_timesheet_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tdd_holiday">
+          <End Role="holiday_details" Type="Self.holiday_details" Multiplicity="0..1" />
+          <End Role="timesheet_day_details" Type="Self.timesheet_day_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="holiday_details">
+              <PropertyRef Name="hd_id" />
+            </Principal>
+            <Dependent Role="timesheet_day_details">
+              <PropertyRef Name="holiday_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -533,6 +546,10 @@
             <End Role="timesheets" EntitySet="timesheets" />
             <End Role="timesheet_details" EntitySet="timesheet_details" />
           </AssociationSet>
+          <AssociationSet Name="FK_tdd_holiday" Association="Self.FK_tdd_holiday">
+            <End Role="holiday_details" EntitySet="holiday_details" />
+            <End Role="timesheet_day_details" EntitySet="timesheet_day_details" />
+          </AssociationSet>
           <AssociationSet Name="FK_tdd_tsd" Association="Self.FK_tdd_tsd">
             <End Role="timesheet_details" EntitySet="timesheet_details" />
             <End Role="timesheet_day_details" EntitySet="timesheet_day_details" />
@@ -601,8 +618,8 @@
           <NavigationProperty Name="leave_details" Relationship="Self.FK_ld_category_type" FromRole="category_type_details" ToRole="leave_details" />
           <NavigationProperty Name="project_details" Relationship="Self.FK_pd_category_type" FromRole="category_type_details" ToRole="project_details" />
           <NavigationProperty Name="timesheet_details" Relationship="Self.FK_td_category_type" FromRole="category_type_details" ToRole="timesheet_details" />
-          <NavigationProperty Name="users" Relationship="mmpModel.FK_user_primary_department" FromRole="category_type_details" ToRole="user" />
-          <NavigationProperty Name="users1" Relationship="mmpModel.FK_user_primary_project" FromRole="category_type_details" ToRole="user" />
+          <NavigationProperty Name="users" Relationship="Self.FK_user_primary_department" FromRole="category_type_details" ToRole="users" />
+          <NavigationProperty Name="users1" Relationship="Self.FK_user_primary_project" FromRole="category_type_details" ToRole="users" />
         </EntityType>
         <EntityType Name="holiday_details">
           <Key>
@@ -616,6 +633,7 @@
           <Property Name="generated_by" Type="Int32" Nullable="false" />
           <NavigationProperty Name="user" Relationship="Self.FK_hd_generated_by" FromRole="holiday_details" ToRole="users" />
           <NavigationProperty Name="holiday_year" Relationship="Self.FK_hd_holidayYear" FromRole="holiday_details" ToRole="holiday_year" />
+          <NavigationProperty Name="timesheet_day_details" Relationship="Self.FK_tdd_holiday" FromRole="holiday_details" ToRole="timesheet_day_details" />
         </EntityType>
         <EntityType Name="holiday_year">
           <Key>
@@ -655,12 +673,12 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="sector_id" Type="Int32" Nullable="false" />
+          <Property Name="region_id" Type="Int32" Nullable="false" />
           <Property Name="project_model" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" />
           <Property Name="category_type_id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="category_type_details" Relationship="Self.FK_pd_category_type" FromRole="project_details" ToRole="category_type_details" />
+          <NavigationProperty Name="region" Relationship="Self.FK_pd_region" FromRole="project_details" ToRole="regions" />
           <NavigationProperty Name="sector" Relationship="Self.FK_pd_sector" FromRole="project_details" ToRole="sectors" />
-          <Property Name="region_id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="region" Relationship="mmpModel.FK_pd_region" FromRole="project_details" ToRole="region" />
         </EntityType>
         <EntityType Name="region">
           <Key>
@@ -668,8 +686,8 @@
           </Key>
           <Property Name="region_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="region_name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="project_details" Relationship="Self.FK_pd_region" FromRole="regions" ToRole="project_details" />
           <NavigationProperty Name="users" Relationship="Self.FK_users_region" FromRole="regions" ToRole="users" />
-          <NavigationProperty Name="project_details" Relationship="mmpModel.FK_pd_region" FromRole="region" ToRole="project_details" />
         </EntityType>
         <EntityType Name="role">
           <Key>
@@ -695,6 +713,8 @@
           <Property Name="tdd_day" Type="DateTime" Nullable="false" />
           <Property Name="workhours" Type="Double" />
           <Property Name="tsd_id" Type="Int32" />
+          <Property Name="holiday_id" Type="Int32" />
+          <NavigationProperty Name="holiday_details" Relationship="Self.FK_tdd_holiday" FromRole="timesheet_day_details" ToRole="holiday_details" />
           <NavigationProperty Name="timesheet_details" Relationship="Self.FK_tdd_tsd" FromRole="timesheet_day_details" ToRole="timesheet_details" />
         </EntityType>
         <EntityType Name="timesheet_details">
@@ -747,13 +767,20 @@
           </Key>
           <Property Name="user_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="role_id" Type="Int32" Nullable="false" />
+          <Property Name="employee_id" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="user_name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="user_email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="user_password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="designation" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="created_at" Type="DateTime" />
           <Property Name="updated_at" Type="DateTime" />
           <Property Name="supervisor" Type="Int32" />
           <Property Name="region_id" Type="Int32" Nullable="false" />
+          <Property Name="user_primary_department" Type="Int32" />
+          <Property Name="user_primary_project" Type="Int32" />
+          <Property Name="user_status" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="category_type_details" Relationship="Self.FK_user_primary_department" FromRole="users" ToRole="category_type_details" />
+          <NavigationProperty Name="category_type_details1" Relationship="Self.FK_user_primary_project" FromRole="users" ToRole="category_type_details" />
           <NavigationProperty Name="holiday_details" Relationship="Self.FK_hd_generated_by" FromRole="users" ToRole="holiday_details" />
           <NavigationProperty Name="presences" Relationship="Self.FK_presence_user_id" FromRole="users" ToRole="presence" />
           <NavigationProperty Name="region" Relationship="Self.FK_users_region" FromRole="users" ToRole="regions" />
@@ -763,13 +790,6 @@
           <NavigationProperty Name="timesheets1" Relationship="Self.FK_timesheets_user" FromRole="users" ToRole="timesheets" />
           <NavigationProperty Name="users1" Relationship="Self.FK_users_supervisor" FromRole="users" ToRole="users1" />
           <NavigationProperty Name="user1" Relationship="Self.FK_users_supervisor" FromRole="users1" ToRole="users" />
-          <Property Name="employee_id" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Name="designation" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="user_primary_department" Type="Int32" />
-          <Property Name="user_primary_project" Type="Int32" />
-          <Property Name="user_status" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="category_type_details" Relationship="mmpModel.FK_user_primary_department" FromRole="user" ToRole="category_type_details" />
-          <NavigationProperty Name="category_type_details1" Relationship="mmpModel.FK_user_primary_project" FromRole="user" ToRole="category_type_details" />
         </EntityType>
         <Association Name="FK_CT_category_id">
           <End Role="categories" Type="Self.category" Multiplicity="1">
@@ -841,6 +861,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_user_primary_department">
+          <End Role="category_type_details" Type="Self.category_type_details" Multiplicity="0..1" />
+          <End Role="users" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category_type_details">
+              <PropertyRef Name="ctd_id" />
+            </Principal>
+            <Dependent Role="users">
+              <PropertyRef Name="user_primary_department" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_user_primary_project">
+          <End Role="category_type_details" Type="Self.category_type_details" Multiplicity="0..1" />
+          <End Role="users" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="category_type_details">
+              <PropertyRef Name="ctd_id" />
+            </Principal>
+            <Dependent Role="users">
+              <PropertyRef Name="user_primary_project" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_hd_generated_by">
           <End Role="users" Type="Self.user" Multiplicity="1" />
           <End Role="holiday_details" Type="Self.holiday_details" Multiplicity="*" />
@@ -867,6 +911,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tdd_holiday">
+          <End Role="holiday_details" Type="Self.holiday_details" Multiplicity="0..1" />
+          <End Role="timesheet_day_details" Type="Self.timesheet_day_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="holiday_details">
+              <PropertyRef Name="hd_id" />
+            </Principal>
+            <Dependent Role="timesheet_day_details">
+              <PropertyRef Name="holiday_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_presence_user_id">
           <End Role="users" Type="Self.user" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -878,6 +934,20 @@
             </Principal>
             <Dependent Role="presence">
               <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_pd_region">
+          <End Role="regions" Type="Self.region" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="project_details" Type="Self.project_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="regions">
+              <PropertyRef Name="region_id" />
+            </Principal>
+            <Dependent Role="project_details">
+              <PropertyRef Name="region_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1051,6 +1121,14 @@
             <End Role="category_type_details" EntitySet="category_type_details" />
             <End Role="timesheet_details" EntitySet="timesheet_details" />
           </AssociationSet>
+          <AssociationSet Name="FK_user_primary_department" Association="Self.FK_user_primary_department">
+            <End Role="category_type_details" EntitySet="category_type_details" />
+            <End Role="users" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_user_primary_project" Association="Self.FK_user_primary_project">
+            <End Role="category_type_details" EntitySet="category_type_details" />
+            <End Role="users" EntitySet="users" />
+          </AssociationSet>
           <AssociationSet Name="FK_hd_generated_by" Association="Self.FK_hd_generated_by">
             <End Role="users" EntitySet="users" />
             <End Role="holiday_details" EntitySet="holiday_details" />
@@ -1059,9 +1137,17 @@
             <End Role="holiday_year" EntitySet="holiday_year" />
             <End Role="holiday_details" EntitySet="holiday_details" />
           </AssociationSet>
+          <AssociationSet Name="FK_tdd_holiday" Association="Self.FK_tdd_holiday">
+            <End Role="holiday_details" EntitySet="holiday_details" />
+            <End Role="timesheet_day_details" EntitySet="timesheet_day_details" />
+          </AssociationSet>
           <AssociationSet Name="FK_presence_user_id" Association="Self.FK_presence_user_id">
             <End Role="users" EntitySet="users" />
             <End Role="presence" EntitySet="presences" />
+          </AssociationSet>
+          <AssociationSet Name="FK_pd_region" Association="Self.FK_pd_region">
+            <End Role="regions" EntitySet="regions" />
+            <End Role="project_details" EntitySet="project_details" />
           </AssociationSet>
           <AssociationSet Name="FK_pd_sector" Association="Self.FK_pd_sector">
             <End Role="sectors" EntitySet="sectors" />
@@ -1138,18 +1224,6 @@
             <Parameter Name="startDate" Mode="In" Type="String" />
             <Parameter Name="endDate" Mode="In" Type="String" />
           </FunctionImport>
-          <AssociationSet Name="FK_user_primary_department" Association="mmpModel.FK_user_primary_department">
-            <End Role="category_type_details" EntitySet="category_type_details" />
-            <End Role="user" EntitySet="users" />
-          </AssociationSet>
-          <AssociationSet Name="FK_user_primary_project" Association="mmpModel.FK_user_primary_project">
-            <End Role="category_type_details" EntitySet="category_type_details" />
-            <End Role="user" EntitySet="users" />
-          </AssociationSet>
-          <AssociationSet Name="FK_pd_region" Association="mmpModel.FK_pd_region">
-            <End Role="region" EntitySet="regions" />
-            <End Role="project_details" EntitySet="project_details" />
-          </AssociationSet>
         </EntityContainer>
         <ComplexType Name="ReportCategoryTotalHours_Result" >
           <Property Type="String" Name="ctd_name" Nullable="false" />
@@ -1186,44 +1260,6 @@
           <Property Type="String" Name="ctd_name" Nullable="false" />
           <Property Type="Double" Name="workhours" Nullable="false" />
         </ComplexType>
-        <Association Name="FK_user_primary_department">
-          <End Type="mmpModel.category_type_details" Role="category_type_details" Multiplicity="0..1" />
-          <End Type="mmpModel.user" Role="user" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="category_type_details">
-              <PropertyRef Name="ctd_id" />
-            </Principal>
-            <Dependent Role="user">
-              <PropertyRef Name="user_primary_department" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_user_primary_project">
-          <End Type="mmpModel.category_type_details" Role="category_type_details" Multiplicity="0..1" />
-          <End Type="mmpModel.user" Role="user" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="category_type_details">
-              <PropertyRef Name="ctd_id" />
-            </Principal>
-            <Dependent Role="user">
-              <PropertyRef Name="user_primary_project" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_pd_region">
-          <End Type="mmpModel.region" Role="region" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="mmpModel.project_details" Role="project_details" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="region">
-              <PropertyRef Name="region_id" />
-            </Principal>
-            <Dependent Role="project_details">
-              <PropertyRef Name="region_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1297,9 +1333,9 @@
           <EntitySetMapping Name="project_details">
             <EntityTypeMapping TypeName="mmpModel.project_details">
               <MappingFragment StoreEntitySet="project_details">
-                <ScalarProperty Name="region_id" ColumnName="region_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="sector_id" ColumnName="sector_id" />
+                <ScalarProperty Name="region_id" ColumnName="region_id" />
                 <ScalarProperty Name="project_model" ColumnName="project_model" />
                 <ScalarProperty Name="category_type_id" ColumnName="category_type_id" />
               </MappingFragment>
@@ -1336,6 +1372,7 @@
                 <ScalarProperty Name="tdd_day" ColumnName="tdd_day" />
                 <ScalarProperty Name="workhours" ColumnName="workhours" />
                 <ScalarProperty Name="tsd_id" ColumnName="tsd_id" />
+                <ScalarProperty Name="holiday_id" ColumnName="holiday_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1379,20 +1416,20 @@
           <EntitySetMapping Name="users">
             <EntityTypeMapping TypeName="mmpModel.user">
               <MappingFragment StoreEntitySet="users">
-                <ScalarProperty Name="user_status" ColumnName="user_status" />
-                <ScalarProperty Name="user_primary_project" ColumnName="user_primary_project" />
-                <ScalarProperty Name="user_primary_department" ColumnName="user_primary_department" />
-                <ScalarProperty Name="designation" ColumnName="designation" />
-                <ScalarProperty Name="employee_id" ColumnName="employee_id" />
                 <ScalarProperty Name="user_id" ColumnName="user_id" />
                 <ScalarProperty Name="role_id" ColumnName="role_id" />
+                <ScalarProperty Name="employee_id" ColumnName="employee_id" />
                 <ScalarProperty Name="user_name" ColumnName="user_name" />
                 <ScalarProperty Name="user_email" ColumnName="user_email" />
                 <ScalarProperty Name="user_password" ColumnName="user_password" />
+                <ScalarProperty Name="designation" ColumnName="designation" />
                 <ScalarProperty Name="created_at" ColumnName="created_at" />
                 <ScalarProperty Name="updated_at" ColumnName="updated_at" />
                 <ScalarProperty Name="supervisor" ColumnName="supervisor" />
                 <ScalarProperty Name="region_id" ColumnName="region_id" />
+                <ScalarProperty Name="user_primary_department" ColumnName="user_primary_department" />
+                <ScalarProperty Name="user_primary_project" ColumnName="user_primary_project" />
+                <ScalarProperty Name="user_status" ColumnName="user_status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1403,10 +1440,7 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="ReportCategoryUserWorkHours" FunctionName="mmpModel.Store.ReportCategoryUserWorkHours">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="mmpModel.ReportCategoryUserWorkHours_Result" >
-                <ScalarProperty Name="ctd_name" ColumnName="ctd_name" />
-                <ScalarProperty Name="user_name" ColumnName="user_name" />
-              </ComplexTypeMapping>
+              <ComplexTypeMapping TypeName="mmpModel.ReportCategoryUserWorkHours_Result" />
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="ReportLeaves" FunctionName="mmpModel.Store.ReportLeaves">
@@ -1431,11 +1465,7 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="ReportUsProjectWorkHours" FunctionName="mmpModel.Store.ReportUsProjectWorkHours">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="mmpModel.ReportUsProjectWorkHours_Result" >
-                <ScalarProperty Name="tdd_day" ColumnName="tdd_day" />
-                <ScalarProperty Name="ctd_name" ColumnName="ctd_name" />
-                <ScalarProperty Name="workhours" ColumnName="workHours" />
-              </ComplexTypeMapping>
+              <ComplexTypeMapping TypeName="mmpModel.ReportUsProjectWorkHours_Result" />
             </ResultMapping>
           </FunctionImportMapping>
         </EntityContainerMapping>

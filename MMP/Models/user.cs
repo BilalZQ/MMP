@@ -27,19 +27,21 @@ namespace MMP.Models
     
         public int user_id { get; set; }
         public int role_id { get; set; }
+        public string employee_id { get; set; }
         public string user_name { get; set; }
         public string user_email { get; set; }
         public string user_password { get; set; }
+        public string designation { get; set; }
         public Nullable<System.DateTime> created_at { get; set; }
         public Nullable<System.DateTime> updated_at { get; set; }
         public Nullable<int> supervisor { get; set; }
         public int region_id { get; set; }
-        public string employee_id { get; set; }
-        public string designation { get; set; }
         public Nullable<int> user_primary_department { get; set; }
         public Nullable<int> user_primary_project { get; set; }
         public string user_status { get; set; }
     
+        public virtual category_type_details category_type_details { get; set; }
+        public virtual category_type_details category_type_details1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<holiday_details> holiday_details { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -55,7 +57,5 @@ namespace MMP.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<user> users1 { get; set; }
         public virtual user user1 { get; set; }
-        public virtual category_type_details category_type_details { get; set; }
-        public virtual category_type_details category_type_details1 { get; set; }
     }
 }

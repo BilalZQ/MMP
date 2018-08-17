@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using MMP.Generic_Functions;
 using MMP.Models.ViewModels.TimeSheet;
 using System.Web.Script.Serialization;
+using System.Threading.Tasks;
 
 namespace MMP.Controllers
 {
@@ -66,6 +67,7 @@ namespace MMP.Controllers
             {
                 mP.Configuration.ProxyCreationEnabled = false;
                 var timesheet = mP.timesheet_mr.Where(x => x.tsmr_valid_till > DateTime.Now).FirstOrDefault<timesheet_mr>();
+                string body;
 
                 if (timesheet == null)
                 {
@@ -82,6 +84,8 @@ namespace MMP.Controllers
                     mP.timesheet_mr.Add(tsmr);
 
                     int timesheetID = tsmr.tsmr_id;
+
+                    
 
                     foreach (user user in mP.users.Where(x => x.user_status == "active"))
                     {
@@ -108,9 +112,17 @@ namespace MMP.Controllers
                             };
                             mP.presences.Add(ps);
                         }
+
+                        body = "<br></br>" + user.user_name +", TimeSheet for current week has been generated. TimeSheet is valid Till "+ endDate +". Visit the following website to access timeSheet<br></br>" +
+                "<a href='http://magcom-001-site3.etempurl.com'>http://magcom-001-site3.etempurl.com</a>";
+
+                        Task.Run(() => EmailAlert.SendEmail(user.user_email, body)); 
                     }
 
                     mP.SaveChanges();
+
+
+                    //EmailAlert.SendEmail("bilal@simsum.co");
 
                     return Json(new { success = true, message = "TimeSheets Generated Successfully" }, JsonRequestBehavior.AllowGet);
                 }
@@ -217,7 +229,8 @@ namespace MMP.Controllers
                             tdd_id = y.tsdd.tdd_id,
                             tdd_day = y.tsdd.tdd_day,
                             workhours = y.tsdd.workhours,
-                            tsd_id = y.tsdd.tsd_id
+                            tsd_id = y.tsdd.tsd_id,
+                            holiday = y.tsdd.holiday_id
                         }).OrderBy(y => y.tdd_id).ToList()
                     });
 
@@ -241,7 +254,7 @@ namespace MMP.Controllers
             {
                 using (mmpEntities mP = new mmpEntities())
                 {
-                    var presenceList = new List<KeyValuePair<DateTime, double?>>();
+                    var presenceList = new List<KeyValuePair<DateTime?, double?>>();
                     ViewBag.Categories = mP.categories.ToList<category>();
                     ViewBag.CategoryTypes = mP.category_type_details.ToList<category_type_details>();
 
@@ -319,11 +332,11 @@ namespace MMP.Controllers
                                     {
                                         double? workHours = presenceList.First(x => x.Key == child.tdd_day).Value;
                                         workHours = workHours + child.workhours;
-                                        presenceList.Add(new KeyValuePair<DateTime, double?>(child.tdd_day, workHours));
+                                        presenceList.Add(new KeyValuePair<DateTime?, double?>(child.tdd_day, workHours));
                                     }
                                     else
                                     {
-                                        presenceList.Add(new KeyValuePair<DateTime, double?>(child.tdd_day, child.workhours));
+                                        presenceList.Add(new KeyValuePair<DateTime?, double?>(child.tdd_day, child.workhours));
                                     }
                                 }
 
@@ -334,7 +347,7 @@ namespace MMP.Controllers
                         foreach (var item in presenceList)
                         {
                             var pres = mP.presences.Where(x => x.p_date == item.Key && x.user_id == ts.timesheet_user).FirstOrDefault();
-                            pres.p_date = item.Key;
+                            pres.p_date = item.Key??DateTime.Now;
                             pres.total_hours = item.Value;
 
                             if (item.Value == 0)
@@ -490,7 +503,8 @@ namespace MMP.Controllers
                                 tdd_id = y.tsdd.tdd_id,
                                 tdd_day = y.tsdd.tdd_day,
                                 workhours = y.tsdd.workhours,
-                                tsd_id = y.tsdd.tsd_id
+                                tsd_id = y.tsdd.tsd_id,
+                                holiday = y.tsdd.holiday_id
                             }).OrderBy(y => y.tdd_id).ToList()
                         });
 
@@ -514,8 +528,10 @@ namespace MMP.Controllers
         [Authorize(Roles = "supervisor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SupervisorUserTimeSheetEdit(List<ParentVM> pvm, string submit)
+        public ActionResult SupervisorUserTimeSheetEdit(List<ParentVM> pvm, string submit, string remarks)
         {
+
+            string body = "";
             if (ModelState.IsValid)
             {
                 using (mmpEntities mP = new mmpEntities())
@@ -544,10 +560,22 @@ namespace MMP.Controllers
                             case "Reject":
                                 ts.timesheet_status = "rejected";
                                 ViewBag.Message = "TimeSheet Rejected";
+                                if (remarks == "")
+                                {
+                                    remarks = "No remarks";
+                                }
+                                body = "<br></br>" + user.user_name + ", Your timeSheet created at "+ timeSheetMR.tsmr_start_date + " and Valid till "+timeSheetMR.tsmr_valid_till+" has been <b>Rejected</b> by your supervisor. You can edit and resubmit the TimeSheet Till " + ts.tsmr_extension + ".<br></br><b>Remarks from supervisor:</b> "+remarks+ "<br></br> Visit the following website to access timeSheet<br></br>" +
+                "<a href='http://magcom-001-site3.etempurl.com'>http://magcom-001-site3.etempurl.com</a>";
                                 break;
                             case "Accept":
                                 ts.timesheet_status = "accepted";
                                 ViewBag.Message = "TimeSheet Accepted";
+                                if (remarks == "")
+                                {
+                                    remarks = "No remarks";
+                                }
+                                body = "<br></br>" + user.user_name + ", Your timeSheet created at " + timeSheetMR.tsmr_start_date + " and Valid till " + timeSheetMR.tsmr_valid_till + " has been <b>Accepted</b> by your supervisor. <br></br><b>Remarks from supervisor:</b> " + remarks + "<br></br> Visit the following website to access timeSheet<br></br>" +
+                "<a href='http://magcom-001-site3.etempurl.com'>http://magcom-001-site3.etempurl.com</a>";
                                 break;
                         }
                         //ts.timesheet_status = ts.timesheet_status == "rejected" ? "submitted" : "saved"; //Based on button press (cannot be saved, can only be submitted)
@@ -557,6 +585,10 @@ namespace MMP.Controllers
                         mP.Entry(ts).State = EntityState.Modified;
 
                         mP.SaveChanges();
+
+                        
+
+                        Task.Run(() => EmailAlert.SendEmail(user.user_email, body));
 
                         return View(pvm);
 
@@ -678,7 +710,7 @@ namespace MMP.Controllers
 
         [Authorize(Roles = "user, admin, supervisor")]
         [HttpGet]
-        public ActionResult TimeSheetEditView(int id = 0)
+        public ActionResult TimeSheetEditView(int id = 0, string message = "")
         {
             using (mmpEntities mP = new mmpEntities())
             {
@@ -695,7 +727,7 @@ namespace MMP.Controllers
 
                     // ADD USER TO THE TIMESHEET EDIT VIEW
                     ViewBag.UserName = mP.users.FirstOrDefault(x => x.user_id == timesheetCaller.timesheet_user).user_name;
-
+                    ViewBag.Message = message;
 
                     if (timesheetCaller.timesheet_user == UserID_RoleID.getUserID())
                     {
@@ -705,7 +737,7 @@ namespace MMP.Controllers
 
                         var timesheetDetails = from tsd in mP.timesheet_details
                                                join tsdd in mP.timesheet_day_details on tsd.tsd_id equals tsdd.tsd_id into tsddps
-                                               from tsdd in tsddps.DefaultIfEmpty()
+                                               from tsdd in tsddps.DefaultIfEmpty()    
                                                select new
                                                {
                                                    tsd,
@@ -723,9 +755,19 @@ namespace MMP.Controllers
                                 tdd_id = y.tsdd.tdd_id,
                                 tdd_day = y.tsdd.tdd_day,
                                 workhours = y.tsdd.workhours,
-                                tsd_id = y.tsdd.tsd_id
+                                tsd_id = y.tsdd.tsd_id,
+                                holiday = y.tsdd.holiday_id
                             }).OrderBy(y => y.tdd_id).ToList()
                         });
+
+/*                        model.Where(x => x.tsd_timesheet_id == id).ToList().ForEach(s => s.timesheet_day_details.ToList().ForEach(y => y.holiday = mP.holiday_details.FirstOrDefault(z => z.hd_from <= y.tdd_day && z.hd_to >= y.tdd_day) != null ? 0 : 1));
+
+                        var newModel = model.Select(i => {
+                            i.timesheet_day_details.Select(x =>
+                            {
+                                x.holiday = mP.holiday_details.FirstOrDefault(z => z.hd_from <= x.tdd_day && z.hd_to >= x.tdd_day) != null ? 0 : 1
+                            });
+                        });*/
 
                         return View(model.ToList());
                     }
@@ -753,7 +795,7 @@ namespace MMP.Controllers
                 using (mmpEntities mP = new mmpEntities())
                 {
 
-                    var presenceList = new List<KeyValuePair<DateTime, double?>>();
+                    var presenceList = new List<KeyValuePair<DateTime?, double?>>();
 
                     ViewBag.Categories = mP.categories.ToList<category>();
                     ViewBag.CategoryTypes = mP.category_type_details.ToList<category_type_details>();
@@ -794,7 +836,8 @@ namespace MMP.Controllers
                                 if (ts.timesheet_status == "rejected")
                                 {
                                     ViewBag.Message = "You are not allowed to save a rejected timeSheet";
-                                    return View(pvm);
+                                    ModelState.Clear();
+                                    return this.RedirectToAction("TimeSheetEditView", "TimeSheet", new { id = tsd_timesheet_id, message = "You are not allowed to save a rejected timeSheet" });
                                 }
                                 ts.timesheet_status = "saved";
                                 ViewBag.Message = "TimeSheet Saved Successfully";
@@ -832,11 +875,11 @@ namespace MMP.Controllers
                                     {
                                         double? workHours = presenceList.First(x => x.Key == child.tdd_day).Value;
                                         workHours = workHours + child.workhours;
-                                        presenceList.Add(new KeyValuePair<DateTime, double?>(child.tdd_day, workHours));
+                                        presenceList.Add(new KeyValuePair<DateTime?, double?>(child.tdd_day, workHours));
                                     }
                                     else
                                     {
-                                        presenceList.Add(new KeyValuePair<DateTime, double?>(child.tdd_day, child.workhours));
+                                        presenceList.Add(new KeyValuePair<DateTime?, double?>(child.tdd_day, child.workhours));
                                     }
                                 }
 
@@ -847,7 +890,7 @@ namespace MMP.Controllers
                         foreach (var item in presenceList)
                         {
                             var pres = mP.presences.Where(x => x.p_date == item.Key && x.user_id == ts.timesheet_user).FirstOrDefault();
-                            pres.p_date = item.Key;
+                            pres.p_date = item.Key??DateTime.Now;
                             pres.total_hours = item.Value;
                             if (item.Value == 0)
                             {
@@ -864,7 +907,18 @@ namespace MMP.Controllers
 
                         mP.SaveChanges();
 
-                        return View(pvm);
+                        ModelState.Clear();
+                        
+
+                        if (User.Identity.IsAuthenticated && UserID_RoleID.getRole(User.Identity.Name) == "admin")
+                        {
+                            return this.RedirectToAction("AdminTimeSheets", "TimeSheet");
+                        }
+                        else
+                        {
+                            return this.RedirectToAction("UserTimesheets", "TimeSheet");
+                        }
+
 
                     }
                     else if (ts.timesheet_status == ("accepted") || ts.timesheet_status == "submitted") //Do this properly
@@ -950,13 +1004,30 @@ namespace MMP.Controllers
 
                         foreach (DateTime day in EachDay(timesheets_mr.tsmr_start_date, timesheets_mr.tsmr_valid_till))
                         {
-                            timesheet_day_details tdd = new timesheet_day_details()
+                            var hdd = mP.holiday_details.Where(z => z.hd_from <= day && z.hd_to >= day).FirstOrDefault<holiday_details>();
+                            if (hdd != null)
                             {
-                                tdd_day = day,
-                                workhours = 0,
-                                tsd_id = td.tsd_id
-                            };
-                            mP.timesheet_day_details.Add(tdd);
+                                timesheet_day_details tdd = new timesheet_day_details()
+                                {
+                                    tdd_day = day,
+                                    workhours = 0,
+                                    tsd_id = td.tsd_id,
+                                    holiday_id = hdd.hd_id
+                                };
+                                mP.timesheet_day_details.Add(tdd);
+
+                            }
+                            else
+                            {
+                                timesheet_day_details tdd = new timesheet_day_details()
+                                {
+                                    tdd_day = day,
+                                    workhours = 0,
+                                    tsd_id = td.tsd_id,
+                                    holiday_id = null
+                                };
+                                mP.timesheet_day_details.Add(tdd);
+                            }
                             mP.SaveChanges();
                         }
 
@@ -1008,6 +1079,7 @@ namespace MMP.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ExtendTimeSheet(ExtendTimeSheet ets)
         {
+            string body;
             if (ModelState.IsValid)
             {
                 using (mmpEntities mP = new mmpEntities())
@@ -1018,6 +1090,15 @@ namespace MMP.Controllers
                         ts.tsmr_extension = ets.tsmr_extension;
                         mP.Entry(ts).State = EntityState.Modified;
                         mP.SaveChanges();
+
+                        var user = mP.users.Where(x => x.user_id == ts.timesheet_user).FirstOrDefault<user>();
+                        timesheet_mr tsmr = mP.timesheet_mr.Where(x => x.tsmr_id == ts.timesheet_caller).FirstOrDefault<timesheet_mr>();
+
+                        body = "<br></br>" + user.user_name + ", Your TimeSheet that was created at " + tsmr.tsmr_start_date + " and Valid till "+ tsmr.tsmr_valid_till+" has been extended till "+ets.tsmr_extension+". Visit the following website to access timeSheet<br></br>" +
+                               "<a href='http://magcom-001-site3.etempurl.com'>http://magcom-001-site3.etempurl.com</a>";
+
+                        Task.Run(() => EmailAlert.SendEmail(user.user_email, body));
+
                         return Json(new { success = true, message = "TimeSheet submittion date successfully extended" }, JsonRequestBehavior.AllowGet);
                     }
                     else

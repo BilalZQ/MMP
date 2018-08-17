@@ -16,12 +16,12 @@ namespace MMP.Models
     {
         public int id { get; set; }
         public int sector_id { get; set; }
+        public int region_id { get; set; }
         public string project_model { get; set; }
         public int category_type_id { get; set; }
-        public int region_id { get; set; }
     
         public virtual category_type_details category_type_details { get; set; }
-        public virtual sector sector { get; set; }
         public virtual region region { get; set; }
+        public virtual sector sector { get; set; }
     }
 }

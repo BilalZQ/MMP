@@ -4,30 +4,34 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="95be6490bfc349d4a29d36707f222658" Name="Diagram1">
-        <EntityTypeShape EntityType="mmpModel.category" Width="1.5" PointX="7.5" PointY="3.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.category_type_details" Width="1.5" PointX="7.5" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.holiday_details" Width="1.5" PointX="5.25" PointY="2.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.holiday_year" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.leave_details" Width="1.5" PointX="9.75" PointY="11.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.presence" Width="1.5" PointX="5.25" PointY="6.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.project_details" Width="1.5" PointX="9.75" PointY="14.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.region" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.role" Width="1.5" PointX="0.75" PointY="2.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.sector" Width="1.5" PointX="7.5" PointY="15.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.timesheet_day_details" Width="1.5" PointX="12" PointY="7" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.timesheet_details" Width="1.5" PointX="9.75" PointY="6.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.timesheet_mr" Width="1.5" PointX="5.25" PointY="9.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.timesheet" Width="1.5" PointX="7.5" PointY="6.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="mmpModel.user" Width="1.5" PointX="3" PointY="3.875" IsExpanded="true" />
+      <Diagram DiagramId="4f88c8d4f3ef403ab8e68eddf0361555" Name="Diagram1">
+        <EntityTypeShape EntityType="mmpModel.category" Width="1.5" PointX="0.75" PointY="10.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.category_type_details" Width="1.5" PointX="3" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.holiday_details" Width="1.5" PointX="10.5" PointY="15.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.holiday_year" Width="1.5" PointX="8.25" PointY="14.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.leave_details" Width="1.5" PointX="5.25" PointY="10.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.presence" Width="1.5" PointX="7.5" PointY="17.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.project_details" Width="1.5" PointX="8.25" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.region" Width="1.5" PointX="3" PointY="14.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.role" Width="1.5" PointX="3" PointY="17" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.sector" Width="1.5" PointX="6" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.timesheet_day_details" Width="1.5" PointX="7.5" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.timesheet_details" Width="1.5" PointX="5.25" PointY="6.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.timesheet_mr" Width="1.5" PointX="7.5" PointY="20.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.timesheet" Width="1.5" PointX="9.75" PointY="19.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="mmpModel.user" Width="1.5" PointX="5.25" PointY="13.625" IsExpanded="true" />
         <AssociationConnector Association="mmpModel.FK_CT_category_id" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_td_category" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_ld_category_type" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_pd_category_type" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_td_category_type" ManuallyRouted="false" />
+        <AssociationConnector Association="mmpModel.FK_user_primary_department" ManuallyRouted="false" />
+        <AssociationConnector Association="mmpModel.FK_user_primary_project" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_hd_generated_by" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_hd_holidayYear" ManuallyRouted="false" />
+        <AssociationConnector Association="mmpModel.FK_tdd_holiday" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_presence_user_id" ManuallyRouted="false" />
+        <AssociationConnector Association="mmpModel.FK_pd_region" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_pd_sector" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_users_region" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_users_role" ManuallyRouted="false" />
@@ -38,9 +42,6 @@
         <AssociationConnector Association="mmpModel.FK_timesheets_approver" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_timesheets_user" ManuallyRouted="false" />
         <AssociationConnector Association="mmpModel.FK_users_supervisor" ManuallyRouted="false" />
-        <AssociationConnector Association="mmpModel.FK_user_primary_department" />
-        <AssociationConnector Association="mmpModel.FK_user_primary_project" />
-        <AssociationConnector Association="mmpModel.FK_pd_region" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

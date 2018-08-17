@@ -8,7 +8,7 @@ namespace MMP.Models
 {
     public partial class ReportLeaves_Result
     {
-        [NotMapped]
-        public string day { get { return this.tdd_day.ToString("MM/dd/yyyy"); } }
+        //[NotMapped]
+        //public string day { get { return this.tdd_day.ToString("MM/dd/yyyy"); } }
     }
 }

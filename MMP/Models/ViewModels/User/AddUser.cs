@@ -19,7 +19,7 @@ namespace MMP.Models.ViewModels.User
         public string user_name { get; set; }
 
         [Display(Name = "Role")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Confirm Password is required")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "User Role is required")]
         public int role_id { get; set; }
 
         [Display(Name = "Password")]

@@ -9,7 +9,7 @@ namespace MMP.Models
     public partial class ReportUsProjectWorkHours_Result
     {
 
-        [NotMapped]
-        public string day { get { return this.tdd_day.ToString("MM/dd/yyyy"); } }
+        //[NotMapped]
+        //public string day { get { return this.tdd_day.ToString("MM/dd/yyyy"); } }
     }
 }

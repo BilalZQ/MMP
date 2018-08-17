@@ -114,10 +114,21 @@
                                 {
                                     @Html.HiddenFor(m => m[j].timesheet_day_details[i].tdd_id)
                                     @Html.HiddenFor(m => m[j].timesheet_day_details[i].tdd_day)
-                                    <td>
-                                        @Html.EditorFor(m => m[j].timesheet_day_details[i].workhours, new { htmlAttributes = new { @class = "form-control", @style = "float: center;text-align: center;" } })
-                                        @Html.ValidationMessageFor(m => m[j].timesheet_day_details[i].workhours)
-                                    </td>
+                                    @Html.HiddenFor(m => m[j].timesheet_day_details[i].holiday)
+                                    if (@Model[j].timesheet_day_details[i].holiday.HasValue)
+                                    {
+                                        <td>
+                                            @Html.EditorFor(m => m[j].timesheet_day_details[i].workhours, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @style = "float: center;text-align: center;" } })
+                                            @Html.HiddenFor(m => m[j].timesheet_day_details[i].workhours)
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            @Html.EditorFor(m => m[j].timesheet_day_details[i].workhours, new { htmlAttributes = new { @class = "form-control", @onchange = "OnChangeEvent()", @style = "float: center;text-align: center;" } })
+                                            @Html.ValidationMessageFor(m => m[j].timesheet_day_details[i].workhours)
+                                        </td>
+                                    }
                                     @Html.HiddenFor(m => m[j].timesheet_day_details[i].tsd_id)
 
 
@@ -285,6 +296,10 @@
                                 className: "success"
                             })
                         }
+                        else
+                        {
+                            location.reload(true);
+                        }
                     }
                 });
             }
@@ -302,7 +317,7 @@
                     {
                         if (data.success)
                         {
-                            location.reload(true);
+                            window.location.reload(false);
                             //dataTable.ajax.reload();
 
                             //notify.js plugin

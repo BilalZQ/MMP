@@ -78,16 +78,18 @@
 <!-- End Page wrapper  -->
 <!-- ============================================================== -->
 
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
 
 
 @section Scripts{
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
     <script>
         var Popup, dataTable;
 
-        $(document).ready(function (){
+        $(document).ready(function () {
             dataTable = $("#holidayTable").DataTable({
                 "ajax": {
                     "url": "/Holiday/GetData",
@@ -99,8 +101,9 @@
                     { "data": "hd.holiday_from" },
                     { "data": "hd.holiday_till" },
                     { "data": "year" },
-                    { "data": "hd.hd_id", "render": function (data) {
-                            return "<a class= 'btn btn-default btn-sm' onclick=OpenModal('@Url.Action("EditHolidays", "Holiday")/" + data + "')><i class= 'fa fa-pencil'></i> Edit</a>"//<a class= 'btn btn-danger btn-sm' style='margin-left:5px' onclick=Delete("+data+")><i class= 'fa fa-trash'></i> Delete</a>"
+                    {
+                        "data": "hd.hd_id", "render": function (data) {
+                            return "<a class= 'btn btn-danger btn-sm' style='margin-left:5px' onclick=Delete(" + data + ")><i class= 'fa fa-trash'></i> Delete</a>"//"<a class= 'btn btn-default btn-sm' onclick=OpenModal('@Url.Action("EditHolidays", "Holiday")/" + data + "')><i class= 'fa fa-pencil'></i> Edit</a><a class= 'btn btn-danger btn-sm' style='margin-left:5px' onclick=Delete("+data+")><i class= 'fa fa-trash'></i> Delete</a>"
                         },
                         "orderable": false,
                         "searchable": false,
@@ -134,8 +137,8 @@
                     alert("Dynamic content load failed.");
                 }
             });
-            //$("#closebtn").on('click',function(){  
-            //    $('#myModal').modal('hide');    
+            //$("#closebtn").on('click',function(){
+            //    $('#myModal').modal('hide');
 
             $("#closbtn").click(function () {
                 $('#myModal').modal('hide');
@@ -180,13 +183,49 @@
                                 className: "success"
                             })
                         }
+                        else
+                        {
+
+                            alert("You cannot add dates for current or previous weeks and date To has to be greater than or equal to date from.");
+                        }
                     }
                 });
             }
             return false;
         }
 
-        
+        function Delete(id)
+        {
+            if (confirm('Are you sure you want to remove this user?'))
+            {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete", "Holiday")/' + id,
+                    success: function (data) {
+                        if (data.success) {
+                            dataTable.ajax.reload(null, false);
+                            //alert(data.message);
+                            toastr.options = {
+                                timeOut: 0,
+                                positionClass: "toast-top-center"
+                            };
+                            toastr.success(data.message, "Success");
+                        }
+                        else
+                        {
+                            //alert(data.message);
+                            toastr.options = {
+                                timeOut: 0,
+                                positionClass: "toast-top-center"
+                            };
+                            toastr.error(data.message, "Error!");
+                        }
+                    }
+                })
+            }
+        }
+
+
 
     </script>
 }

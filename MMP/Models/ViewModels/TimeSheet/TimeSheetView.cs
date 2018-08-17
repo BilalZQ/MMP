@@ -24,11 +24,13 @@ namespace MMP.Models.ViewModels.TimeSheet
         
         public int? tdd_id { get; set; }
         
-        public DateTime tdd_day { get; set; }
+        public Nullable<DateTime> tdd_day { get; set; }
         
         public Nullable<double> workhours { get; set; }
 
         public int?  tsd_id { get; set; }
+
+        public Nullable<int> holiday { get; set; }
     }
 
     public class AddCategoryandCategoryType
@@ -44,4 +46,5 @@ namespace MMP.Models.ViewModels.TimeSheet
         [System.Web.Mvc.Remote("CheckExistingTimeSheetCategory", "ModelValidation", HttpMethod = "POST", ErrorMessage = "Category type already added to timeSheet", AdditionalFields = "tsd_timesheet_id")]
         public int tsd_category_type_id { get; set; }
     }
+    
 }

@@ -73,26 +73,32 @@
                         <th>Calculate Total</th>
                         <th></th>
                     </tr>
-                    @if (Model != null && Model.Count > 0)  // GET THEM IN ONE LOOP
-                {
-                    for (int j = 0; j < Model.Count; j++)
+                    @if (Model != null && Model.Count > 0)
                     {
+                        for (int j = 0; j < Model.Count; j++)
+                        {
+
+                            Rowtotal = 0.0;
+
                             <tr style="border: 1px solid black">
-                                @Html.HiddenFor(a => a[j].tsd_id)
-                                @Html.HiddenFor(a => a[j].tsd_timesheet_id)
+                                @Html.HiddenFor(a => a[j].tsd_id, new { @name = "tsd_id_" + j })
+                                @Html.HiddenFor(a => a[j].tsd_timesheet_id, new { @name = "tsd_timesheet_id_" + j })
                                 <td>
                                     <!--@Html.DisplayFor(a => a[j].tsd_category_id, new { htmlAttributes = new { @class = "form-control" } })-->
-                                    @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.Categories, "category_id", "category_name", Model[j].tsd_category_id), new { @class = "customDrowDown", @disabled = "disabled" })
+                                    @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.Categories, "category_id", "category_name", Model[j].tsd_category_id), new { @disabled = "disabled" })
+                                    @Html.HiddenFor(a => a[j].tsd_category_id)
                                     @Html.ValidationMessageFor(a => a[j].tsd_category_id)
                                 </td>
                                 <td>
                                     <!--@Html.DisplayFor(a => a[j].tsd_category_type_id, new { htmlAttributes = new { @class = "form-control" } })-->
-                                    @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_name", Model[j].tsd_category_type_id), new { @class = "customDrowDown", @disabled = "disabled" })
+                                    @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_name", Model[j].tsd_category_type_id), new { @disabled = "disabled" })
+                                    @Html.HiddenFor(a => a[j].tsd_category_id)
                                     @Html.ValidationMessageFor(a => a[j].tsd_category_type_id)
                                 </td>
 
                                 <td>
-                                    @Html.DropDownListFor(a => a[j].tsd_category_type_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_code", Model[j].tsd_category_type_id), new { @class = "customDrowDown", @disabled = "disabled" })
+                                    @Html.DropDownListFor(a => a[j].tsd_category_type_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_code", Model[j].tsd_category_type_id), new { @disabled = "disabled" })
+                                    @Html.HiddenFor(a => a[j].tsd_category_type_id)
                                     @Html.ValidationMessageFor(a => a[j].tsd_category_type_id)
                                 </td>
 
@@ -103,16 +109,28 @@
                                     @Html.HiddenFor(m => m[j].timesheet_day_details[i].tdd_day)
                                     <td>
                                         @Html.EditorFor(m => m[j].timesheet_day_details[i].workhours, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @style = "float: center;text-align: center;" } })
+                                        @Html.HiddenFor(m => m[j].timesheet_day_details[i].workhours)
                                         @Html.ValidationMessageFor(m => m[j].timesheet_day_details[i].workhours)
                                     </td>
                                     @Html.HiddenFor(m => m[j].timesheet_day_details[i].tsd_id)
 
 
                                     Rowtotal = (@Model[j].timesheet_day_details[i].workhours.Value) + Rowtotal;
+
+
                                 }
 
                                 <td align="center">@Rowtotal</td>
+
+
+                                <td>
+                                    @if (j >= 0)
+                                    {
+                                        <a class="btn btn-danger" onclick="Delete(@Model[j].tsd_timesheet_id, @Model[j].tsd_category_type_id)"><i class="fa fa-trash"></i> Delete</a><!--NEED TO GIVE OPTION TO DELETE ROWS (CATEGORY AND CATEGORY TYPE ID WITH ALL ITS RESPECTIVE WORKHOUR ENTRIES)-->
+                                    }
+                                </td>
                             </tr>
+
                         }
 
                         <tr>
@@ -134,8 +152,14 @@
                             }
                         </tr>
 
-                    }
 
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td align="center"><b>Remarks: </b></td>
+                            <td>&nbsp;</td>
+                            <td><input type="text" name="remarks" /></td>
+                        </tr>
+                    }
 
 
                 </table>

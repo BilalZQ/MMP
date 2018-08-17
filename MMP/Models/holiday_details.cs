@@ -14,14 +14,22 @@ namespace MMP.Models
     
     public partial class holiday_details
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public holiday_details()
+        {
+            this.timesheet_day_details = new HashSet<timesheet_day_details>();
+        }
+    
         public int hd_id { get; set; }
         public string hd_name { get; set; }
         public System.DateTime hd_from { get; set; }
         public System.DateTime hd_to { get; set; }
-        public int hy_id { get; set; }
+        public int? hy_id { get; set; }
         public int generated_by { get; set; }
     
         public virtual user user { get; set; }
         public virtual holiday_year holiday_year { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<timesheet_day_details> timesheet_day_details { get; set; }
     }
 }
