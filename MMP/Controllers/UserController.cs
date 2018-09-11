@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -115,21 +116,21 @@ namespace MMP.Controllers
                 var v = mP.users.Where(a => a.employee_id == login.employee_id && a.user_status == "active").FirstOrDefault();                
                 if (v != null)
                 {
-                    string Roles = UserID_RoleID.getRole(v.user_name);
-                    Debug.WriteLine(string.IsNullOrEmpty(login.user_password));
+                    string Roles = UserID_RoleID.getRole(v.employee_id);
+                    //Debug.WriteLine(string.IsNullOrEmpty(login.user_password));
 
                     if (string.Compare(Crypto.Hash(login.user_password), v.user_password) == 0)
                     {
                         int timeout = login.RememberMe ? 525600 : 20; // 525600 => 1 year
                         //var ticket = new FormsAuthenticationTicket(login.user_name, login.RememberMe, timeout);
-                        var authTicket = new FormsAuthenticationTicket(v.user_id, v.user_name, DateTime.Now, DateTime.Now.AddMinutes(60), /* expiry */ false, Roles, "/");
+                        var authTicket = new FormsAuthenticationTicket(v.user_id, v.employee_id, DateTime.Now, DateTime.Now.AddMinutes(60), /* expiry */ false, Roles, "/");
                         string encrypted = FormsAuthentication.Encrypt(authTicket);
                         var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encrypted);
                         cookie.Expires = DateTime.Now.AddMinutes(60);
                         cookie.HttpOnly = true;
                         Response.Cookies.Add(cookie);
 
-                        Debug.WriteLine(Roles);
+                        //Debug.WriteLine(Roles);
 
                         if (Url.IsLocalUrl(ReturnURL))
                         {
@@ -189,7 +190,7 @@ namespace MMP.Controllers
                             {
                                 user,
                                 user_role = role.role_name,
-                                supervisor = u.employee_id,
+                                supervisor = u.employee_id + "   " + u.user_name,
                                 region = region.region_name,
                                 user_primary_department = upd.ctd_name,
                                 user_primary_project = upp.ctd_name
@@ -215,6 +216,11 @@ namespace MMP.Controllers
                 ViewBag.departments = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "departments").category_id)).ToList<category_type_details>();
                 ViewBag.projects = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "projects").category_id)).ToList<category_type_details>();
 
+                ViewBag.supervisorsl = mP.users.Where(a => a.role_id == mP.roles.FirstOrDefault(x => x.role_name == "supervisor").role_id && a.user_status == "active").Select(p => new SelectListItem()
+                {
+                    Text = p.employee_id + "    " + p.user_name,
+                    Value = p.user_id.ToString()
+                }).ToList();
                 return View(new AddUser());
             }
 
@@ -232,7 +238,13 @@ namespace MMP.Controllers
                 ViewBag.supervisors = mP.users.Where(a => a.role_id == mP.roles.FirstOrDefault(x => x.role_name == "supervisor").role_id).ToList<user>();
                 ViewBag.departments = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "departments").category_id)).ToList<category_type_details>();
                 ViewBag.projects = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "projects").category_id)).ToList<category_type_details>();
-                
+
+                ViewBag.supervisorsl = mP.users.Where(a => a.role_id == mP.roles.FirstOrDefault(x => x.role_name == "supervisor").role_id && a.user_status == "active").Select(p => new SelectListItem()
+                {
+                    Text = p.employee_id + "    " + p.user_name,
+                    Value = p.user_id.ToString()
+                }).ToList();
+
                 #region Employee ID Already Exists
                 var isEmployeeIDExists = isEmployeeIDExist(newUser.employee_id);
                 if (isEmployeeIDExists)
@@ -286,8 +298,41 @@ namespace MMP.Controllers
                         user_status = "active"
                     };
 
-                    #region Save to Database 
                     mP.users.Add(user);
+
+                    var timesheet = mP.timesheet_mr.Where(x => x.tsmr_valid_till > DateTime.Now && x.tsmr_start_date < DateTime.Now).FirstOrDefault<timesheet_mr>();
+                    string body;
+                    if (timesheet != null)
+                    {
+                        timesheet ts = new timesheet()
+                        {
+                            timesheet_user = user.user_id,
+                            time_my = DateTime.Now,
+                            timesheet_status = "saved",
+                            timesheet_caller = timesheet.tsmr_id,
+                            tsmr_extension = timesheet.tsmr_valid_till
+                        };
+                        mP.timesheets.Add(ts);
+
+                        foreach (DateTime day in EachDay(timesheet.tsmr_start_date, timesheet.tsmr_valid_till))
+                        {
+                            presence ps = new presence()
+                            {
+                                p_date = day,
+                                total_hours = 0,
+                                leave_status = "",
+                                user_id = user.user_id
+                            };
+                            mP.presences.Add(ps);
+                        }
+
+
+                        body = "<br></br>" + user.user_name + ", TimeSheet for current week has been generated. TimeSheet is valid Till " + timesheet.tsmr_valid_till + ". Visit the following website to access timeSheet<br></br>" +
+                "<a href='http://magcom-001-site3.etempurl.com'>http://magcom-001-site3.etempurl.com</a>";
+
+                        Task.Run(() => EmailAlert.SendEmail(user.user_email, body));
+                    }
+                    #region Save to Database 
                     mP.SaveChanges();
                     #endregion
 
@@ -314,9 +359,19 @@ namespace MMP.Controllers
                 ViewBag.departments = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "departments").category_id)).ToList<category_type_details>();
                 ViewBag.projects = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "projects").category_id)).ToList<category_type_details>();
 
+
+                
+
+                
                 if (id != 0)
                 {
                     user u = mP.users.Where(x => x.user_id == id).FirstOrDefault<user>();
+
+                    ViewBag.supervisorsl = mP.users.Where(a => a.role_id == mP.roles.FirstOrDefault(x => x.role_name == "supervisor").role_id && a.user_id != u.user_id && a.user_status == "active").Select(p => new SelectListItem()
+                    {
+                        Text = p.employee_id + "    " + p.user_name,
+                        Value = p.user_id.ToString()
+                    }).ToList();
                     EditUser editUser = new EditUser()
                     {
                         user_id = u.user_id,
@@ -334,6 +389,11 @@ namespace MMP.Controllers
                 }
                 else
                 {
+                    ViewBag.supervisorsl = mP.users.Where(a => a.role_id == mP.roles.FirstOrDefault(x => x.role_name == "supervisor").role_id && a.user_status == "active").Select(p => new SelectListItem()
+                    {
+                        Text = p.employee_id + "    " + p.user_name,
+                        Value = p.user_id.ToString()
+                    }).ToList();
                     return View();
                 }
             }
@@ -351,6 +411,13 @@ namespace MMP.Controllers
                 ViewBag.supervisors = mP.users.Where(a => a.user_id == mP.roles.FirstOrDefault(x => x.role_name == "supervisor").role_id && a.user_id != editUser.user_id).ToList<user>();
                 ViewBag.departments = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "departments").category_id)).ToList<category_type_details>();
                 ViewBag.projects = mP.category_type_details.Where(x => x.category_id == (mP.categories.FirstOrDefault(z => z.category_name == "projects").category_id)).ToList<category_type_details>();
+
+                ViewBag.supervisorsl = mP.users.Where(a => a.role_id == mP.roles.FirstOrDefault(x => x.role_name == "supervisor").role_id && a.user_id != editUser.user_id && a.user_status == "active").Select(p => new SelectListItem()
+                {
+                    Text = p.employee_id + "    " + p.user_name,
+                    Value = p.user_id.ToString()
+                }).ToList();
+
 
                 if (ModelState.IsValid)
                 {
@@ -500,6 +567,13 @@ namespace MMP.Controllers
         }
 
         [NonAction]
+        public IEnumerable<DateTime> EachDay(DateTime from, DateTime thru)
+        {
+            for (var day = from.Date; day.Date <= thru.Date; day = day.AddDays(1))
+                yield return day;
+        }
+
+        [NonAction]
         public void SendEmail(string email)
         {
 
@@ -531,5 +605,7 @@ namespace MMP.Controllers
                 IsBodyHtml = true
             }) smtp.Send(message);
         }
+
+
     }
 }

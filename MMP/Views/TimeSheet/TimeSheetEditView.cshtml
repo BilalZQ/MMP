@@ -54,7 +54,7 @@
 
             if (ViewBag.UserName != null)
             {
-                <div style="border: solid 1px green">
+                <div style="border: solid 1px black">
                     <p><b>USERNAME: </b>@ViewBag.UserName </p>
                 </div>
             }
@@ -62,8 +62,16 @@
 
             if (ViewBag.Message != null)
             {
+                <div style="border: solid 2px red">
+                    <b>@ViewBag.Message</b>
+                </div>
+            }
+
+            if (ViewBag.RowERR != null)
+            {
                 <div style="border: solid 1px green">
-                    @ViewBag.Message
+                    <p><b>Note: </b>If you want to add a new Category Type to the TimeSheet <a class="btn btn-success" style="margin-bottom:10px" onclick="Reload(@ViewBag.TimeSheetID)"><i class="fa fa-refresh"></i> RELOAD</a> the View.</p>
+                    <b>@ViewBag.RowERR</b>
                 </div>
             }
 
@@ -104,8 +112,7 @@
                                     @Html.ValidationMessageFor(a => a[j].tsd_category_id)
                                 </td>
                                 <td>
-                                    <!--@Html.DisplayFor(a => a[j].tsd_category_type_id, new { htmlAttributes = new { @class = "form-control" } })-->
-                                    @Html.DropDownListFor(a => a[j].tsd_category_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_name", Model[j].tsd_category_type_id), new { @disabled = "disabled" })
+                                    @Html.DropDownListFor(a => a[j].tsd_category_type_id, new SelectList(ViewBag.CategoryTypes, "ctd_id", "ctd_name", Model[j].tsd_category_type_id), new { @disabled = "disabled" })
                                     @Html.HiddenFor(a => a[j].tsd_category_id)
                                     @Html.ValidationMessageFor(a => a[j].tsd_category_type_id)
                                 </td>
@@ -223,7 +230,7 @@
     <script>
         var Popup, dataTable;
         var table = $("#dataTable");
-        
+
 
         function OpenModal(url) {
             debugger;
@@ -299,10 +306,8 @@
             return false;
         }
 
-        function Delete(id, category_typeID)
-        {
-            if (confirm('Are you sure you want to remove this Category/CategoryType from TimeSheet?'))
-            {
+        function Delete(id, category_typeID) {
+            if (confirm('Are you sure you want to remove this Category/CategoryType from TimeSheet?')) {
                 $.ajax({
                     type: "POST",
                     url: '@Url.Action("Delete", "TimeSheet")/?id=' + id + '&category_typeID=' + category_typeID,
@@ -320,6 +325,11 @@
                     }
                 })
             }
+        }
+
+        function Reload(id)
+        {
+            location.href = '@Url.Action("TimeSheetEditView", "TimeSheet")';
         }
 
     </script>

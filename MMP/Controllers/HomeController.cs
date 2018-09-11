@@ -26,7 +26,14 @@ namespace MMP.Controllers
                     int user_id = UserID_RoleID.getUserID();
                     var ts_id = mP.timesheets.OrderByDescending(x => x.time_my).FirstOrDefault(x => x.timesheet_user == user_id).timesheet_id;
                     //return RedirectToAction("UserTimesheets", "TimeSheet");
-                    return RedirectToAction("TimeSheetEditView", "TimeSheet", new { id = ts_id });
+                    if (ts_id > 0)
+                    {
+                        return RedirectToAction("TimeSheetEditView", "TimeSheet", new { id = ts_id });
+                    }
+                    else
+                    {
+                        return RedirectToAction("UserTimesheets", "TimeSheet");
+                    }
                     //'@Url.Action("TimeSheetEditView", "TimeSheet")/'+id
                 }
 

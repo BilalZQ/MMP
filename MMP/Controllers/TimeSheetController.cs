@@ -10,6 +10,7 @@ using MMP.Generic_Functions;
 using MMP.Models.ViewModels.TimeSheet;
 using System.Web.Script.Serialization;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
 
 namespace MMP.Controllers
 {
@@ -72,7 +73,7 @@ namespace MMP.Controllers
                 if (timesheet == null)
                 {
                     DateTime startDate = StartOfWeek(DateTime.Today, DayOfWeek.Monday);
-                    DateTime endDate = startDate.AddDays(6);
+                    DateTime endDate = startDate.AddDays(7);
                     timesheet_mr tsmr = new timesheet_mr()
                     {
                         tsmr_generated_by = UserID_RoleID.getUserID(),
@@ -84,8 +85,9 @@ namespace MMP.Controllers
                     mP.timesheet_mr.Add(tsmr);
 
                     int timesheetID = tsmr.tsmr_id;
-
                     
+                    Debug.Write("asdas  ");
+                    Debug.Write(System.Web.HttpContext.Current.User.Identity.Name);
 
                     foreach (user user in mP.users.Where(x => x.user_status == "active"))
                     {
@@ -98,8 +100,6 @@ namespace MMP.Controllers
                             tsmr_extension = endDate
                         };
                         mP.timesheets.Add(ts);
-
-                        Debug.WriteLine(ts);
 
                         foreach (DateTime day in EachDay(tsmr.tsmr_start_date, tsmr.tsmr_valid_till))
                         {
@@ -812,8 +812,9 @@ namespace MMP.Controllers
                     ViewBag.startDate = timeSheetMR.tsmr_start_date;
                     ViewBag.endDate = timeSheetMR.tsmr_valid_till;
 
-                    if (submit == "Calculate")
+                    if (submit == "Calculate") // Warning in case newly added rows wont be displayed
                     {
+                        ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost.");
                         return View(pvm);
                     }
 
@@ -822,6 +823,7 @@ namespace MMP.Controllers
                     {
                         if (pvm.Sum(x => x.timesheet_day_details[i].workhours).Value > 7.5)
                         {
+                            ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost.");
                             ViewBag.Message = string.Format("Error! Make sure sum of each column is less than 7.5.");
                             return View(pvm);
                         }
