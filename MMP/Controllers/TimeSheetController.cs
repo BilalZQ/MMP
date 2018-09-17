@@ -73,7 +73,7 @@ namespace MMP.Controllers
                 if (timesheet == null)
                 {
                     DateTime startDate = StartOfWeek(DateTime.Today, DayOfWeek.Monday);
-                    DateTime endDate = startDate.AddDays(7);
+                    DateTime endDate = startDate.AddDays(6).Date.AddHours(23).AddMinutes(59).AddSeconds(59);
                     timesheet_mr tsmr = new timesheet_mr()
                     {
                         tsmr_generated_by = UserID_RoleID.getUserID(),
@@ -86,8 +86,8 @@ namespace MMP.Controllers
 
                     int timesheetID = tsmr.tsmr_id;
                     
-                    Debug.Write("asdas  ");
-                    Debug.Write(System.Web.HttpContext.Current.User.Identity.Name);
+                    //Debug.Write("asdas  ");
+                    //Debug.Write(System.Web.HttpContext.Current.User.Identity.Name);
 
                     foreach (user user in mP.users.Where(x => x.user_status == "active"))
                     {
@@ -162,13 +162,17 @@ namespace MMP.Controllers
                                   join user in mP.users on ts.timesheet_user equals user.user_id
                                   join supervisor in mP.users on user.supervisor equals supervisor.user_id into supervisorps
                                   from supervisor in supervisorps.DefaultIfEmpty()
+                                  join ctd in mP.category_type_details on user.user_primary_department equals ctd.ctd_id into ctdps from ctd in ctdps.DefaultIfEmpty()
+                                  join ctp in mP.category_type_details on user.user_primary_project equals ctp.ctd_id into ctpps from ctp in ctpps.DefaultIfEmpty()
                                   join tsmr in mP.timesheet_mr on ts.timesheet_caller equals tsmr.tsmr_id
                                   select new
                                   {
                                       ts,
                                       user,
                                       supervisorName = supervisor.employee_id == null ? "" : supervisor.employee_id,
-                                      tsmr
+                                      tsmr,
+                                      primary_department = ctd.ctd_name == null ? "" : ctd.ctd_name,
+                                      primary_project = ctp.ctd_name == null ? "" : ctp.ctd_name
                                       //month = Convert.ToDateTime(tsmr.startDate).ToString("MMMM")
                                   }).Where(x => x.user.user_status == "active").OrderByDescending(x => x.tsmr.tsmr_created_at);
 
@@ -280,7 +284,7 @@ namespace MMP.Controllers
                     // *** TimeSheet 7.5 Check ***
                     for (int i = 0; i < timeSheetMR.days; i++)
                     {
-                        if (pvm.Sum(x => x.timesheet_day_details[i].workhours).Value > 7.5)
+                        if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 7.5)
                         {
                             ViewBag.Message = string.Format("Error! Make sure sum of each column is less than 7.5.");
                             return View(pvm);
@@ -426,13 +430,19 @@ namespace MMP.Controllers
                                   join user in mP.users on ts.timesheet_user equals user.user_id
                                   join supervisor in mP.users on user.supervisor equals supervisor.user_id into supervisorps
                                   from supervisor in supervisorps.DefaultIfEmpty()
+                                  join ctd in mP.category_type_details on user.user_primary_department equals ctd.ctd_id into ctdps
+                                  from ctd in ctdps.DefaultIfEmpty()
+                                  join ctp in mP.category_type_details on user.user_primary_project equals ctp.ctd_id into ctpps
+                                  from ctp in ctpps.DefaultIfEmpty()
                                   join tsmr in mP.timesheet_mr on ts.timesheet_caller equals tsmr.tsmr_id
                                   select new
                                   {
                                       ts,
                                       user,
                                       supervisorName = supervisor.employee_id == null ? "" : supervisor.employee_id,
-                                      tsmr
+                                      tsmr,
+                                      primary_department = ctd.ctd_name == null ? "" : ctd.ctd_name,
+                                      primary_project = ctp.ctd_name == null ? "" : ctp.ctd_name
                                   }).Where(x => x.user.supervisor == userID && x.user.user_status == "active").OrderByDescending(x => x.tsmr.tsmr_created_at);
 
                 if (flag.Equals("currentTimeSheets", StringComparison.InvariantCultureIgnoreCase))
@@ -685,13 +695,19 @@ namespace MMP.Controllers
                                   join user in mP.users on ts.timesheet_user equals user.user_id
                                   join supervisor in mP.users on user.supervisor equals supervisor.user_id into supervisorps
                                   from supervisor in supervisorps.DefaultIfEmpty()
+                                  join ctd in mP.category_type_details on user.user_primary_department equals ctd.ctd_id into ctdps
+                                  from ctd in ctdps.DefaultIfEmpty()
+                                  join ctp in mP.category_type_details on user.user_primary_project equals ctp.ctd_id into ctpps
+                                  from ctp in ctpps.DefaultIfEmpty()
                                   join tsmr in mP.timesheet_mr on ts.timesheet_caller equals tsmr.tsmr_id
                                   select new
                                   {
                                       ts,
                                       user,
                                       supervisorName = supervisor.employee_id == null ? "" : supervisor.employee_id,
-                                      tsmr
+                                      tsmr,
+                                      primary_department = ctd.ctd_name == null ? "" : ctd.ctd_name,
+                                      primary_project = ctp.ctd_name == null ? "" : ctp.ctd_name
                                   }).Where(x => x.user.user_id == userID && x.user.user_status == "active").OrderByDescending(x => x.tsmr.tsmr_created_at);
 
                 if (flag.Equals("currentTimeSheets", StringComparison.InvariantCultureIgnoreCase))
@@ -821,7 +837,7 @@ namespace MMP.Controllers
                     // *** TimeSheet 7.5 Check ***
                     for (int i = 0; i < timeSheetMR.days; i++)
                     {
-                        if (pvm.Sum(x => x.timesheet_day_details[i].workhours).Value > 7.5)
+                        if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 7.5)
                         {
                             ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost.");
                             ViewBag.Message = string.Format("Error! Make sure sum of each column is less than 7.5.");
@@ -1048,6 +1064,118 @@ namespace MMP.Controllers
             }
         }
 
+        // ===========================================================================================================================================================================
+
+        // *** TIMESHEETS MR & BULK EXTENTION (ADMIN ONLY) ***
+        [Authorize(Roles = "admin")]
+        public ActionResult GeneratedTimeSheets()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public ActionResult GetGeneratedTimeSheets()
+        {
+            using (mmpEntities mP = new mmpEntities())
+            {
+                mP.Configuration.ProxyCreationEnabled = false;
+
+                int userID = UserID_RoleID.getUserID();
+
+                var timesheets = (from tsmr in mP.timesheet_mr
+                                  join user in mP.users on tsmr.tsmr_generated_by equals user.user_id
+                                  select new
+                                  {
+                                      tsmr,
+                                      user_name = user.user_name
+                                  }).OrderByDescending(x => x.tsmr.tsmr_created_at);
+                
+
+
+                return Json(new { data = timesheets.AsNoTracking().ToList() }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        #region Bulk Extend TimeSheets date
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public ActionResult BulkExtendTimeSheets(int id = 0)
+        {
+            using (mmpEntities mP = new mmpEntities())
+            {
+                if (id != 0)
+                {
+                    var timesheet_caller = mP.timesheet_mr.Where(x => x.tsmr_id == id).FirstOrDefault();
+                    ExtendTimeSheet ets = new ExtendTimeSheet()
+                    {
+                        tsd_timesheet_id = timesheet_caller.tsmr_id,
+                        tsmr_valid_till = timesheet_caller.tsmr_valid_till,
+                        tsmr_extension = timesheet_caller.tsmr_valid_till
+                    };
+
+                    return View(ets);
+                }
+                else
+                {
+                    return View();
+                }
+
+            }
+        }
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult BulkExtendTimeSheets(ExtendTimeSheet ets)
+        {
+            string body;
+            if (ModelState.IsValid)
+            {
+                using (mmpEntities mP = new mmpEntities())
+                {
+                    if (ets.tsmr_extension >= ets.tsmr_valid_till && ets.tsmr_extension > DateTime.Now && ets.tsmr_extension < ets.tsmr_valid_till.AddMonths(6))
+                    {
+                        var timesheets = mP.timesheets.Where(x => x.timesheet_caller == ets.tsd_timesheet_id).ToList<timesheet>(); //tsd_timesheet_id = tsmr_id from timesheets MR
+                        //timesheet ts = mP.timesheets.Where(x => x.timesheet_id == ets.tsd_timesheet_id).FirstOrDefault();
+                        foreach (timesheet timesheet in timesheets)
+                        {
+                            if (timesheet.tsmr_extension < ets.tsmr_extension && timesheet.timesheet_status != "accepted")
+                            {
+                                timesheet.tsmr_extension = ets.tsmr_extension;
+                                mP.Entry(timesheet).State = EntityState.Modified;
+                                mP.SaveChanges();
+
+                                var user = mP.users.Where(x => x.user_id == timesheet.timesheet_user).FirstOrDefault<user>();
+                                timesheet_mr tsmr = mP.timesheet_mr.Where(x => x.tsmr_id == timesheet.timesheet_caller).FirstOrDefault<timesheet_mr>();
+
+                                body = "<br></br>" + user.user_name + ", Your TimeSheet starting from " + tsmr.tsmr_start_date + " and Valid till " + tsmr.tsmr_valid_till + " has been extended till " + ets.tsmr_extension + ". Visit the following website to access timeSheet<br></br>" +
+                                       "<a href='http://magcom-001-site3.etempurl.com'>http://magcom-001-site3.etempurl.com</a>"; //Update url to the latest Site
+
+                                Task.Run(() => EmailAlert.SendEmail(user.user_email, body));
+                            }
+                        }
+
+                        
+
+                        return Json(new { success = true, message = "TimeSheet submittion date successfully extended" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Failed to extend TimeSheet submittion date" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                }
+            }
+            else
+            {
+                return Json(new { success = false, message = "Invalid ModelState" }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+        #endregion
+
+        // ===========================================================================================================================================================================
+
 
         #region Extend TimeSheet date
         [Authorize(Roles = "admin")]
@@ -1162,6 +1290,9 @@ namespace MMP.Controllers
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+
 
 
         [NonAction]

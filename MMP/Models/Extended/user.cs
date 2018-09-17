@@ -14,5 +14,8 @@ namespace MMP.Models
 
         [NotMapped]
         public string updateDate { get { return this.updated_at.ToString(); } }
+
+        [NotMapped]
+        public string joining_date { get { return this.join_date.ToString(); } }
     }
 }

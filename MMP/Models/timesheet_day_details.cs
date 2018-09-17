@@ -16,7 +16,7 @@ namespace MMP.Models
     {
         public int tdd_id { get; set; }
         public System.DateTime tdd_day { get; set; }
-        public Nullable<double> workhours { get; set; }
+        public double workhours { get; set; }
         public Nullable<int> tsd_id { get; set; }
         public Nullable<int> holiday_id { get; set; }
     

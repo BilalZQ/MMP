@@ -115,7 +115,7 @@
                                     @Html.HiddenFor(m => m[j].timesheet_day_details[i].tsd_id)
 
 
-                                    Rowtotal = (@Model[j].timesheet_day_details[i].workhours.Value) + Rowtotal;
+                                    Rowtotal = (@Model[j].timesheet_day_details[i].workhours) + Rowtotal;
 
 
                                 }
@@ -141,13 +141,13 @@
                             {
 
 
-                                if (@Model.Sum(x => x.timesheet_day_details[i].workhours).Value > 7.5)
+                                if (@Model.Sum(x => x.timesheet_day_details[i].workhours) > 7.5)
                                 {
-                                    <td align="center" bgcolor="#FF0000"><font color="white">@Model.Sum(x => x.timesheet_day_details[i].workhours).Value</font></td>
+                                    <td align="center" bgcolor="#FF0000"><font color="white">@Model.Sum(x => x.timesheet_day_details[i].workhours)</font></td>
                                 }
                                 else
                                 {
-                                    <td align="center">@Model.Sum(x => x.timesheet_day_details[i].workhours).Value</td>
+                                    <td align="center">@Model.Sum(x => x.timesheet_day_details[i].workhours)</td>
                                 }
                             }
                         </tr>
@@ -206,6 +206,8 @@
 @section Scripts{
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
     <script>
         var Popup, dataTable;
 

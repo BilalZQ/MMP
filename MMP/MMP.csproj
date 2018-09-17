@@ -1353,6 +1353,7 @@
     <Compile Include="Models\ViewModels\Reports\USProjectReport.cs" />
     <Compile Include="Models\ViewModels\Sector\AddSector.cs" />
     <Compile Include="Models\ViewModels\Sector\EditSector.cs" />
+    <Compile Include="Models\ViewModels\TimeSheet\BulkExtendTimeSheet.cs" />
     <Compile Include="Models\ViewModels\TimeSheet\ExtendTimeSheet.cs" />
     <Compile Include="Models\ViewModels\TimeSheet\TimeSheetView.cs" />
     <Compile Include="Models\ViewModels\User\AddUser.cs" />
@@ -1423,6 +1424,8 @@
     <Content Include="Views\SectorProjects\SSProjectReport.cshtml" />
     <Content Include="Views\TimeSheet\ExtendTimeSheet.cshtml" />
     <Content Include="Views\Presence\SuperVisorUserPresence.cshtml" />
+    <Content Include="Views\TimeSheet\GeneratedTimeSheets.cshtml" />
+    <Content Include="Views\TimeSheet\BulkExtendTimeSheets.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -24,7 +24,7 @@ namespace MMP.Models
         public string hd_name { get; set; }
         public System.DateTime hd_from { get; set; }
         public System.DateTime hd_to { get; set; }
-        public int? hy_id { get; set; }
+        public int hy_id { get; set; }
         public int generated_by { get; set; }
     
         public virtual user user { get; set; }

@@ -100,7 +100,7 @@
           </Key>
           <Property Name="tdd_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="tdd_day" Type="date" Nullable="false" />
-          <Property Name="workhours" Type="double" />
+          <Property Name="workhours" Type="double" Nullable="false" />
           <Property Name="tsd_id" Type="int" />
           <Property Name="holiday_id" Type="int" />
         </EntityType>
@@ -156,6 +156,7 @@
           <Property Name="user_primary_department" Type="int" />
           <Property Name="user_primary_project" Type="int" />
           <Property Name="user_status" Type="enum" />
+          <Property Name="join_date" Type="datetime" Precision="0" Nullable="false" />
         </EntityType>
         <Association Name="FK_CT_category_id">
           <End Role="categories" Type="Self.categories" Multiplicity="1">
@@ -309,7 +310,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_tdd_holiday">
+        <Association Name="FK_tdd_holiday_id">
           <End Role="holiday_details" Type="Self.holiday_details" Multiplicity="0..1" />
           <End Role="timesheet_day_details" Type="Self.timesheet_day_details" Multiplicity="*" />
           <ReferentialConstraint>
@@ -546,7 +547,7 @@
             <End Role="timesheets" EntitySet="timesheets" />
             <End Role="timesheet_details" EntitySet="timesheet_details" />
           </AssociationSet>
-          <AssociationSet Name="FK_tdd_holiday" Association="Self.FK_tdd_holiday">
+          <AssociationSet Name="FK_tdd_holiday_id" Association="Self.FK_tdd_holiday_id">
             <End Role="holiday_details" EntitySet="holiday_details" />
             <End Role="timesheet_day_details" EntitySet="timesheet_day_details" />
           </AssociationSet>
@@ -711,7 +712,7 @@
           </Key>
           <Property Name="tdd_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="tdd_day" Type="DateTime" Nullable="false" />
-          <Property Name="workhours" Type="Double" />
+          <Property Name="workhours" Type="Double" Nullable="false" />
           <Property Name="tsd_id" Type="Int32" />
           <Property Name="holiday_id" Type="Int32" />
           <NavigationProperty Name="holiday_details" Relationship="Self.FK_tdd_holiday" FromRole="timesheet_day_details" ToRole="holiday_details" />
@@ -790,6 +791,7 @@
           <NavigationProperty Name="timesheets1" Relationship="Self.FK_timesheets_user" FromRole="users" ToRole="timesheets" />
           <NavigationProperty Name="users1" Relationship="Self.FK_users_supervisor" FromRole="users" ToRole="users1" />
           <NavigationProperty Name="user1" Relationship="Self.FK_users_supervisor" FromRole="users1" ToRole="users" />
+          <Property Name="join_date" Type="DateTime" Nullable="false" />
         </EntityType>
         <Association Name="FK_CT_category_id">
           <End Role="categories" Type="Self.category" Multiplicity="1">
@@ -1416,6 +1418,7 @@
           <EntitySetMapping Name="users">
             <EntityTypeMapping TypeName="mmpModel.user">
               <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="join_date" ColumnName="join_date" />
                 <ScalarProperty Name="user_id" ColumnName="user_id" />
                 <ScalarProperty Name="role_id" ColumnName="role_id" />
                 <ScalarProperty Name="employee_id" ColumnName="employee_id" />

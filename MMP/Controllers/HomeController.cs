@@ -104,7 +104,7 @@ namespace MMP.Controllers
                              {
                                  tsmr,
                                  ts
-                             }).Where(x => x.tsmr.tsmr_valid_till >= DateTime.Now).GroupBy(x => new {
+                             }).Where(x => x.tsmr.tsmr_valid_till < DateTime.Now).GroupBy(x => new {
                                                                                                 x.ts.timesheet_status
                                                                                                 })
                                                                                    .Select(x => new

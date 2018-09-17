@@ -40,10 +40,10 @@ namespace MMP.Models.ViewModels.User
         [Required(AllowEmptyStrings = false, ErrorMessage = "User Region is required")]
         public int region_id { get; set; }
 
-        [Display(Name = "User Designation")]
+        [Display(Name = "User Primary Department")]
         public Nullable<int> user_primary_department { get; set; }
 
-        [Display(Name = "User Designation")]
+        [Display(Name = "User Primary Project")]
         public Nullable<int> user_primary_project { get; set; }
     }
 }

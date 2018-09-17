@@ -24,9 +24,11 @@ namespace MMP.Models.ViewModels.TimeSheet
         
         public int? tdd_id { get; set; }
         
-        public Nullable<DateTime> tdd_day { get; set; }
-        
-        public Nullable<double> workhours { get; set; }
+        public DateTime tdd_day { get; set; }
+
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "WorkHours are required")]
+        public double workhours { get; set; }
 
         public int?  tsd_id { get; set; }
 

@@ -44,24 +44,41 @@
         </div>   
 
         <div class="table-responsive">
-            <table id="userTable" class="table table-striped table-bordered" style="width:100%" >
-            <thead>
-                <tr>
-                    <!--<th>User ID</th>-->
-                    <th>Employee ID</th>
-                    <th>Employee Name</th>
-                    <th>User Role</th>
-                    <th>Email</th>
-                    <th>Designation</th>
-                    <th>created at</th>
-                    <th>updated at</th>
-                    <th>supervisor</th>
-                    <th>Region</th>
-                    <th>Primary Dept.</th>
-                    <th>Primary Project</th>
-                    <th></th>
-                </tr>
-            </thead>
+            <table id="userTable" class="table table-striped table-bordered" style="width:100%" >                
+                <thead>
+                    <tr>
+                        <!--<th>User ID</th>-->
+                        <th align="center">Employee ID</th>
+                        <th align="center">Employee Name</th>
+                        <th align="center">User Role</th>
+                        <th align="center">Email</th>
+                        <th align="center">Designation</th>
+                        <th align="center">created at</th>
+                        <th align="center">updated at</th>
+                        <th align="center">supervisor</th>
+                        <th align="center">Region</th>
+                        <th align="center">Primary Dept.</th>
+                        <th align="center">Primary Project</th>
+                        <th align="center">Join Date</th>
+                        <th align="center"></th>
+                    </tr>
+                    <tr>
+                        <!--<th>User ID</th>-->
+                        <th style="text-align:center">Employee ID</th>
+                        <th style="text-align:center">Employee Name</th>
+                        <th style="text-align:center">User Role</th>
+                        <th style="text-align:center">Email</th>
+                        <th style="text-align:center">Designation</th>
+                        <th style="text-align:center">created at</th>
+                        <th style="text-align:center">updated at</th>
+                        <th style="text-align:center">supervisor</th>
+                        <th style="text-align:center">Region</th>
+                        <th style="text-align:center">Primary Dept.</th>
+                        <th style="text-align:center">Primary Project</th>
+                        <th style="text-align:center">Join Date</th>
+                        <th style="text-align:center"></th>
+                    </tr>
+                </thead>
 
         </table>
         </div>
@@ -97,10 +114,11 @@
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
     <script src="~/Scripts/jquery.validate.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
     <script>
         var Popup, dataTable;
 
-        $(document).ready(function (){
+        $(document).ready(function () {
             dataTable = $("#userTable").DataTable({
                 "ajax": {
                     "url": "/User/GetData/"+ @ViewBag.userID,
@@ -120,6 +138,7 @@
                     { "data": "region" },
                     { "data": "user_primary_department" },
                     { "data": "user_primary_project" },
+                    { "data": "user.joining_date" },
                     { "data": "user.user_id", "render": function (data) {
                         return "<a class= 'btn btn-default btn-sm' onclick=OpenModal('@Url.Action("EditUser", "User")/" + data + "')><i class= 'fa fa-pencil'></i> Edit</a><a class= 'btn btn-default btn-sm' onclick=redirect(" + data + ")><i class= 'fa fa-pencil'></i> View Attendance</a><a class= 'btn btn-danger btn-sm' style='margin-left:5px' onclick=Delete(" + data +")><i class= 'fa fa-trash'></i> Delete</a><a class='btn btn-default btn-sm' onclick=OpenModal('@Url.Action("ChangePassword", "User")/" + data + "')><i class='fa fa-pencil'></i> Edit Password</a>"
                         },
@@ -137,7 +156,31 @@
                         "className": "text-center",
                         "width": "10%"
                     }],
+
+                orderCellsTop: true// For filter search
             });
+
+
+            // FILTERS
+            $('#userTable thead tr:eq(1) th').each(function () {
+                var title = $('#userTable thead tr:eq(0) th').eq($(this).index()).text();
+                if (title != "") {
+                    $(this).html('<input type="text" style="text-align:center"   placeholder="filter" size="5"/>');
+                }
+
+                //$(this).html('<input type="text" placeholder="filter ' + title + '" size="5"/>');
+            });
+
+
+            // Apply the search
+            dataTable.columns().every(function (index) {
+                $('#userTable thead tr:eq(1) th:eq(' + index + ') input').on('keyup change', function () {
+                    dataTable.column($(this).parent().index() + ':visible')
+                        .search(this.value)
+                        .draw();
+                });
+            });
+            
         });
 
         function OpenModal(url) {

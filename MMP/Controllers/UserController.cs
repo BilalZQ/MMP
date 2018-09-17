@@ -295,46 +295,52 @@ namespace MMP.Controllers
                         region_id = newUser.region_id,
                         user_primary_department = newUser.user_primary_department,
                         user_primary_project = newUser.user_primary_project,
-                        user_status = "active"
+                        user_status = "active",
+                        join_date = newUser.joining_date
                     };
 
                     mP.users.Add(user);
 
-                    var timesheet = mP.timesheet_mr.Where(x => x.tsmr_valid_till > DateTime.Now && x.tsmr_start_date < DateTime.Now).FirstOrDefault<timesheet_mr>();
-                    string body;
-                    if (timesheet != null)
+                    //var timesheet = mP.timesheet_mr.Where(x => x.tsmr_valid_till > DateTime.Now && x.tsmr_start_date < DateTime.Now).FirstOrDefault<timesheet_mr>();
+                    var timesheets = mP.timesheet_mr.Where(x => x.tsmr_valid_till > user.join_date).ToList<timesheet_mr>();
+                    foreach (timesheet_mr timesheet in timesheets)
                     {
-                        timesheet ts = new timesheet()
+                        string body;
+                        if (timesheet != null)
                         {
-                            timesheet_user = user.user_id,
-                            time_my = DateTime.Now,
-                            timesheet_status = "saved",
-                            timesheet_caller = timesheet.tsmr_id,
-                            tsmr_extension = timesheet.tsmr_valid_till
-                        };
-                        mP.timesheets.Add(ts);
-
-                        foreach (DateTime day in EachDay(timesheet.tsmr_start_date, timesheet.tsmr_valid_till))
-                        {
-                            presence ps = new presence()
+                            timesheet ts = new timesheet()
                             {
-                                p_date = day,
-                                total_hours = 0,
-                                leave_status = "",
-                                user_id = user.user_id
+                                timesheet_user = user.user_id,
+                                time_my = DateTime.Now,
+                                timesheet_status = "saved",
+                                timesheet_caller = timesheet.tsmr_id,
+                                tsmr_extension = timesheet.tsmr_valid_till
                             };
-                            mP.presences.Add(ps);
+                            mP.timesheets.Add(ts);
+
+                            
+                            foreach (DateTime day in EachDay(timesheet.tsmr_start_date, timesheet.tsmr_valid_till))
+                            {
+                                presence ps = new presence()
+                                {
+                                    p_date = day,
+                                    total_hours = 0,
+                                    leave_status = "",
+                                    user_id = user.user_id
+                                };
+                                mP.presences.Add(ps);
+                            }
+
+
+                            body = "<br></br>" + user.user_name + ", New TimeSheet is assigned to you. TimeSheet is valid Till " + timesheet.tsmr_valid_till + ". Visit the following website to access timeSheet<br></br>" +
+                    "<a href='http://magcom-001-site3.etempurl.com'>http://magcom-001-site3.etempurl.com</a>";
+
+                            Task.Run(() => EmailAlert.SendEmail(user.user_email, body));
                         }
-
-
-                        body = "<br></br>" + user.user_name + ", TimeSheet for current week has been generated. TimeSheet is valid Till " + timesheet.tsmr_valid_till + ". Visit the following website to access timeSheet<br></br>" +
-                "<a href='http://magcom-001-site3.etempurl.com'>http://magcom-001-site3.etempurl.com</a>";
-
-                        Task.Run(() => EmailAlert.SendEmail(user.user_email, body));
+                        #region Save to Database 
+                        mP.SaveChanges();
+                        #endregion
                     }
-                    #region Save to Database 
-                    mP.SaveChanges();
-                    #endregion
 
                     return Json(new { success = true, message = "Saved Successfully" });
                 }

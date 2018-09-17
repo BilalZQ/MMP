@@ -50,6 +50,19 @@
                         <th>Extended Date</th>
                         <th></th>
                     </tr>
+                    <tr>
+                        <th style="text-align:center">Employee ID</th>
+                        <th style="text-align:center">Employee Name</th>
+                        <th style="text-align:center">Supervisor</th>
+                        <th style="text-align:center">Status</th>
+                        <th style="text-align:center">Updated at</th>
+                        <th style="text-align:center">Updated by</th>
+                        <th style="text-align:center">Created At</th>
+                        <th style="text-align:center">Start Date</th>
+                        <th style="text-align:center">Valid Till</th>
+                        <th style="text-align:center">Extended Date</th>
+                        <th style="text-align:center"></th>
+                    </tr>
                 </thead>
 
             </table>
@@ -110,8 +123,31 @@
                 ],
                 "language": {
                     "emptyTable" : "No TimeSheets Available current week"
-                }
+                },
+
+                orderCellsTop: true// For filter search
             });
+
+            // FILTERS
+            $('#timesheetsTable thead tr:eq(1) th').each(function () {
+                var title = $('#timesheetsTable thead tr:eq(0) th').eq($(this).index()).text();
+                if (title != "") {
+                    $(this).html('<input type="text" style="text-align:center"   placeholder="filter" size="5"/>');
+                }
+
+                //$(this).html('<input type="text" placeholder="filter ' + title + '" size="5"/>');
+            });
+
+
+            // Apply the search
+            dataTable.columns().every(function (index) {
+                $('#timesheetsTable thead tr:eq(1) th:eq(' + index + ') input').on('keyup change', function () {
+                    dataTable.column($(this).parent().index() + ':visible')
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
         });
 
         function PopupForm(url)

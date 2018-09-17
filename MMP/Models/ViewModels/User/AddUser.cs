@@ -41,6 +41,10 @@ namespace MMP.Models.ViewModels.User
         [System.Web.Mvc.Remote("CheckExistingEmail", "ModelValidation", HttpMethod = "POST", ErrorMessage = "Email already exists")]
         public string user_email { get; set; }
 
+        [Display(Name = "Joining Date")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "User Joining Date is required")]
+        public System.DateTime joining_date { get; set; }
+
         [Display(Name = "User Designation")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "User Designation is required")]
         public string designation { get; set; }
@@ -52,10 +56,10 @@ namespace MMP.Models.ViewModels.User
         [Required(AllowEmptyStrings = false, ErrorMessage = "User Region is required")]
         public int region_id { get; set; }
 
-        [Display(Name = "User Designation")]
+        [Display(Name = "User Primary Department")]
         public Nullable<int> user_primary_department { get; set; }
 
-        [Display(Name = "User Designation")]
+        [Display(Name = "User Primary Project")]
         public Nullable<int> user_primary_project { get; set; }
 
 

@@ -39,6 +39,7 @@ namespace MMP.Models
         public Nullable<int> user_primary_department { get; set; }
         public Nullable<int> user_primary_project { get; set; }
         public string user_status { get; set; }
+        public System.DateTime join_date { get; set; }
     
         public virtual category_type_details category_type_details { get; set; }
         public virtual category_type_details category_type_details1 { get; set; }
