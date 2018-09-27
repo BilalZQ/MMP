@@ -113,7 +113,7 @@ namespace MMP.Controllers
             String message = "";
             using (mmpEntities mP = new mmpEntities())
             {
-                var v = mP.users.Where(a => a.employee_id == login.employee_id && a.user_status == "active").FirstOrDefault();                
+                var v = mP.users.Where(a => a.user_email == login.email && a.user_status == "active").FirstOrDefault();                
                 if (v != null)
                 {
                     string Roles = UserID_RoleID.getRole(v.employee_id);
@@ -149,8 +149,8 @@ namespace MMP.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("EmployeeIDERR", "Employee ID does not exist");
-                    message = "Employee ID does not exist";
+                    ModelState.AddModelError("EmailERR", "E-mail does not exist");
+                    message = "E-mail does not exist";
                 }
             }
 

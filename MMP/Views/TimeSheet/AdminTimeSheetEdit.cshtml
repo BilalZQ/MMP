@@ -156,13 +156,38 @@
                             {
 
 
-                                if (@Model.Sum(x => x.timesheet_day_details[i].workhours) > 7.5)
+                                if (i == 4)
                                 {
-                                    <td align="center" bgcolor="#FF0000"><font color="white">@Model.Sum(x => x.timesheet_day_details[i].workhours)</font></td>
+                                    if (@Model.Sum(x => x.timesheet_day_details[i].workhours) > 6.5)
+                                    {
+                                        <td align="center" bgcolor="#FF0000"><font color="white">@Model.Sum(x => x.timesheet_day_details[i].workhours)</font></td>
+                                    }
+                                    else
+                                    {
+                                        <td align="center">@Model.Sum(x => x.timesheet_day_details[i].workhours)</td>
+                                    }
+                                }
+                                else if (i == 5)
+                                {
+                                    if (@Model.Sum(x => x.timesheet_day_details[i].workhours) > 7)
+                                    {
+                                        <td align="center" bgcolor="#FF0000"><font color="white">@Model.Sum(x => x.timesheet_day_details[i].workhours)</font></td>
+                                    }
+                                    else
+                                    {
+                                        <td align="center">@Model.Sum(x => x.timesheet_day_details[i].workhours)</td>
+                                    }
                                 }
                                 else
                                 {
-                                    <td align="center">@Model.Sum(x => x.timesheet_day_details[i].workhours)</td>
+                                    if (@Model.Sum(x => x.timesheet_day_details[i].workhours) > 7.5)
+                                    {
+                                        <td align="center" bgcolor="#FF0000"><font color="white">@Model.Sum(x => x.timesheet_day_details[i].workhours)</font></td>
+                                    }
+                                    else
+                                    {
+                                        <td align="center">@Model.Sum(x => x.timesheet_day_details[i].workhours)</td>
+                                    }
                                 }
                             }
                         </tr>

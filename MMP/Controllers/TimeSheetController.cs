@@ -278,15 +278,36 @@ namespace MMP.Controllers
 
                     if (submit == "Calculate")
                     {
+                        ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost."); //Make a function for these
+                        ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
                         return View(pvm);
                     }
 
                     // *** TimeSheet 7.5 Check ***
                     for (int i = 0; i < timeSheetMR.days; i++)
                     {
+                        if (i == timeSheetMR.days - 3) //Fri
+                        {
+                            if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 6.5)
+                            {
+                                ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost."); //Make a function for these
+                                ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
+                                return View(pvm);
+                            }
+                        }
+                        if (i == timeSheetMR.days - 2) //Sat
+                        {
+                            if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 7)
+                            {
+                                ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost.");
+                                ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
+                                return View(pvm);
+                            }
+                        }
                         if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 7.5)
                         {
-                            ViewBag.Message = string.Format("Error! Make sure sum of each column is less than 7.5.");
+                            ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost.");
+                            ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
                             return View(pvm);
                         }
                     }
@@ -830,6 +851,7 @@ namespace MMP.Controllers
 
                     if (submit == "Calculate") // Warning in case newly added rows wont be displayed
                     {
+                        ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
                         ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost.");
                         return View(pvm);
                     }
@@ -837,10 +859,28 @@ namespace MMP.Controllers
                     // *** TimeSheet 7.5 Check ***
                     for (int i = 0; i < timeSheetMR.days; i++)
                     {
+                        if (i == timeSheetMR.days - 3) //Fri
+                        {
+                            if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 6.5)
+                            {
+                                ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost."); //Make a function for these
+                                ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
+                                return View(pvm);
+                            }
+                        }
+                        if (i == timeSheetMR.days - 2) //Sat
+                        {
+                            if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 7)
+                            {
+                                ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost.");
+                                ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
+                                return View(pvm);
+                            }
+                        }
                         if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 7.5)
                         {
                             ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost.");
-                            ViewBag.Message = string.Format("Error! Make sure sum of each column is less than 7.5.");
+                            ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
                             return View(pvm);
                         }
                     }

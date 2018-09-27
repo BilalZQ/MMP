@@ -14,8 +14,8 @@ namespace MMP.Models.ViewModels.User
         //public string user_name { get; set; }
 
         [Display(Name = "Employee ID")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Employee ID is required")]
-        public string employee_id { get; set; }
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Email is required")]
+        public string email { get; set; }
 
         [Display(Name = "Password")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Password is required")]
