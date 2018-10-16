@@ -314,7 +314,7 @@ namespace MMP.Controllers
                                 time_my = DateTime.Now,
                                 timesheet_status = "saved",
                                 timesheet_caller = timesheet.tsmr_id,
-                                tsmr_extension = timesheet.tsmr_valid_till
+                                tsmr_extension = timesheet.tsmr_valid_till > DateTime.Now ? timesheet.tsmr_valid_till : DateTime.Now.AddDays(-1)
                             };
                             mP.timesheets.Add(ts);
 
@@ -337,10 +337,12 @@ namespace MMP.Controllers
 
                             Task.Run(() => EmailAlert.SendEmail(user.user_email, body));
                         }
-                        #region Save to Database 
-                        mP.SaveChanges();
-                        #endregion
+                        
                     }
+
+                    #region Save to Database 
+                    mP.SaveChanges();
+                    #endregion
 
                     return Json(new { success = true, message = "Saved Successfully" });
                 }

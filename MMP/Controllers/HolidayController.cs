@@ -205,7 +205,6 @@ namespace MMP.Controllers
              using (mmpEntities mP = new mmpEntities())
             {
                 var v = mP.holiday_details.Where(a => (a.hd_name == hd_name || a.hd_from == fromdate) /*&& a.hy_id == hy_id*/ && a.hd_id != hd_id).FirstOrDefault();
-                Debug.WriteLine(v == null ? "empty" : "not empty");
                 return v != null;
             }
         }

@@ -19,16 +19,17 @@ namespace MMP.Controllers
         {
             using (mmpEntities mP = new mmpEntities())
             {
-
+                Debug.WriteLine("Here");
+                Debug.WriteLine(User.Identity.Name);
                 if (User.Identity.IsAuthenticated && UserID_RoleID.getRole(User.Identity.Name) != "admin")
                 {
                     //send them to the AuthenticatedIndex page instead of the index page
                     int user_id = UserID_RoleID.getUserID();
-                    var ts_id = mP.timesheets.OrderByDescending(x => x.time_my).FirstOrDefault(x => x.timesheet_user == user_id).timesheet_id;
+                    var ts = mP.timesheets.OrderByDescending(x => x.time_my).Where(x => x.timesheet_user == user_id && x.tsmr_extension > DateTime.Now).FirstOrDefault<timesheet>();
                     //return RedirectToAction("UserTimesheets", "TimeSheet");
-                    if (ts_id > 0)
+                    if (ts != null)
                     {
-                        return RedirectToAction("TimeSheetEditView", "TimeSheet", new { id = ts_id });
+                        return RedirectToAction("TimeSheetEditView", "TimeSheet", new { id = ts.timesheet_id });
                     }
                     else
                     {
@@ -36,56 +37,58 @@ namespace MMP.Controllers
                     }
                     //'@Url.Action("TimeSheetEditView", "TimeSheet")/'+id
                 }
-
-
-                List<string> sectors = new List<string>();
-                List<int> project_count = new List<int>();
-
-                List<DataPoint> dataPoints = new List<DataPoint>();
-
-
-                List<DataPoint> timeSheet_status_count = new List<DataPoint>();
-
-                mP.Configuration.ProxyCreationEnabled = false;
-                var usersPerRole = from user in mP.users
-                                   group user by user.role into userGroup
-                                   select new
-                                   {
-                                       value = userGroup.Key.role_name,
-                                       count = userGroup.Count(),
-                                   };
-
-                foreach (var item in usersPerRole)
+                else if (User.Identity.IsAuthenticated && UserID_RoleID.getRole(User.Identity.Name) == "admin")
                 {
-                    //Debug.WriteLine(item.value);
-                    //Debug.WriteLine(item.count);
-                    dataPoints.Add(new DataPoint(item.value.ToString().ToUpper(), item.count));
+                    List<string> sectors = new List<string>();
+                    List<int> project_count = new List<int>();
+
+                    List<DataPoint> dataPoints = new List<DataPoint>();
+
+
+                    List<DataPoint> timeSheet_status_count = new List<DataPoint>();
+
+                    mP.Configuration.ProxyCreationEnabled = false;
+                    var usersPerRole = from user in mP.users
+                                       group user by user.role into userGroup
+                                       select new
+                                       {
+                                           value = userGroup.Key.role_name,
+                                           count = userGroup.Count(),
+                                       };
+
+                    foreach (var item in usersPerRole)
+                    {
+                        //Debug.WriteLine(item.value);
+                        //Debug.WriteLine(item.count);
+                        dataPoints.Add(new DataPoint(item.value.ToString().ToUpper(), item.count));
+                    }
+
+                    //var timeSheetCountByStatus = from 
+
+
+                    var projectsPerSector = from pd in mP.project_details
+                                            group pd by pd.sector into projectGroup
+                                            select new
+                                            {
+                                                value = projectGroup.Key.sector_name,
+                                                count = projectGroup.Count()
+                                            };
+                    foreach (var item in projectsPerSector)
+                    {
+                        sectors.Add(item.value.ToString().ToUpper());
+                        project_count.Add(item.count);
+                    }
+
+                    ViewBag.DoughnutDataPoints = JsonConvert.SerializeObject(dataPoints);
+                    ViewBag.Sectors = JsonConvert.SerializeObject(sectors);
+                    ViewBag.ProjecsCount = JsonConvert.SerializeObject(project_count);
+
+                    //Debug.WriteLine(JsonConvert.SerializeObject(dataPoints));
+                    //Debug.WriteLine(JsonConvert.SerializeObject(sectors));
+                    //Debug.WriteLine(JsonConvert.SerializeObject(project_count));
+
+                    return View();
                 }
-
-                //var timeSheetCountByStatus = from 
-
-
-                var projectsPerSector = from pd in mP.project_details
-                                        group pd by pd.sector into projectGroup
-                                        select new
-                                        {
-                                            value = projectGroup.Key.sector_name,
-                                            count = projectGroup.Count()
-                                        };
-                foreach (var item in projectsPerSector)
-                {
-                    sectors.Add(item.value.ToString().ToUpper());
-                    project_count.Add(item.count);
-                }
-
-                ViewBag.DoughnutDataPoints = JsonConvert.SerializeObject(dataPoints);
-                ViewBag.Sectors = JsonConvert.SerializeObject(sectors);
-                ViewBag.ProjecsCount = JsonConvert.SerializeObject(project_count);
-
-                //Debug.WriteLine(JsonConvert.SerializeObject(dataPoints));
-                //Debug.WriteLine(JsonConvert.SerializeObject(sectors));
-                //Debug.WriteLine(JsonConvert.SerializeObject(project_count));
-
                 return View();
             }
         }

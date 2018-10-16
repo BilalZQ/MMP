@@ -34,5 +34,15 @@ namespace MMP.Generic_Functions
                 return role.role_name;                
             }
         }
+
+        public static string getUserName()
+        {
+            var employeeID = System.Web.HttpContext.Current.User.Identity.Name;
+            using (mmpEntities mE = new mmpEntities())
+            {
+                user user = mE.users.Where(x => x.employee_id == employeeID).FirstOrDefault<user>();
+                return user == null ? "" : user.user_name;
+            }
+        }
     }
 }

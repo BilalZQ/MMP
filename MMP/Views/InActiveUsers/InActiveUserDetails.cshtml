@@ -32,8 +32,7 @@
         <!-- Start Page Content -->
         <!-- ============================================================== -->
         <!-- Row -->
-        <a class="btn btn-success" style="margin-bottom:10px" onclick="OpenModal('@Url.Action("AddUser", "User")')"><i class="fa fa-plus"></i> Add New</a>
-        
+
         <div id='myModal' class='modal'>
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -41,10 +40,10 @@
                     </div>
                 </div>
             </div>
-        </div>   
+        </div>
 
         <div class="table-responsive">
-            <table id="userTable" class="table table-striped table-bordered" style="width:100%" >                
+            <table id="userTable" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
                         <!--<th>User ID</th>-->
@@ -80,9 +79,9 @@
                     </tr>
                 </thead>
 
-        </table>
+            </table>
         </div>
-        
+
     </div>
     <!-- ============================================================== -->
     <!-- End PAge Content -->
@@ -98,7 +97,6 @@
 <!-- ============================================================== -->
 <!-- End footer -->
 <!-- ============================================================== -->
-
 <!-- ============================================================== -->
 <!-- End Page wrapper  -->
 <!-- ============================================================== -->
@@ -121,7 +119,7 @@
         $(document).ready(function () {
             dataTable = $("#userTable").DataTable({
                 "ajax": {
-                    "url": "/User/GetData/"+ @ViewBag.userID,
+                    "url": "/InActiveUsers/GetData/" + @ViewBag.userID,
                     "type": "GET",
                     "datatype": "json"
                 },
@@ -140,7 +138,7 @@
                     { "data": "user_primary_project" },
                     { "data": "user.joining_date" },
                     { "data": "user.user_id", "render": function (data) {
-                        return "<a class= 'btn btn-default btn-sm' onclick=OpenModal('@Url.Action("EditUser", "User")/" + data + "')><i class= 'fa fa-pencil'></i> Edit</a><a class= 'btn btn-default btn-sm' onclick=redirect(" + data + ")><i class= 'fa fa-pencil'></i> View Attendance</a><a class= 'btn btn-danger btn-sm' style='margin-left:5px' onclick=Delete(" + data +")><i class= 'fa fa-trash'></i> Deactivate</a><a class='btn btn-default btn-sm' onclick=OpenModal('@Url.Action("ChangePassword", "User")/" + data + "')><i class='fa fa-pencil'></i> Edit Password</a>"
+                        return "<a class= 'btn btn-default btn-sm' onclick=redirect(" + data +")><i class= 'fa fa-pencil'></i> View TimeSheets</a>"
                         },
                         "orderable": false,
                         "searchable": false,
@@ -180,107 +178,12 @@
                         .draw();
                 });
             });
-            
+
         });
-
-        function OpenModal(url) {
-            debugger;
-            var $buttonClicked = $(this);
-            var id = $buttonClicked.attr('data-id');
-            var options = { "backdrop": "static", keyboard: true };
-            $.ajax({
-                type: "GET",
-                url: url,
-                contentType: "application/json; charset=utf-8",
-                datatype: "json",
-                success: function (data) {
-                    $('#myModalContent').html(data);
-                    $('#myModal').modal(options);
-                    $('#myModal').modal('show');
-
-                },
-                error: function () {
-                    alert("Dynamic content load failed.");
-                }
-            });
-        //$("#closebtn").on('click',function(){  
-        //    $('#myModal').modal('hide');    
-
-        $("#closbtn").click(function () {
-            $('#myModal').modal('hide');
-        });  
-     }
-
-
-        /*function PopupForm(url)
-        {
-            var formDiv = $('<div class="container-fluid"/>');
-            $.get(url).done(function (response) {
-                formDiv.html(response);
-
-                Popup = formDiv.dialog({
-                    autoOpen: true,
-                    resizeable: false,
-                    title: "Fill user details",
-                    height: 700,
-                    width: 1000,
-                    close: function () {
-                        Popup.dialog('destroy').remove();
-                    }
-                });
-            });
-        }*/
-
-        function SubmitForm(form) {
-            $.validator.unobtrusive.parse(form);
-            if ($(form).valid()) {
-                $.ajax({
-                    type: "POST",
-                    url: form.action,
-                    data: $(form).serialize(),
-                    success: function (data) {
-                        if (data.success) {
-                            $('#myModal').modal('hide');
-                            //Popup.dialog('close');
-                            dataTable.ajax.reload(null, false);
-
-                            //notify.js plugin
-                            $.notify(data.message, {
-                                globalPosition: "top center",
-                                className: "success"
-                            })
-                        }
-                    }                    
-                });
-            }
-            return false;
-        }
-
-        function Delete(id)
-        {
-            if (confirm('Are you sure you want to deactivate this user?'))
-            {
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("Delete", "User")/' + id,
-                    success: function (data) {
-                        if (data.success) {
-                            dataTable.ajax.reload(null, false);
-
-                            //notify.js plugin
-                            $.notify(data.message, {
-                                globalPosition: "top center",
-                                className: "success"
-                            })
-                        }
-                    }
-                })
-            }
-        }
 
         function redirect(id)
         {
-            location.href = '@Url.Action("UserPresence", "Presence")/' + id;
+            location.href = '@Url.Action("InActiveUserTimesheets", "InActiveUsers")/'+id;
         }
 
     </script>

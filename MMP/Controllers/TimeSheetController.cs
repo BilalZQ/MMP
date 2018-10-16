@@ -279,7 +279,7 @@ namespace MMP.Controllers
                     if (submit == "Calculate")
                     {
                         ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost."); //Make a function for these
-                        ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
+                        //ViewBag.Message = string.Format("Notice! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
                         return View(pvm);
                     }
 
@@ -291,7 +291,7 @@ namespace MMP.Controllers
                             if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 6.5)
                             {
                                 ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost."); //Make a function for these
-                                ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
+                                ViewBag.Message = string.Format("Error! The time entered exceeds the provided limit");
                                 return View(pvm);
                             }
                         }
@@ -300,14 +300,14 @@ namespace MMP.Controllers
                             if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 7)
                             {
                                 ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost.");
-                                ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
+                                ViewBag.Message = string.Format("Error! The time entered exceeds the provided limit");
                                 return View(pvm);
                             }
                         }
                         if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 7.5)
                         {
                             ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost.");
-                            ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
+                            ViewBag.Message = string.Format("Error! The time entered exceeds the provided limit");
                             return View(pvm);
                         }
                     }
@@ -401,7 +401,7 @@ namespace MMP.Controllers
                         }
                         else
                         {
-                            ViewBag.Message = string.Format("Cannot edit a Saved TimeSheet");
+                            ViewBag.Message = string.Format("You Cannot edit a Saved TimeSheet");
                             return View(pvm);
                         }
                     }
@@ -626,7 +626,7 @@ namespace MMP.Controllers
                     }
                     else if (ts.tsmr_extension < DateTime.Now)
                     {
-                        ViewBag.Message = string.Format("Cannot edit TimeSheet's past their extension date.");
+                        ViewBag.Message = string.Format("You Cannot edit TimeSheet's past their extension date.");
                         return View(pvm);
                     }
                     else
@@ -634,13 +634,13 @@ namespace MMP.Controllers
                         switch (ts.timesheet_status)
                         {
                             case "saved":
-                                ViewBag.Message = string.Format("Cannot Accept/Reject a Saved TimeSheet");
+                                ViewBag.Message = string.Format("You Cannot Accept/Reject a Saved TimeSheet");
                                 break;
                             case "accepted":
-                                ViewBag.Message = string.Format("Cannot Accept/Reject a Accepted TimeSheet");
+                                ViewBag.Message = string.Format("You Cannot Accept/Reject a Accepted TimeSheet");
                                 break;
                             case "rejected":
-                                ViewBag.Message = string.Format("Cannot Accept/Reject a Rejected TimeSheet");
+                                ViewBag.Message = string.Format("You Cannot Accept/Reject a Rejected TimeSheet");
                                 break;
                         }
 
@@ -851,7 +851,7 @@ namespace MMP.Controllers
 
                     if (submit == "Calculate") // Warning in case newly added rows wont be displayed
                     {
-                        ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
+                        //ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
                         ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost.");
                         return View(pvm);
                     }
@@ -864,7 +864,7 @@ namespace MMP.Controllers
                             if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 6.5)
                             {
                                 ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost."); //Make a function for these
-                                ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
+                                ViewBag.Message = string.Format("Error! The time entered exceeds the provided limit");
                                 return View(pvm);
                             }
                         }
@@ -873,14 +873,14 @@ namespace MMP.Controllers
                             if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 7)
                             {
                                 ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost.");
-                                ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
+                                ViewBag.Message = string.Format("Error! The time entered exceeds the provided limit");
                                 return View(pvm);
                             }
                         }
                         if (pvm.Sum(x => x.timesheet_day_details[i].workhours) > 7.5)
                         {
                             ViewBag.RowERR = string.Format("Warning! If you Reload the page all unsaved progress will be lost.");
-                            ViewBag.Message = string.Format("Error! Make sure sum of each column is Mon-Thu (<7.5), Fri (<6.5) & Sat(<7).");
+                            ViewBag.Message = string.Format("Error! The time entered exceeds the provided limit");
                             return View(pvm);
                         }
                     }
@@ -981,12 +981,12 @@ namespace MMP.Controllers
                     }
                     else if (ts.timesheet_status == ("accepted") || ts.timesheet_status == "submitted") //Do this properly
                     {
-                        ViewBag.Message = string.Format("Cannot edit a Submitted/Accepted TimeSheet");
+                        ViewBag.Message = string.Format("You Cannot edit a Submitted/Accepted TimeSheet");
                         return View(pvm);
                     }
                     else if (ts.tsmr_extension < DateTime.Now)
                     {
-                        ViewBag.Message = string.Format("Cannot edit TimeSheet's past their extension date.");
+                        ViewBag.Message = string.Format("You Cannot edit TimeSheet's past their extension date.");
                         return View(pvm);
                     }
 
@@ -1214,7 +1214,57 @@ namespace MMP.Controllers
         }
         #endregion
 
-        // ===========================================================================================================================================================================
+        #region Generate BackDated TimeSheets
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public ActionResult GenerateBackDatedTimeSheets()
+        {
+            using (mmpEntities mP = new mmpEntities())
+            {
+                return View();
+            }
+        }
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GenerateBackDatedTimeSheets(GenerateBackDatedTimeSheets gbdt)
+        {
+            using (mmpEntities mP = new mmpEntities())
+            {
+                var tsmr_startDate = mP.timesheet_mr.OrderBy(x => x.tsmr_start_date).FirstOrDefault().tsmr_start_date;
+                
+                if (tsmr_startDate != null && gbdt.tsmr_backDate < DateTime.Now)
+                {
+                    DateTime startDate = StartOfWeek(gbdt.tsmr_backDate, DayOfWeek.Monday);
+
+                    while (startDate != tsmr_startDate)
+                    {
+                        DateTime endDate = startDate.AddDays(6).Date.AddHours(23).AddMinutes(59).AddSeconds(59);
+                        timesheet_mr tsmr = new timesheet_mr()
+                        {
+                            tsmr_generated_by = UserID_RoleID.getUserID(),
+                            days = 7, // It was decided that every TimeSheet will be for 7 days 
+                            tsmr_created_at = DateTime.Now,
+                            tsmr_start_date = startDate,
+                            tsmr_valid_till = endDate
+                        };
+                        startDate = startDate.AddDays(7);
+                        mP.timesheet_mr.Add(tsmr);
+
+
+
+                        Debug.WriteLine(startDate);
+                    }
+                    mP.SaveChanges();
+                    
+                }
+
+                return View(gbdt);
+            }
+        }
+        #endregion
+
+      // ===========================================================================================================================================================================
 
 
         #region Extend TimeSheet date

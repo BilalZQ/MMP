@@ -108,7 +108,7 @@
                         <!-- Profile -->
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><!--<img src="~/assets/images/users/1.jpg" alt="user" class="profile-pic m-r-10" />-->Welcome,  @HttpContext.Current.User.Identity.Name.ToUpper()</a>
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><!--<img src="~/assets/images/users/1.jpg" alt="user" class="profile-pic m-r-10" />-->Welcome, @MMP.Generic_Functions.UserID_RoleID.getUserName().ToUpper() [@HttpContext.Current.User.Identity.Name.ToUpper()]</a>
                         </li>
                     </ul>
                 </div>
@@ -179,6 +179,9 @@
                                 <li>
                                     <a class="waves-effect waves-dark" href="@Url.Action("SectorDetails", "Sector")" aria-expanded="false"><i class="mdi mdi-chart-pie"></i><span class="hide-menu">Sectors</span></a>
                                 </li>
+                                <li>
+                                    <a class="waves-effect waves-dark" href="@Url.Action("InActiveUserDetails", "InActiveUsers")" aria-expanded="false"><i class="mdi mdi-account-check"></i><span class="hide-menu">DeActivated Users</span></a>
+                                </li>
                                 <!--<li>
                                     <a class="waves-effect waves-dark" href="@Url.Action("UserPresence", "Presence")" aria-expanded="false"><i class="mdi mdi-calendar-check"></i><span class="hide-menu">User Logs</span></a>
                                 </li>-->
@@ -196,12 +199,12 @@
             <!-- End Sidebar scroll-->
             <!-- Bottom points-->
             <div class="sidebar-footer">
-                <!-- item--><a class="link" data-toggle="tooltip" title="Settings"></a>
+                <!-- item--><!-- <a class="link" data-toggle="tooltip" title="Settings"></a>-->
                 @using (Html.BeginForm("Logout", "User", FormMethod.Post, new { id = "logoutForm" }))
                 {
-                <!-- item--><a href="javascript:document.getElementById('logoutForm').submit()" class="link" data-toggle="tooltip" title="Logout"><i class="mdi mdi-power"></i></a>
+                <!-- item--><a href="javascript:document.getElementById('logoutForm').submit()" class="link" data-toggle="tooltip" title="Logout" style="color:blue; font-size: x-large; width:100%; text-align:center"><i class="mdi mdi-power"></i><br>Logout</a>
                 }
-                <!-- item--><a class="link" data-toggle="tooltip" title="Settings"></a>
+                <!-- item--><!--<a class="link" data-toggle="tooltip" title="Settings"></a>-->
 
             </div>
             <!-- End Bottom points-->

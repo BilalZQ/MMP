@@ -12,7 +12,7 @@ namespace MMP.Models.ViewModels.TimeSheet
         public System.DateTime tsmr_valid_till { get; set; }
 
         [Display(Name = "Extended Date")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Category is required")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Extension Date is required")]
         [System.Web.Mvc.Remote("CheckTimeSheetExtention", "ModelValidation", HttpMethod = "POST", ErrorMessage = "TimeSheet Extension date should be greater than current DateTime as well as the Valid Date of the respective timesheet and it cannot be more than 6 months starting from the valid date of the respective timesheet.", AdditionalFields = "tsmr_valid_till")]
         public System.DateTime? tsmr_extension { get; set; }
     }
